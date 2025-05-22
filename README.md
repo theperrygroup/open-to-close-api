@@ -10,7 +10,9 @@ This is a Python client library for interacting with the Open To Close API. It p
 
 ## Installation
 
-(Instructions to be added once the package is ready for publishing, e.g., `pip install open-to-close-api`)
+```bash
+pip install open-to-close-api
+```
 
 ## Usage
 
