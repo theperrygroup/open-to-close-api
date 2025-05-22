@@ -1,0 +1,6 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Whenever you need to run a command to test that something works, always run the command. Do not ask me to do it or if you can do it. Just do it.

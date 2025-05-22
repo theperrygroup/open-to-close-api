@@ -1,0 +1,12 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+We need to setup an API wrapper for follow up boss. My env variables can be found in the .env file but this is what they contain:
+
+OPEN_TO_CLOSE_API_KEY=MWI2TnluVjdxRVZPdm00eUREblRNQT09OmlPT2M0UlRKY2cyVEZmeUdqTk9PVVRrclJLZXdoancxOmE4ODZjMmVmNTI3MGQyNGM0YWY5N2Y1ZWZjOWQ5M2Q2OWVmMTgyMzZhMmY3YTEwZTI3MDk0ZWM1YmI4MTk4MTg=
+
+Pull from there to get the API key in the code. 
+
+You will find all endpoints in the ./tasks/endpoint_tasks.md. We need to build an API wrapper for each and every endpoint. Once you have written the code for an endpoint, test the code to ensure that it works. Once you have confirmed that, check off the endpoint.

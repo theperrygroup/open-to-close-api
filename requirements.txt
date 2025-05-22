@@ -1,0 +1,5 @@
+requests
+python-dotenv
+types-requests
+pytest
+pytest-cov 

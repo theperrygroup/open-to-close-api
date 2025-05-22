@@ -1,0 +1,6 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Always check ./STYLE_GUIDE.md to understand the style of the code before proceeding.
