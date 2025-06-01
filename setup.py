@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -11,11 +11,11 @@ setup(
     description="A Python client for the Open To Close API.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/theperrygroup/open-to-close-api", # Placeholder URL, update if you have a repo
-    packages=find_packages(), # find packages in current directory
+    url="https://github.com/theperrygroup/open-to-close-api",  # Placeholder URL, update if you have a repo
+    packages=find_packages(),  # find packages in current directory
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License", # Assuming MIT, update if different
+        "License :: OSI Approved :: MIT License",  # Assuming MIT, update if different
         "Operating System :: OS Independent",
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
@@ -37,11 +37,11 @@ setup(
             "mypy>=1.0.0",
             "isort>=5.12.0",
             "pylint>=2.17.0",
-            "types-requests>=2.25.0"
+            "types-requests>=2.25.0",
         ]
     },
     project_urls={
-        'Bug Reports': 'https://github.com/theperrygroup/open-to-close-api/issues', # Placeholder
-        'Source': 'https://github.com/theperrygroup/open-to-close-api/', # Placeholder
+        "Bug Reports": "https://github.com/theperrygroup/open-to-close-api/issues",  # Placeholder
+        "Source": "https://github.com/theperrygroup/open-to-close-api/",  # Placeholder
     },
-) 
+)

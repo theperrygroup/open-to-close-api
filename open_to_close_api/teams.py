@@ -1,12 +1,13 @@
-from typing import Dict, Any, Optional, List, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 if TYPE_CHECKING:  # pragma: no cover
     from .client import OpenToCloseAPI
 
+
 class TeamsAPI:
     """Handles API requests for Team related endpoints."""
 
-    def __init__(self, client: 'OpenToCloseAPI'):
+    def __init__(self, client: "OpenToCloseAPI"):
         """Initializes the TeamsAPI with a client instance.
 
         Args:
@@ -14,7 +15,9 @@ class TeamsAPI:
         """
         self._client = client
 
-    def list_teams(self, params: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+    def list_teams(
+        self, params: Optional[Dict[str, Any]] = None
+    ) -> List[Dict[str, Any]]:
         """Retrieves a list of teams.
 
         Args:
@@ -42,7 +45,8 @@ class TeamsAPI:
         """
         response = self._client._request("POST", "/teams", json_data=team_data)
         json_response = response.json()
-        if isinstance(json_response, dict) and json_response.get('id'): return json_response
+        if isinstance(json_response, dict) and json_response.get("id"):
+            return json_response
         return json_response.get("data", {})
 
     def retrieve_team(self, team_id: int) -> Dict[str, Any]:
@@ -56,7 +60,8 @@ class TeamsAPI:
         """
         response = self._client._request("GET", f"/teams/{team_id}")
         json_response = response.json()
-        if isinstance(json_response, dict) and json_response.get('id'): return json_response
+        if isinstance(json_response, dict) and json_response.get("id"):
+            return json_response
         return json_response.get("data", {})
 
     def update_team(self, team_id: int, team_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -69,9 +74,12 @@ class TeamsAPI:
         Returns:
             A dictionary representing the updated team.
         """
-        response = self._client._request("PUT", f"/teams/{team_id}", json_data=team_data)
+        response = self._client._request(
+            "PUT", f"/teams/{team_id}", json_data=team_data
+        )
         json_response = response.json()
-        if isinstance(json_response, dict) and json_response.get('id'): return json_response
+        if isinstance(json_response, dict) and json_response.get("id"):
+            return json_response
         return json_response.get("data", {})
 
     def delete_team(self, team_id: int) -> Dict[str, Any]:
@@ -79,11 +87,11 @@ class TeamsAPI:
 
         Args:
             team_id: The ID of the team to delete.
-        
+
         Returns:
             A dictionary containing the API response.
         """
         response = self._client._request("DELETE", f"/teams/{team_id}")
         if response.status_code == 204:
             return {}
-        return response.json() 
+        return response.json()

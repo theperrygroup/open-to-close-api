@@ -45,4 +45,4 @@ class ServerError(OpenToCloseAPIError):
 
 
 class NetworkError(OpenToCloseAPIError):
-    """Raised when network connection fails.""" 
+    """Raised when network connection fails."""

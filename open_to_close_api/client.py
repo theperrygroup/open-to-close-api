@@ -1,28 +1,35 @@
 import os
+from typing import Any, Dict, Optional
+
 import requests
 from dotenv import load_dotenv
-from typing import Optional, Dict, Any
 
-from .agents import AgentsAPI # Import AgentsAPI
-from .contacts import ContactsAPI # Import ContactsAPI
+from .agents import AgentsAPI  # Import AgentsAPI
+from .contacts import ContactsAPI  # Import ContactsAPI
+
 # from .contact_roles import ContactRolesAPI # Removed
 # from .file_roles import FileRolesAPI # Removed
-from .properties import PropertiesAPI # Import PropertiesAPI
-from .property_contacts import PropertyContactsAPI # Import PropertyContactsAPI
-from .property_documents import PropertyDocumentsAPI # Import PropertyDocumentsAPI
-from .property_emails import PropertyEmailsAPI # Import PropertyEmailsAPI
+from .properties import PropertiesAPI  # Import PropertiesAPI
+from .property_contacts import PropertyContactsAPI  # Import PropertyContactsAPI
+from .property_documents import PropertyDocumentsAPI  # Import PropertyDocumentsAPI
+from .property_emails import PropertyEmailsAPI  # Import PropertyEmailsAPI
+
 # from .property_fields import PropertyFieldsAPI # Removed
 # from .property_field_sections import PropertyFieldSectionsAPI # Removed
 # from .property_field_groups import PropertyFieldGroupsAPI # Removed
-from .property_notes import PropertyNotesAPI # Import PropertyNotesAPI
-from .property_tasks import PropertyTasksAPI # Import PropertyTasksAPI
-# from .property_templates import PropertyTemplatesAPI # Removed
-from .teams import TeamsAPI # Import TeamsAPI
+from .property_notes import PropertyNotesAPI  # Import PropertyNotesAPI
+from .property_tasks import PropertyTasksAPI  # Import PropertyTasksAPI
+
 # from .time_zones import TimeZonesAPI # Removed
-from .tags import TagsAPI # Import TagsAPI
-from .users import UsersAPI # Import UsersAPI
+from .tags import TagsAPI  # Import TagsAPI
+
+# from .property_templates import PropertyTemplatesAPI # Removed
+from .teams import TeamsAPI  # Import TeamsAPI
+from .users import UsersAPI  # Import UsersAPI
+
 # from .events import EventsAPI # Removed
 # from .transactions import TransactionsAPI # Removed
+
 
 class OpenToCloseAPI:
     """Main client for Open To Close API.
@@ -43,7 +50,7 @@ class OpenToCloseAPI:
         # Use service endpoints
         agents = client.agents.list_agents()
         agent = client.agents.retrieve_agent(1)
-        
+
         # Create a new contact
         contact = client.contacts.create_contact({
             "name": "John Doe",
@@ -69,17 +76,19 @@ class OpenToCloseAPI:
         """
         self._api_key = api_key
         self._base_url = base_url or "https://api.opentoclose.com/v1"
-        
+
         # Backward compatibility properties
         load_dotenv()
         self.api_key = self._api_key or os.getenv("OPEN_TO_CLOSE_API_KEY")
         if not self.api_key:
-            raise ValueError("API key not provided and not found in environment variables.")
+            raise ValueError(
+                "API key not provided and not found in environment variables."
+            )
         self.base_url = self._base_url
         self.headers = {
             "Accept": "application/json",
         }
-        
+
         # Lazy initialization of service clients
         self._agents: Optional[AgentsAPI] = None
         self._contacts: Optional[ContactsAPI] = None
@@ -101,9 +110,7 @@ class OpenToCloseAPI:
             AgentsAPI instance for managing agents
         """
         if self._agents is None:
-            self._agents = AgentsAPI(
-                api_key=self._api_key, base_url=self._base_url
-            )
+            self._agents = AgentsAPI(api_key=self._api_key, base_url=self._base_url)
         return self._agents
 
     @property
@@ -114,9 +121,7 @@ class OpenToCloseAPI:
             ContactsAPI instance for managing contacts
         """
         if self._contacts is None:
-            self._contacts = ContactsAPI(
-                api_key=self._api_key, base_url=self._base_url
-            )
+            self._contacts = ContactsAPI(api_key=self._api_key, base_url=self._base_url)
         return self._contacts
 
     @property
@@ -205,9 +210,7 @@ class OpenToCloseAPI:
             TagsAPI instance for managing tags
         """
         if self._tags is None:
-            self._tags = TagsAPI(
-                api_key=self._api_key, base_url=self._base_url
-            )
+            self._tags = TagsAPI(api_key=self._api_key, base_url=self._base_url)
         return self._tags
 
     @property
@@ -218,9 +221,7 @@ class OpenToCloseAPI:
             TeamsAPI instance for managing teams
         """
         if self._teams is None:
-            self._teams = TeamsAPI(
-                api_key=self._api_key, base_url=self._base_url
-            )
+            self._teams = TeamsAPI(api_key=self._api_key, base_url=self._base_url)
         return self._teams
 
     @property
@@ -231,9 +232,7 @@ class OpenToCloseAPI:
             UsersAPI instance for managing users
         """
         if self._users is None:
-            self._users = UsersAPI(
-                api_key=self._api_key, base_url=self._base_url
-            )
+            self._users = UsersAPI(api_key=self._api_key, base_url=self._base_url)
         return self._users
 
     def _request(
@@ -246,7 +245,7 @@ class OpenToCloseAPI:
         """Make a request to the Open To Close API.
 
         This method is kept for backward compatibility with existing tests.
-        
+
         Args:
             method: The HTTP method (GET, POST, PUT, DELETE).
             endpoint: The API endpoint (e.g., "/agents").
@@ -260,9 +259,9 @@ class OpenToCloseAPI:
             requests.exceptions.RequestException: For network or HTTP errors.
         """
         import requests
-        
+
         url = f"{self._base_url}{endpoint}"
-        
+
         # Add api_token to params for all requests
         if params is None:
             params = {}
@@ -271,14 +270,13 @@ class OpenToCloseAPI:
         response = requests.request(
             method, url, headers=self.headers, params=params, json=json_data
         )
-        
+
         if response.status_code >= 400:
             try:
                 error_details = response.json()
                 print(f"API Error Details: {error_details}")
             except requests.exceptions.JSONDecodeError:
                 print(f"API Error Text: {response.text}")
-        
+
         response.raise_for_status()
         return response
-

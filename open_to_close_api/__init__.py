@@ -1,6 +1,9 @@
 """Open To Close API Python Client."""
 
+# Import service clients
+from .agents import AgentsAPI
 from .client import OpenToCloseAPI
+from .contacts import ContactsAPI
 from .exceptions import (
     AuthenticationError,
     NetworkError,
@@ -10,10 +13,6 @@ from .exceptions import (
     ServerError,
     ValidationError,
 )
-
-# Import service clients
-from .agents import AgentsAPI
-from .contacts import ContactsAPI
 from .properties import PropertiesAPI
 from .property_contacts import PropertyContactsAPI
 from .property_documents import PropertyDocumentsAPI
@@ -47,4 +46,4 @@ __all__ = [
     "RateLimitError",
     "ServerError",
     "NetworkError",
-] 
+]

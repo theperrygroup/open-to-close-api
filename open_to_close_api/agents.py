@@ -7,7 +7,7 @@ from .base_client import BaseClient
 
 class AgentsAPI(BaseClient):
     """Client for agents API endpoints.
-    
+
     This client provides methods to manage agents in the Open To Close platform.
     """
 
@@ -22,7 +22,9 @@ class AgentsAPI(BaseClient):
         """
         super().__init__(api_key=api_key, base_url=base_url)
 
-    def list_agents(self, params: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+    def list_agents(
+        self, params: Optional[Dict[str, Any]] = None
+    ) -> List[Dict[str, Any]]:
         """Retrieve a list of agents.
 
         Args:
@@ -76,7 +78,7 @@ class AgentsAPI(BaseClient):
             ```
         """
         response = self.post("/agents", json_data=agent_data)
-        if isinstance(response, dict) and response.get('id'):
+        if isinstance(response, dict) and response.get("id"):
             return response
         return response.get("data", {}) if isinstance(response, dict) else {}
 
@@ -101,7 +103,7 @@ class AgentsAPI(BaseClient):
             ```
         """
         response = self.get(f"/agents/{agent_id}")
-        if isinstance(response, dict) and response.get('id'):
+        if isinstance(response, dict) and response.get("id"):
             return response
         return response.get("data", {}) if isinstance(response, dict) else {}
 
@@ -130,7 +132,7 @@ class AgentsAPI(BaseClient):
             ```
         """
         response = self.put(f"/agents/{agent_id}", json_data=agent_data)
-        if isinstance(response, dict) and response.get('id'):
+        if isinstance(response, dict) and response.get("id"):
             return response
         return response.get("data", {}) if isinstance(response, dict) else {}
 
@@ -139,7 +141,7 @@ class AgentsAPI(BaseClient):
 
         Args:
             agent_id: The ID of the agent to delete
-        
+
         Returns:
             A dictionary containing the API response
 
@@ -153,4 +155,4 @@ class AgentsAPI(BaseClient):
             result = client.agents.delete_agent(123)
             ```
         """
-        return self.delete(f"/agents/{agent_id}") 
+        return self.delete(f"/agents/{agent_id}")

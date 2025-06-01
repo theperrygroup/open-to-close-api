@@ -1,12 +1,13 @@
-from typing import Dict, Any, Optional, List, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 if TYPE_CHECKING:  # pragma: no cover
     from .client import OpenToCloseAPI
 
+
 class TagsAPI:
     """Handles API requests for Tag related endpoints."""
 
-    def __init__(self, client: 'OpenToCloseAPI'):
+    def __init__(self, client: "OpenToCloseAPI"):
         """Initializes the TagsAPI with a client instance.
 
         Args:
@@ -14,7 +15,9 @@ class TagsAPI:
         """
         self._client = client
 
-    def list_tags(self, params: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+    def list_tags(
+        self, params: Optional[Dict[str, Any]] = None
+    ) -> List[Dict[str, Any]]:
         """Retrieves a list of tags.
 
         Args:
@@ -42,7 +45,8 @@ class TagsAPI:
         """
         response = self._client._request("POST", "/tags", json_data=tag_data)
         json_response = response.json()
-        if isinstance(json_response, dict) and json_response.get('id'): return json_response
+        if isinstance(json_response, dict) and json_response.get("id"):
+            return json_response
         return json_response.get("data", {})
 
     def retrieve_tag(self, tag_id: int) -> Dict[str, Any]:
@@ -56,7 +60,8 @@ class TagsAPI:
         """
         response = self._client._request("GET", f"/tags/{tag_id}")
         json_response = response.json()
-        if isinstance(json_response, dict) and json_response.get('id'): return json_response
+        if isinstance(json_response, dict) and json_response.get("id"):
+            return json_response
         return json_response.get("data", {})
 
     def update_tag(self, tag_id: int, tag_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -71,7 +76,8 @@ class TagsAPI:
         """
         response = self._client._request("PUT", f"/tags/{tag_id}", json_data=tag_data)
         json_response = response.json()
-        if isinstance(json_response, dict) and json_response.get('id'): return json_response
+        if isinstance(json_response, dict) and json_response.get("id"):
+            return json_response
         return json_response.get("data", {})
 
     def delete_tag(self, tag_id: int) -> Dict[str, Any]:
@@ -79,11 +85,11 @@ class TagsAPI:
 
         Args:
             tag_id: The ID of the tag to delete.
-        
+
         Returns:
             A dictionary containing the API response.
         """
         response = self._client._request("DELETE", f"/tags/{tag_id}")
         if response.status_code == 204:
             return {}
-        return response.json() 
+        return response.json()

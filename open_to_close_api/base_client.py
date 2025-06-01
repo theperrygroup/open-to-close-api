@@ -39,10 +39,12 @@ class BaseClient:
 
         self.base_url = base_url or "https://api.opentoclose.com/v1"
         self.session = requests.Session()
-        self.session.headers.update({
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        })
+        self.session.headers.update(
+            {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+            }
+        )
 
     def _handle_response(self, response: requests.Response) -> Dict[str, Any]:
         """Handle HTTP response and raise appropriate exceptions."""
@@ -123,7 +125,9 @@ class BaseClient:
         except requests.exceptions.RequestException as e:
             raise NetworkError(f"Network error: {str(e)}")
 
-    def get(self, endpoint: str, params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def get(
+        self, endpoint: str, params: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
         """Make GET request."""
         return self._request("GET", endpoint, params=params)
 
@@ -135,7 +139,9 @@ class BaseClient:
         files: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """Make POST request."""
-        return self._request("POST", endpoint, json_data=json_data, data=data, files=files)
+        return self._request(
+            "POST", endpoint, json_data=json_data, data=data, files=files
+        )
 
     def put(
         self,
@@ -145,7 +151,9 @@ class BaseClient:
         files: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """Make PUT request."""
-        return self._request("PUT", endpoint, json_data=json_data, data=data, files=files)
+        return self._request(
+            "PUT", endpoint, json_data=json_data, data=data, files=files
+        )
 
     def delete(self, endpoint: str) -> Dict[str, Any]:
         """Make DELETE request."""
@@ -159,4 +167,6 @@ class BaseClient:
         files: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """Make PATCH request."""
-        return self._request("PATCH", endpoint, json_data=json_data, data=data, files=files) 
+        return self._request(
+            "PATCH", endpoint, json_data=json_data, data=data, files=files
+        )

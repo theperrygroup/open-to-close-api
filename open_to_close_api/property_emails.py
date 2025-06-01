@@ -1,12 +1,13 @@
-from typing import Dict, Any, Optional, List, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 if TYPE_CHECKING:  # pragma: no cover
     from .client import OpenToCloseAPI
 
+
 class PropertyEmailsAPI:
     """Handles API requests for Property Email related endpoints."""
 
-    def __init__(self, client: 'OpenToCloseAPI'):
+    def __init__(self, client: "OpenToCloseAPI"):
         """Initializes the PropertyEmailsAPI with a client instance.
 
         Args:
@@ -14,7 +15,9 @@ class PropertyEmailsAPI:
         """
         self._client = client
 
-    def list_property_emails(self, property_id: int, params: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+    def list_property_emails(
+        self, property_id: int, params: Optional[Dict[str, Any]] = None
+    ) -> List[Dict[str, Any]]:
         """Retrieves a list of emails for a specific property.
 
         Args:
@@ -24,7 +27,9 @@ class PropertyEmailsAPI:
         Returns:
             A list of dictionaries, where each dictionary represents a property email.
         """
-        response = self._client._request("GET", f"/properties/{property_id}/emails", params=params)
+        response = self._client._request(
+            "GET", f"/properties/{property_id}/emails", params=params
+        )
         json_response = response.json()
         if isinstance(json_response, list):
             return json_response
@@ -32,7 +37,9 @@ class PropertyEmailsAPI:
             return json_response.get("data", [])
         return []
 
-    def create_property_email(self, property_id: int, email_data: Dict[str, Any]) -> Dict[str, Any]:
+    def create_property_email(
+        self, property_id: int, email_data: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Adds an email to a specific property.
 
         Args:
@@ -42,12 +49,17 @@ class PropertyEmailsAPI:
         Returns:
             A dictionary representing the newly added property email.
         """
-        response = self._client._request("POST", f"/properties/{property_id}/emails", json_data=email_data)
+        response = self._client._request(
+            "POST", f"/properties/{property_id}/emails", json_data=email_data
+        )
         json_response = response.json()
-        if isinstance(json_response, dict) and json_response.get('id'): return json_response
+        if isinstance(json_response, dict) and json_response.get("id"):
+            return json_response
         return json_response.get("data", {})
 
-    def retrieve_property_email(self, property_id: int, email_id: int) -> Dict[str, Any]:
+    def retrieve_property_email(
+        self, property_id: int, email_id: int
+    ) -> Dict[str, Any]:
         """Retrieves a specific email for a specific property.
 
         Args:
@@ -57,12 +69,17 @@ class PropertyEmailsAPI:
         Returns:
             A dictionary representing the property email.
         """
-        response = self._client._request("GET", f"/properties/{property_id}/emails/{email_id}")
+        response = self._client._request(
+            "GET", f"/properties/{property_id}/emails/{email_id}"
+        )
         json_response = response.json()
-        if isinstance(json_response, dict) and json_response.get('id'): return json_response
+        if isinstance(json_response, dict) and json_response.get("id"):
+            return json_response
         return json_response.get("data", {})
 
-    def update_property_email(self, property_id: int, email_id: int, email_data: Dict[str, Any]) -> Dict[str, Any]:
+    def update_property_email(
+        self, property_id: int, email_id: int, email_data: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Updates a specific email for a specific property.
 
         Args:
@@ -73,9 +90,12 @@ class PropertyEmailsAPI:
         Returns:
             A dictionary representing the updated property email.
         """
-        response = self._client._request("PUT", f"/properties/{property_id}/emails/{email_id}", json_data=email_data)
+        response = self._client._request(
+            "PUT", f"/properties/{property_id}/emails/{email_id}", json_data=email_data
+        )
         json_response = response.json()
-        if isinstance(json_response, dict) and json_response.get('id'): return json_response
+        if isinstance(json_response, dict) and json_response.get("id"):
+            return json_response
         return json_response.get("data", {})
 
     def delete_property_email(self, property_id: int, email_id: int) -> Dict[str, Any]:
@@ -84,11 +104,13 @@ class PropertyEmailsAPI:
         Args:
             property_id: The ID of the property.
             email_id: The ID of the email to remove.
-        
+
         Returns:
             A dictionary containing the API response.
         """
-        response = self._client._request("DELETE", f"/properties/{property_id}/emails/{email_id}")
+        response = self._client._request(
+            "DELETE", f"/properties/{property_id}/emails/{email_id}"
+        )
         if response.status_code == 204:
             return {}
-        return response.json() 
+        return response.json()

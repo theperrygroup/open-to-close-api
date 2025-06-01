@@ -7,7 +7,7 @@ from .base_client import BaseClient
 
 class UsersAPI(BaseClient):
     """Client for users API endpoints.
-    
+
     This client provides methods to manage users in the Open To Close platform.
     """
 
@@ -22,7 +22,9 @@ class UsersAPI(BaseClient):
         """
         super().__init__(api_key=api_key, base_url=base_url)
 
-    def list_users(self, params: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+    def list_users(
+        self, params: Optional[Dict[str, Any]] = None
+    ) -> List[Dict[str, Any]]:
         """Retrieve a list of users.
 
         Args:
@@ -76,7 +78,7 @@ class UsersAPI(BaseClient):
             ```
         """
         response = self.post("/users", json_data=user_data)
-        if isinstance(response, dict) and response.get('id'):
+        if isinstance(response, dict) and response.get("id"):
             return response
         return response.get("data", {}) if isinstance(response, dict) else {}
 
@@ -101,7 +103,7 @@ class UsersAPI(BaseClient):
             ```
         """
         response = self.get(f"/users/{user_id}")
-        if isinstance(response, dict) and response.get('id'):
+        if isinstance(response, dict) and response.get("id"):
             return response
         return response.get("data", {}) if isinstance(response, dict) else {}
 
@@ -130,7 +132,7 @@ class UsersAPI(BaseClient):
             ```
         """
         response = self.put(f"/users/{user_id}", json_data=user_data)
-        if isinstance(response, dict) and response.get('id'):
+        if isinstance(response, dict) and response.get("id"):
             return response
         return response.get("data", {}) if isinstance(response, dict) else {}
 
@@ -139,7 +141,7 @@ class UsersAPI(BaseClient):
 
         Args:
             user_id: The ID of the user to delete
-        
+
         Returns:
             A dictionary containing the API response
 
@@ -153,4 +155,4 @@ class UsersAPI(BaseClient):
             result = client.users.delete_user(123)
             ```
         """
-        return self.delete(f"/users/{user_id}") 
+        return self.delete(f"/users/{user_id}")
