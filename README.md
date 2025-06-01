@@ -22,13 +22,13 @@ A comprehensive Python client library for the Open To Close API, providing easy-
 ### Installation
 
 ```bash
-pip install open-to-close-api
+pip install open-to-close
 ```
 
 ### Basic Usage
 
 ```python
-from open_to_close_api import OpenToCloseAPI
+from open_to_close import OpenToCloseAPI
 
 # Initialize the client (loads API key from .env or environment variable by default)
 client = OpenToCloseAPI()
@@ -113,7 +113,7 @@ OPEN_TO_CLOSE_API_KEY=your_actual_api_key_here
 The client will automatically load this when you initialize it:
 
 ```python
-from open_to_close_api import OpenToCloseAPI
+from open_to_close import OpenToCloseAPI
 
 # Automatically loads from environment or .env file
 client = OpenToCloseAPI()
@@ -124,7 +124,7 @@ client = OpenToCloseAPI()
 The client provides specific exception types for different error conditions:
 
 ```python
-from open_to_close_api import (
+from open_to_close import (
     OpenToCloseAPI,
     AuthenticationError,
     ValidationError,
@@ -202,7 +202,7 @@ Run the test suite:
 pytest
 
 # Run with coverage
-pytest --cov=open_to_close_api
+pytest --cov=open_to_close
 
 # Run integration tests (requires API key)
 pytest tests/integration/

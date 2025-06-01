@@ -4,8 +4,8 @@ import pytest
 from unittest.mock import Mock, patch
 import requests
 
-from open_to_close_api.base_client import BaseClient
-from open_to_close_api.exceptions import (
+from open_to_close.base_client import BaseClient
+from open_to_close.exceptions import (
     AuthenticationError,
     NetworkError,
     NotFoundError,
@@ -20,14 +20,14 @@ class TestBaseClient:
     """Test BaseClient functionality."""
 
     @patch.dict("os.environ", {}, clear=True)
-    @patch("open_to_close_api.base_client.load_dotenv")
+    @patch("open_to_close.base_client.load_dotenv")
     def test_init_without_api_key_raises_error(self, mock_load_dotenv: Mock) -> None:
         """Test that BaseClient raises AuthenticationError without API key."""
         with pytest.raises(AuthenticationError, match="API key is required"):
             BaseClient()
 
     @patch.dict("os.environ", {"OPEN_TO_CLOSE_API_KEY": "env_api_key"}, clear=True)
-    @patch("open_to_close_api.base_client.load_dotenv")
+    @patch("open_to_close.base_client.load_dotenv")
     def test_init_with_env_api_key(self, mock_load_dotenv: Mock) -> None:
         """Test BaseClient initialization with API key from environment."""
         client = BaseClient()
@@ -56,7 +56,7 @@ class TestBaseClient:
         for key, value in expected_headers.items():
             assert client.session.headers.get(key) == value
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_handle_response_200(self, mock_request: Mock) -> None:
         """Test handling successful 200 response."""
         client = BaseClient(api_key="test_key")
@@ -68,7 +68,7 @@ class TestBaseClient:
         result = client._handle_response(response)
         assert result == {"id": 1, "name": "test"}
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_handle_response_201(self, mock_request: Mock) -> None:
         """Test handling successful 201 response."""
         client = BaseClient(api_key="test_key")
@@ -80,7 +80,7 @@ class TestBaseClient:
         result = client._handle_response(response)
         assert result == {"id": 1, "name": "created"}
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_handle_response_204(self, mock_request: Mock) -> None:
         """Test handling 204 No Content response."""
         client = BaseClient(api_key="test_key")
@@ -91,7 +91,7 @@ class TestBaseClient:
         result = client._handle_response(response)
         assert result == {}
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_handle_response_400_validation_error(self, mock_request: Mock) -> None:
         """Test handling 400 Bad Request response."""
         client = BaseClient(api_key="test_key")
@@ -103,7 +103,7 @@ class TestBaseClient:
         with pytest.raises(ValidationError, match="Bad request: Invalid request"):
             client._handle_response(response)
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_handle_response_401_authentication_error(self, mock_request: Mock) -> None:
         """Test handling 401 Unauthorized response."""
         client = BaseClient(api_key="test_key")
@@ -117,7 +117,7 @@ class TestBaseClient:
         ):
             client._handle_response(response)
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_handle_response_404_not_found_error(self, mock_request: Mock) -> None:
         """Test handling 404 Not Found response."""
         client = BaseClient(api_key="test_key")
@@ -131,7 +131,7 @@ class TestBaseClient:
         ):
             client._handle_response(response)
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_handle_response_429_rate_limit_error(self, mock_request: Mock) -> None:
         """Test handling 429 Rate Limit response."""
         client = BaseClient(api_key="test_key")
@@ -145,7 +145,7 @@ class TestBaseClient:
         ):
             client._handle_response(response)
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_handle_response_500_server_error(self, mock_request: Mock) -> None:
         """Test handling 500 Server Error response."""
         client = BaseClient(api_key="test_key")
@@ -157,7 +157,7 @@ class TestBaseClient:
         with pytest.raises(ServerError, match="Server error: Internal server error"):
             client._handle_response(response)
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_handle_response_unknown_error(self, mock_request: Mock) -> None:
         """Test handling unknown error response."""
         client = BaseClient(api_key="test_key")
@@ -171,7 +171,7 @@ class TestBaseClient:
         ):
             client._handle_response(response)
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_handle_response_invalid_json(self, mock_request: Mock) -> None:
         """Test handling response with invalid JSON."""
         client = BaseClient(api_key="test_key")
@@ -184,7 +184,7 @@ class TestBaseClient:
         with pytest.raises(ValidationError, match="Bad request: invalid json"):
             client._handle_response(response)
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_handle_response_no_content(self, mock_request: Mock) -> None:
         """Test handling response with no content."""
         client = BaseClient(api_key="test_key")
@@ -195,7 +195,7 @@ class TestBaseClient:
         result = client._handle_response(response)
         assert result == {}
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_request_method(self, mock_session_request: Mock) -> None:
         """Test the _request method."""
         client = BaseClient(api_key="test_key")
@@ -220,7 +220,7 @@ class TestBaseClient:
         )
         assert result == {"id": 1}
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_request_network_error(self, mock_session_request: Mock) -> None:
         """Test _request method with network error."""
         client = BaseClient(api_key="test_key")
@@ -231,7 +231,7 @@ class TestBaseClient:
         with pytest.raises(NetworkError, match="Network error: Connection failed"):
             client._request("GET", "/test")
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_get_method(self, mock_session_request: Mock) -> None:
         """Test the get method."""
         client = BaseClient(api_key="test_key")
@@ -254,7 +254,7 @@ class TestBaseClient:
         )
         assert result == {"data": "test"}
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_post_method(self, mock_session_request: Mock) -> None:
         """Test the post method."""
         client = BaseClient(api_key="test_key")
@@ -278,7 +278,7 @@ class TestBaseClient:
         )
         assert result == {"id": 1, "created": True}
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_put_method(self, mock_session_request: Mock) -> None:
         """Test the put method."""
         client = BaseClient(api_key="test_key")
@@ -302,7 +302,7 @@ class TestBaseClient:
         )
         assert result == {"id": 1, "updated": True}
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_delete_method(self, mock_session_request: Mock) -> None:
         """Test the delete method."""
         client = BaseClient(api_key="test_key")
@@ -324,7 +324,7 @@ class TestBaseClient:
         )
         assert result == {}
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_patch_method(self, mock_session_request: Mock) -> None:
         """Test the patch method."""
         client = BaseClient(api_key="test_key")
@@ -348,7 +348,7 @@ class TestBaseClient:
         )
         assert result == {"id": 1, "patched": True}
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_request_with_leading_slash_endpoint(
         self, mock_session_request: Mock
     ) -> None:
@@ -373,7 +373,7 @@ class TestBaseClient:
             params={"api_token": "test_key"},
         )
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_request_with_files(self, mock_session_request: Mock) -> None:
         """Test _request method with files parameter."""
         client = BaseClient(api_key="test_key")
@@ -397,7 +397,7 @@ class TestBaseClient:
         )
         assert result == {"uploaded": True}
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_request_with_data(self, mock_session_request: Mock) -> None:
         """Test _request method with data parameter."""
         client = BaseClient(api_key="test_key")

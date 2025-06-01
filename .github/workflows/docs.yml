@@ -9,7 +9,7 @@ on:
       - 'docs/**'
       - 'mkdocs.yml'
       - '.github/workflows/docs.yml'
-      - 'open_to_close_api/**'  # Rebuild docs when code changes (for auto-generated content)
+      - 'open_to_close/**'  # Rebuild docs when code changes (for auto-generated content)
   pull_request:
     branches:
       - main
@@ -71,7 +71,7 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          pytest --cov=open_to_close_api --cov-report=xml
+          pytest --cov=open_to_close --cov-report=xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4

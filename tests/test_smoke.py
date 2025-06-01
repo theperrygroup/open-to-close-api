@@ -1,12 +1,12 @@
 # Basic smoke tests
-import open_to_close_api
+import open_to_close
 
 
-def test_import():
-    assert hasattr(open_to_close_api, "OpenToCloseAPI")
-    assert hasattr(open_to_close_api, "__version__")
+def test_package_imports() -> None:
+    assert hasattr(open_to_close, "OpenToCloseAPI")
+    assert hasattr(open_to_close, "__version__")
 
 
-def test_client_instantiation():
-    client = open_to_close_api.OpenToCloseAPI("test_key")
+def test_basic_client_instantiation() -> None:
+    client = open_to_close.OpenToCloseAPI("test_key")
     assert client is not None

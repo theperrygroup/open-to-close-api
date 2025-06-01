@@ -33,7 +33,7 @@ jobs:
       env:
         OPEN_TO_CLOSE_API_KEY: ${{ secrets.OPEN_TO_CLOSE_API_KEY }}
       run: |
-        pytest --cov=open_to_close_api --cov-report=term-missing
+        pytest --cov=open_to_close --cov-report=term-missing
 
   build:
     runs-on: ubuntu-latest
@@ -64,7 +64,7 @@ jobs:
         echo "pyproject.toml version: $PYPROJECT_VERSION"
         
         # Extract version from __init__.py
-        INIT_VERSION=$(grep -E '^__version__ = ' open_to_close_api/__init__.py | sed 's/__version__ = "\(.*\)"/\1/')
+        INIT_VERSION=$(grep -E '^__version__ = ' open_to_close/__init__.py | sed 's/__version__ = "\(.*\)"/\1/')
         echo "__init__.py version: $INIT_VERSION"
         
         # Check if all versions match
@@ -148,8 +148,8 @@ jobs:
         echo "" >> CHANGELOG.md
         echo "### Package Information" >> CHANGELOG.md
         echo "- **Python Support**: 3.8 - 3.12" >> CHANGELOG.md
-        echo "- **PyPI Package**: [open-to-close-api $VERSION](https://pypi.org/project/open-to-close-api/$VERSION/)" >> CHANGELOG.md
-        echo "- **Documentation**: [GitHub Docs](https://github.com/theperrygroup/open-to-close-api/blob/main/docs/README.md)" >> CHANGELOG.md
+        echo "- **PyPI Package**: [open-to-close $VERSION](https://pypi.org/project/open-to-close/$VERSION/)" >> CHANGELOG.md
+        echo "- **Documentation**: [GitHub Docs](https://github.com/theperrygroup/open-to-close/blob/main/docs/README.md)" >> CHANGELOG.md
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
@@ -177,7 +177,7 @@ jobs:
         echo "🎉 Successfully released Open To Close API ${GITHUB_REF#refs/tags/}!"
         echo "✅ Published to PyPI"
         echo "✅ Created GitHub release"
-        echo "📦 Package available at: https://pypi.org/project/open-to-close-api/"
+        echo "📦 Package available at: https://pypi.org/project/open-to-close/"
 
     - name: Notify on failure
       if: needs.publish-pypi.result == 'failure' || needs.create-github-release.result == 'failure'

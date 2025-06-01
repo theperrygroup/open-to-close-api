@@ -4,8 +4,8 @@ import pytest
 from unittest.mock import Mock, patch
 import requests
 
-from open_to_close_api import OpenToCloseAPI
-from open_to_close_api.exceptions import NotFoundError, ValidationError
+from open_to_close import OpenToCloseAPI
+from open_to_close.exceptions import NotFoundError, ValidationError
 
 
 @pytest.fixture
@@ -32,7 +32,7 @@ class TestPropertyContactsAPI:
         assert property_contacts is not None
         assert hasattr(property_contacts, "list_property_contacts")
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_property_contacts(self, mock_request, client, mock_response):
         """Test listing property contacts."""
         mock_request.return_value = mock_response
@@ -43,7 +43,7 @@ class TestPropertyContactsAPI:
         assert isinstance(contacts, list)
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_create_property_contact(self, mock_request, client, mock_response):
         """Test creating a property contact."""
         mock_request.return_value = mock_response
@@ -56,7 +56,7 @@ class TestPropertyContactsAPI:
         assert contact.get("id") == 1
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_retrieve_property_contact(self, mock_request, client, mock_response):
         """Test retrieving a property contact."""
         mock_request.return_value = mock_response
@@ -68,7 +68,7 @@ class TestPropertyContactsAPI:
         assert contact.get("id") == 1
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_update_property_contact(self, mock_request, client, mock_response):
         """Test updating a property contact."""
         mock_request.return_value = mock_response
@@ -83,7 +83,7 @@ class TestPropertyContactsAPI:
         assert contact.get("id") == 1
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_delete_property_contact(self, mock_request, client, mock_response):
         """Test deleting a property contact."""
         mock_request.return_value = mock_response
@@ -105,7 +105,7 @@ class TestPropertyDocumentsAPI:
         assert property_documents is not None
         assert hasattr(property_documents, "list_property_documents")
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_property_documents(self, mock_request, client, mock_response):
         """Test listing property documents."""
         mock_request.return_value = mock_response
@@ -116,7 +116,7 @@ class TestPropertyDocumentsAPI:
         assert isinstance(documents, list)
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_create_property_document(self, mock_request, client, mock_response):
         """Test creating a property document."""
         mock_request.return_value = mock_response
@@ -144,7 +144,7 @@ class TestPropertyEmailsAPI:
         assert property_emails is not None
         assert hasattr(property_emails, "list_property_emails")
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_property_emails(self, mock_request, client, mock_response):
         """Test listing property emails."""
         mock_request.return_value = mock_response
@@ -165,7 +165,7 @@ class TestPropertyNotesAPI:
         assert property_notes is not None
         assert hasattr(property_notes, "list_property_notes")
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_property_notes(self, mock_request, client, mock_response):
         """Test listing property notes."""
         mock_request.return_value = mock_response
@@ -186,7 +186,7 @@ class TestPropertyTasksAPI:
         assert property_tasks is not None
         assert hasattr(property_tasks, "list_property_tasks")
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_property_tasks(self, mock_request, client, mock_response):
         """Test listing property tasks."""
         mock_request.return_value = mock_response
@@ -197,7 +197,7 @@ class TestPropertyTasksAPI:
         assert isinstance(tasks, list)
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_create_property_task(self, mock_request, client, mock_response):
         """Test creating a property task."""
         mock_request.return_value = mock_response
@@ -229,7 +229,7 @@ class TestPropertyAPIIntegration:
 
     def test_property_apis_inherit_from_base_client(self, client):
         """Test that all property APIs inherit from BaseClient."""
-        from open_to_close_api.base_client import BaseClient
+        from open_to_close.base_client import BaseClient
 
         assert isinstance(client.property_contacts, BaseClient)
         assert isinstance(client.property_documents, BaseClient)

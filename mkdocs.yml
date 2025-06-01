@@ -1,11 +1,11 @@
 site_name: Open To Close API Python Client
 site_description: Official Python client for the Open To Close Real Estate API
 site_author: The Perry Group
-site_url: https://open-to-close-api.readthedocs.io/
+site_url: https://open-to-close.readthedocs.io/
 
 # Repository
-repo_name: open-to-close-api
-repo_url: https://github.com/theperrygroup/open-to-close-api
+repo_name: open-to-close
+repo_url: https://github.com/theperrygroup/open-to-close
 edit_uri: edit/main/docs/
 
 # Copyright
@@ -91,7 +91,7 @@ markdown_extensions:
   - pymdownx.magiclink:
       repo_url_shorthand: true
       user: theperrygroup
-      repo: open-to-close-api
+      repo: open-to-close
   - pymdownx.mark
   - pymdownx.smartsymbols
   - pymdownx.superfences:
@@ -131,9 +131,9 @@ extra:
     provider: mike
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/theperrygroup/open-to-close-api
+      link: https://github.com/theperrygroup/open-to-close
     - icon: fontawesome/brands/python
-      link: https://pypi.org/project/open-to-close-api/
+      link: https://pypi.org/project/open-to-close/
     - icon: material/web
       link: https://www.theperry.group
     - icon: material/email
@@ -151,4 +151,4 @@ extra:
 
 # Watch extra directories
 watch:
-  - open_to_close_api/ 
+  - open_to_close/ 

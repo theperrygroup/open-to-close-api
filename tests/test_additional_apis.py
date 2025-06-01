@@ -4,8 +4,8 @@ import pytest
 from unittest.mock import Mock, patch
 import requests
 
-from open_to_close_api import OpenToCloseAPI
-from open_to_close_api.exceptions import (
+from open_to_close import OpenToCloseAPI
+from open_to_close.exceptions import (
     NotFoundError,
     ValidationError,
     AuthenticationError,
@@ -62,7 +62,7 @@ class TestTagsAPI:
         assert hasattr(tags, "update_tag")
         assert hasattr(tags, "delete_tag")
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_tags(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_list_response: Mock
     ) -> None:
@@ -76,7 +76,7 @@ class TestTagsAPI:
         assert tags[0]["id"] == 1
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_tags_with_params(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_list_response: Mock
     ) -> None:
@@ -88,7 +88,7 @@ class TestTagsAPI:
         assert isinstance(tags, list)
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_tags_dict_response(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -104,7 +104,7 @@ class TestTagsAPI:
         assert len(tags) == 1
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_create_tag(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -124,7 +124,7 @@ class TestTagsAPI:
         assert tag.get("name") == "VIP Client"
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_create_tag_dict_response(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -141,7 +141,7 @@ class TestTagsAPI:
         assert tag.get("id") == 1
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_retrieve_tag(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -155,7 +155,7 @@ class TestTagsAPI:
         assert tag.get("id") == 123
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_retrieve_tag_dict_response(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -171,7 +171,7 @@ class TestTagsAPI:
         assert tag.get("id") == 123
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_update_tag(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -191,7 +191,7 @@ class TestTagsAPI:
         assert tag.get("name") == "Premium Client"
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_delete_tag(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_delete_response: Mock
     ) -> None:
@@ -217,7 +217,7 @@ class TestTeamsAPI:
         assert hasattr(teams, "update_team")
         assert hasattr(teams, "delete_team")
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_teams(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_list_response: Mock
     ) -> None:
@@ -230,7 +230,7 @@ class TestTeamsAPI:
         assert len(teams) == 1
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_teams_with_params(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_list_response: Mock
     ) -> None:
@@ -242,7 +242,7 @@ class TestTeamsAPI:
         assert isinstance(teams, list)
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_create_team(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -262,7 +262,7 @@ class TestTeamsAPI:
         assert team.get("name") == "Sales Team"
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_retrieve_team(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -276,7 +276,7 @@ class TestTeamsAPI:
         assert team.get("id") == 123
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_update_team(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -296,7 +296,7 @@ class TestTeamsAPI:
         assert team.get("name") == "Marketing Team"
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_delete_team(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_delete_response: Mock
     ) -> None:
@@ -322,7 +322,7 @@ class TestUsersAPI:
         assert hasattr(users, "update_user")
         assert hasattr(users, "delete_user")
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_users(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_list_response: Mock
     ) -> None:
@@ -335,7 +335,7 @@ class TestUsersAPI:
         assert len(users) == 1
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_users_with_params(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_list_response: Mock
     ) -> None:
@@ -347,7 +347,7 @@ class TestUsersAPI:
         assert isinstance(users, list)
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_create_user(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -373,7 +373,7 @@ class TestUsersAPI:
         assert user.get("email") == "john@example.com"
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_retrieve_user(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -392,7 +392,7 @@ class TestUsersAPI:
         assert user.get("email") == "john@example.com"
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_update_user(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -412,7 +412,7 @@ class TestUsersAPI:
         assert user.get("name") == "Jane User"
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_delete_user(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_delete_response: Mock
     ) -> None:
@@ -438,7 +438,7 @@ class TestPropertyEmailsAPI:
         assert hasattr(property_emails, "update_property_email")
         assert hasattr(property_emails, "delete_property_email")
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_property_emails(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_list_response: Mock
     ) -> None:
@@ -450,7 +450,7 @@ class TestPropertyEmailsAPI:
         assert isinstance(emails, list)
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_property_emails_with_params(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_list_response: Mock
     ) -> None:
@@ -462,7 +462,7 @@ class TestPropertyEmailsAPI:
         assert isinstance(emails, list)
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_property_emails_dict_response(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -478,7 +478,7 @@ class TestPropertyEmailsAPI:
         assert len(emails) == 1
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_property_emails_dict_response_no_data(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -494,7 +494,7 @@ class TestPropertyEmailsAPI:
         assert len(emails) == 0
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_property_emails_unexpected_response(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -510,7 +510,7 @@ class TestPropertyEmailsAPI:
         assert len(emails) == 0
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_create_property_email(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -535,7 +535,7 @@ class TestPropertyEmailsAPI:
         assert email.get("subject") == "Property Update"
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_create_property_email_dict_response(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -552,7 +552,7 @@ class TestPropertyEmailsAPI:
         assert email.get("id") == 1
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_create_property_email_dict_response_no_data(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -569,7 +569,7 @@ class TestPropertyEmailsAPI:
         assert len(email) == 0
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_create_property_email_unexpected_response(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -586,7 +586,7 @@ class TestPropertyEmailsAPI:
         assert len(email) == 0
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_retrieve_property_email(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -600,7 +600,7 @@ class TestPropertyEmailsAPI:
         assert email.get("id") == 123
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_retrieve_property_email_dict_response(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -616,7 +616,7 @@ class TestPropertyEmailsAPI:
         assert email.get("id") == 123
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_update_property_email(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -631,7 +631,7 @@ class TestPropertyEmailsAPI:
         assert email.get("id") == 123
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_update_property_email_dict_response(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -648,7 +648,7 @@ class TestPropertyEmailsAPI:
         assert email.get("id") == 123
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_delete_property_email(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_delete_response: Mock
     ) -> None:
@@ -674,7 +674,7 @@ class TestPropertyNotesAPI:
         assert hasattr(property_notes, "update_property_note")
         assert hasattr(property_notes, "delete_property_note")
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_property_notes(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_list_response: Mock
     ) -> None:
@@ -686,7 +686,7 @@ class TestPropertyNotesAPI:
         assert isinstance(notes, list)
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_property_notes_dict_response(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -702,7 +702,7 @@ class TestPropertyNotesAPI:
         assert len(notes) == 1
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_property_notes_dict_response_no_data(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -718,7 +718,7 @@ class TestPropertyNotesAPI:
         assert len(notes) == 0
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_create_property_note(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -739,7 +739,7 @@ class TestPropertyNotesAPI:
         assert note.get("title") == "Important Note"
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_create_property_note_dict_response(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -756,7 +756,7 @@ class TestPropertyNotesAPI:
         assert note.get("id") == 1
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_create_property_note_dict_response_no_data(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -773,7 +773,7 @@ class TestPropertyNotesAPI:
         assert len(note) == 0
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_retrieve_property_note(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -787,7 +787,7 @@ class TestPropertyNotesAPI:
         assert note.get("id") == 123
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_retrieve_property_note_dict_response(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -803,7 +803,7 @@ class TestPropertyNotesAPI:
         assert note.get("id") == 123
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_update_property_note(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -818,7 +818,7 @@ class TestPropertyNotesAPI:
         assert note.get("id") == 123
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_update_property_note_dict_response(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -835,7 +835,7 @@ class TestPropertyNotesAPI:
         assert note.get("id") == 123
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_delete_property_note(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_delete_response: Mock
     ) -> None:
@@ -861,7 +861,7 @@ class TestPropertyDocumentsAPI:
         assert hasattr(property_documents, "update_property_document")
         assert hasattr(property_documents, "delete_property_document")
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_property_documents(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_list_response: Mock
     ) -> None:
@@ -873,7 +873,7 @@ class TestPropertyDocumentsAPI:
         assert isinstance(documents, list)
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_property_documents_dict_response(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -889,7 +889,7 @@ class TestPropertyDocumentsAPI:
         assert len(documents) == 1
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_property_documents_dict_response_no_data(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -905,7 +905,7 @@ class TestPropertyDocumentsAPI:
         assert len(documents) == 0
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_create_property_document(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -930,7 +930,7 @@ class TestPropertyDocumentsAPI:
         assert document.get("title") == "Contract Document"
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_create_property_document_dict_response(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -947,7 +947,7 @@ class TestPropertyDocumentsAPI:
         assert document.get("id") == 1
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_create_property_document_dict_response_no_data(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -964,7 +964,7 @@ class TestPropertyDocumentsAPI:
         assert len(document) == 0
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_retrieve_property_document(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -978,7 +978,7 @@ class TestPropertyDocumentsAPI:
         assert document.get("id") == 123
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_retrieve_property_document_dict_response(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -994,7 +994,7 @@ class TestPropertyDocumentsAPI:
         assert document.get("id") == 123
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_update_property_document(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -1011,7 +1011,7 @@ class TestPropertyDocumentsAPI:
         assert document.get("id") == 123
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_update_property_document_dict_response(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -1030,7 +1030,7 @@ class TestPropertyDocumentsAPI:
         assert document.get("id") == 123
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_delete_property_document(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_delete_response: Mock
     ) -> None:
@@ -1056,7 +1056,7 @@ class TestPropertyTasksAPI:
         assert hasattr(property_tasks, "update_property_task")
         assert hasattr(property_tasks, "delete_property_task")
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_property_tasks(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_list_response: Mock
     ) -> None:
@@ -1068,7 +1068,7 @@ class TestPropertyTasksAPI:
         assert isinstance(tasks, list)
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_property_tasks_dict_response(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -1084,7 +1084,7 @@ class TestPropertyTasksAPI:
         assert len(tasks) == 1
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_property_tasks_dict_response_no_data(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -1100,7 +1100,7 @@ class TestPropertyTasksAPI:
         assert len(tasks) == 0
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_create_property_task(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -1126,7 +1126,7 @@ class TestPropertyTasksAPI:
         assert task.get("title") == "Follow up with client"
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_create_property_task_dict_response(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -1143,7 +1143,7 @@ class TestPropertyTasksAPI:
         assert task.get("id") == 1
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_create_property_task_dict_response_no_data(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -1160,7 +1160,7 @@ class TestPropertyTasksAPI:
         assert len(task) == 0
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_retrieve_property_task(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -1174,7 +1174,7 @@ class TestPropertyTasksAPI:
         assert task.get("id") == 123
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_retrieve_property_task_dict_response(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -1190,7 +1190,7 @@ class TestPropertyTasksAPI:
         assert task.get("id") == 123
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_update_property_task(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -1210,7 +1210,7 @@ class TestPropertyTasksAPI:
         assert task.get("status") == "completed"
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_update_property_task_dict_response(
         self, mock_request: Mock, client: OpenToCloseAPI
     ) -> None:
@@ -1227,7 +1227,7 @@ class TestPropertyTasksAPI:
         assert task.get("id") == 123
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_delete_property_task(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_delete_response: Mock
     ) -> None:

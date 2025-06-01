@@ -52,13 +52,13 @@ jobs:
 
     - name: Type checking with mypy
       run: |
-        mypy open_to_close_api/ --ignore-missing-imports
+        mypy open_to_close/ --ignore-missing-imports
 
     - name: Test with pytest
       env:
         OPEN_TO_CLOSE_API_KEY: ${{ secrets.OPEN_TO_CLOSE_API_KEY }}
       run: |
-        pytest --cov=open_to_close_api --cov-report=xml --cov-report=term-missing
+        pytest --cov=open_to_close --cov-report=xml --cov-report=term-missing
 
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3

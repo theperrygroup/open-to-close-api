@@ -1,7 +1,7 @@
 """Tests for exceptions module."""
 
 import pytest
-from open_to_close_api.exceptions import (
+from open_to_close.exceptions import (
     OpenToCloseAPIError,
     AuthenticationError,
     ValidationError,

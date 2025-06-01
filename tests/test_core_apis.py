@@ -5,8 +5,8 @@ from unittest.mock import Mock, patch
 import requests
 import os
 
-from open_to_close_api import OpenToCloseAPI
-from open_to_close_api.exceptions import (
+from open_to_close import OpenToCloseAPI
+from open_to_close.exceptions import (
     NotFoundError,
     ValidationError,
     AuthenticationError,
@@ -37,7 +37,7 @@ class TestAgentsAPI:
         assert agents is not None
         assert hasattr(agents, "list_agents")
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_agents(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -50,7 +50,7 @@ class TestAgentsAPI:
         assert isinstance(agents, list)
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_create_agent(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -73,7 +73,7 @@ class TestAgentsAPI:
         assert agent.get("id") == 1
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_retrieve_agent(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -87,7 +87,7 @@ class TestAgentsAPI:
         assert agent.get("id") == 1
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_update_agent(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -102,7 +102,7 @@ class TestAgentsAPI:
         assert agent.get("id") == 1
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_delete_agent(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -126,7 +126,7 @@ class TestContactsAPI:
         assert contacts is not None
         assert hasattr(contacts, "list_contacts")
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_contacts(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -139,7 +139,7 @@ class TestContactsAPI:
         assert isinstance(contacts, list)
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_create_contact(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -162,7 +162,7 @@ class TestContactsAPI:
         assert contact.get("id") == 1
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_retrieve_contact(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -176,7 +176,7 @@ class TestContactsAPI:
         assert contact.get("id") == 1
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_update_contact(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -191,7 +191,7 @@ class TestContactsAPI:
         assert contact.get("id") == 1
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_delete_contact(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -215,7 +215,7 @@ class TestPropertiesAPI:
         assert properties is not None
         assert hasattr(properties, "list_properties")
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_list_properties(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -228,7 +228,7 @@ class TestPropertiesAPI:
         assert isinstance(properties, list)
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_create_property(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -252,7 +252,7 @@ class TestPropertiesAPI:
         assert property.get("id") == 1
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_retrieve_property(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -266,7 +266,7 @@ class TestPropertiesAPI:
         assert property.get("id") == 1
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_update_property(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -281,7 +281,7 @@ class TestPropertiesAPI:
         assert property.get("id") == 1
         mock_request.assert_called_once()
 
-    @patch("open_to_close_api.base_client.requests.Session.request")
+    @patch("open_to_close.base_client.requests.Session.request")
     def test_delete_property(
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
@@ -343,7 +343,7 @@ class TestClientIntegration:
 
     def test_base_client_inheritance(self, client: OpenToCloseAPI) -> None:
         """Test that all API clients inherit from BaseClient."""
-        from open_to_close_api.base_client import BaseClient
+        from open_to_close.base_client import BaseClient
 
         assert isinstance(client.agents, BaseClient)
         assert isinstance(client.contacts, BaseClient)
