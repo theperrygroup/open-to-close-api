@@ -129,18 +129,18 @@ nav:
     - api/index.md
     - Main Client: api/client.md
     - Core Resources:
-      - api/agents.md
-      - api/contacts.md  
-      - api/properties.md
-      - api/tags.md
-      - api/teams.md
-      - api/users.md
+      - Properties: api/properties.md
+      - Agents: api/agents.md
+      - Contacts: api/contacts.md
+      - Teams: api/teams.md
+      - Users: api/users.md
+      - Tags: api/tags.md
     - Property Sub-Resources:
-      - api/property-contacts.md
-      - api/property-documents.md
-      - api/property-emails.md
-      - api/property-notes.md
-      - api/property-tasks.md
+      - Property Contacts: api/property-contacts.md
+      - Property Documents: api/property-documents.md
+      - Property Emails: api/property-emails.md
+      - Property Notes: api/property-notes.md
+      - Property Tasks: api/property-tasks.md
   - Guides:
     - guides/index.md
     - Error Handling: guides/error-handling.md

@@ -309,7 +309,7 @@ Now that you have the client installed:
 
 1. **[Set up authentication](authentication.md)** - Configure your API key
 2. **[Try the quick start](quickstart.md)** - Make your first API call
-3. **[Explore configuration options](configuration.md)** - Customize the client
+3. **[Explore API documentation](../api/index.md)** - Learn about available operations
 
 ---
 

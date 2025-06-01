@@ -17,7 +17,7 @@ Complete documentation for all Open To Close API Python client methods, classes,
 
     Primary client class for initialization and configuration
 
-    [:octicons-arrow-right-24: OpenToCloseAPI](client.md)
+    [:octicons-arrow-right-24: Properties API](properties.md)
 
 -   :material-home:{ .lg .middle } **Core Resources**
 
@@ -25,7 +25,7 @@ Complete documentation for all Open To Close API Python client methods, classes,
 
     Primary business entities and their CRUD operations
 
-    [:octicons-arrow-right-24: View Core APIs](#-core-resources)
+    [:octicons-arrow-right-24: View Core APIs](#core-resources)
 
 -   :material-file-document:{ .lg .middle } **Property Sub-Resources**
 
@@ -33,7 +33,7 @@ Complete documentation for all Open To Close API Python client methods, classes,
 
     Property-specific data and relationship management
 
-    [:octicons-arrow-right-24: View Property APIs](#-property-sub-resources)
+    [:octicons-arrow-right-24: View Property APIs](#property-sub-resources)
 
 -   :material-alert-octagon:{ .lg .middle } **Exception Reference**
 
@@ -41,7 +41,7 @@ Complete documentation for all Open To Close API Python client methods, classes,
 
     Error handling and exception types
 
-    [:octicons-arrow-right-24: View Exceptions](../reference/exceptions.md)
+    [:octicons-arrow-right-24: Properties API](properties.md)
 
 </div>
 
@@ -57,14 +57,14 @@ Manage real estate properties and listings:
 
 ### **👥 People & Organizations**
 Manage people and organizational structures:
-- **[Agents](agents.md)** - Agent profiles and management
-- **[Contacts](contacts.md)** - Customer and lead management
-- **[Teams](teams.md)** - Team organization and structure
-- **[Users](users.md)** - User account management
+- **Agents** - Agent profiles and management *(Documentation coming soon)*
+- **Contacts** - Customer and lead management *(Documentation coming soon)*
+- **Teams** - Team organization and structure *(Documentation coming soon)*
+- **Users** - User account management *(Documentation coming soon)*
 
 ### **🏷️ Classification & Organization**
 Tools for organizing and categorizing data:
-- **[Tags](tags.md)** - Classification and labeling system
+- **Tags** - Classification and labeling system *(Documentation coming soon)*
 
 ---
 
@@ -75,15 +75,15 @@ Property-specific resources that extend core property functionality:
 ### **📄 Documentation & Communication**
 Track all property-related communications and documents:
 
-- **[Property Documents](property-documents.md)** - File attachments and document management
-- **[Property Emails](property-emails.md)** - Email communication tracking
-- **[Property Notes](property-notes.md)** - Internal notes and annotations
+- **Property Documents** - File attachments and document management *(Documentation coming soon)*
+- **Property Emails** - Email communication tracking *(Documentation coming soon)*
+- **Property Notes** - Internal notes and annotations *(Documentation coming soon)*
 
 ### **📅 Tasks & Relationships**
 Manage workflows and relationships for properties:
 
-- **[Property Tasks](property-tasks.md)** - Task management and workflow automation
-- **[Property Contacts](property-contacts.md)** - Property-specific contact relationships
+- **Property Tasks** - Task management and workflow automation *(Documentation coming soon)*
+- **Property Contacts** - Property-specific contact relationships *(Documentation coming soon)*
 
 ---
 
@@ -221,7 +221,7 @@ All methods can raise these exception types:
     - **`ServerError`**: Server-side error occurred
     - **`NetworkError`**: Network connectivity issue
 
-See the **[Exception Reference](../reference/exceptions.md)** for detailed error handling patterns.
+See the Properties API documentation for error handling examples.
 
 ---
 
@@ -231,22 +231,6 @@ See the **[Exception Reference](../reference/exceptions.md)** for detailed error
 
 <div class="grid cards" markdown>
 
--   :material-account-tie:{ .lg .middle } **Agents API**
-
-    ---
-
-    Manage agent profiles, contact information, and assignments
-
-    [:octicons-arrow-right-24: Agents Documentation](agents.md)
-
--   :material-account-group:{ .lg .middle } **Contacts API**
-
-    ---
-
-    Customer and lead management with relationship tracking
-
-    [:octicons-arrow-right-24: Contacts Documentation](contacts.md)
-
 -   :material-home-city:{ .lg .middle } **Properties API**
 
     ---
@@ -255,77 +239,11 @@ See the **[Exception Reference](../reference/exceptions.md)** for detailed error
 
     [:octicons-arrow-right-24: Properties Documentation](properties.md)
 
--   :material-account-supervisor:{ .lg .middle } **Teams API**
-
-    ---
-
-    Team organization and user group management
-
-    [:octicons-arrow-right-24: Teams Documentation](teams.md)
-
--   :material-account:{ .lg .middle } **Users API**
-
-    ---
-
-    User account management and system access
-
-    [:octicons-arrow-right-24: Users Documentation](users.md)
-
--   :material-tag:{ .lg .middle } **Tags API**
-
-    ---
-
-    Classification and labeling system for organization
-
-    [:octicons-arrow-right-24: Tags Documentation](tags.md)
-
 </div>
 
 ### **Property Sub-Resource APIs**
 
-<div class="grid cards" markdown>
-
--   :material-file-document:{ .lg .middle } **Property Documents**
-
-    ---
-
-    File attachments and document management per property
-
-    [:octicons-arrow-right-24: Documents Documentation](property-documents.md)
-
--   :material-email:{ .lg .middle } **Property Emails**
-
-    ---
-
-    Email communication tracking and history
-
-    [:octicons-arrow-right-24: Emails Documentation](property-emails.md)
-
--   :material-note-text:{ .lg .middle } **Property Notes**
-
-    ---
-
-    Internal notes and annotations for properties
-
-    [:octicons-arrow-right-24: Notes Documentation](property-notes.md)
-
--   :material-calendar-check:{ .lg .middle } **Property Tasks**
-
-    ---
-
-    Task management and workflow automation
-
-    [:octicons-arrow-right-24: Tasks Documentation](property-tasks.md)
-
--   :material-home-account:{ .lg .middle } **Property Contacts**
-
-    ---
-
-    Property-specific contact relationships and roles
-
-    [:octicons-arrow-right-24: Property Contacts Documentation](property-contacts.md)
-
-</div>
+Property sub-resource APIs are covered in the main Properties documentation.
 
 ---
 
@@ -333,10 +251,9 @@ See the **[Exception Reference](../reference/exceptions.md)** for detailed error
 
 !!! tip "Additional Resources"
 
-    - **[Main Client Configuration](client.md)** - Detailed client setup and options
-    - **[Data Types & Enums](../reference/data-types.md)** - Type definitions and constants
-    - **[Exception Reference](../reference/exceptions.md)** - Error handling guide
-    - **[Examples & Guides](../guides/examples.md)** - Practical usage examples
+    - **[Properties API](properties.md)** - Complete properties documentation
+    - **[Getting Started](../getting-started/index.md)** - Setup and configuration
+    - **[Guides](../guides/index.md)** - Usage patterns and examples
 
 ---
 
@@ -347,7 +264,7 @@ New to the API? Start here:
 1. **[Install the client](../getting-started/installation.md)** - Get up and running
 2. **[Configure authentication](../getting-started/authentication.md)** - Set up your API key
 3. **[Try the quick start](../getting-started/quickstart.md)** - Make your first API call
-4. **[Explore examples](../guides/examples.md)** - See real-world use cases
+4. **[Explore guides](../guides/index.md)** - See usage patterns and examples
 
 ---
 

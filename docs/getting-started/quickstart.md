@@ -416,14 +416,14 @@ explore_account_data()
 Congratulations! You've successfully made your first API calls. Here's what to explore next:
 
 ### **Immediate Next Steps**
-1. **[Configuration Guide](configuration.md)** - Customize client settings for your environment
-2. **[Error Handling Guide](../guides/error-handling.md)** - Implement robust error handling
-3. **[Best Practices](../guides/best-practices.md)** - Learn recommended patterns and optimizations
+1. **[API Reference](../api/index.md)** - Explore all available operations
+2. **[Properties API](../api/properties.md)** - Complete property management documentation
+3. **[Guides](../guides/index.md)** - Usage patterns and examples
 
 ### **Explore More Features**
 - **[API Reference](../api/index.md)** - Complete documentation of all available methods
-- **[Examples](../guides/examples.md)** - More real-world usage scenarios
-- **[Integration Patterns](../guides/integration-patterns.md)** - Common integration approaches
+- **[Guides](../guides/index.md)** - More real-world usage scenarios
+- **[Guides](../guides/index.md)** - Common integration approaches and patterns
 
 ### **Build Something Real**
 Try implementing these common scenarios:

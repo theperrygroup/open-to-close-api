@@ -148,22 +148,17 @@ Perfect for new users and initial setup:
 - **[Installation Guide](getting-started/installation.md)** - Set up the client library
 - **[Authentication Setup](getting-started/authentication.md)** - Configure API access
 - **[Quick Start Tutorial](getting-started/quickstart.md)** - Your first API calls
-- **[Configuration Options](getting-started/configuration.md)** - Advanced setup
 
 ### **API Reference**
 Complete technical documentation:
 
-- **[Main Client](api/client.md)** - OpenToCloseAPI class and initialization
-- **[Core Resources](api/index.md)** - Properties, agents, contacts, teams, users, tags
-- **[Property Sub-Resources](api/property-contacts.md)** - Documents, emails, notes, tasks, contacts
+- **[API Overview](api/index.md)** - Core resources and endpoints
+- **[Properties](api/properties.md)** - Property management operations
 
 ### **Guides & Examples**
 Practical usage and best practices:
 
-- **[Error Handling](guides/error-handling.md)** - Exception handling patterns
-- **[Best Practices](guides/best-practices.md)** - Recommended usage patterns
-- **[Examples](guides/examples.md)** - Real-world code examples
-- **[Integration Patterns](guides/integration-patterns.md)** - Common integration scenarios
+- **[Guides Overview](guides/index.md)** - Usage patterns and examples
 
 ---
 
@@ -202,13 +197,13 @@ New to the Open To Close API? Start here:
 1. **[Install the client](getting-started/installation.md)** - Get up and running in minutes
 2. **[Configure authentication](getting-started/authentication.md)** - Set up your API key
 3. **[Try the quick start](getting-started/quickstart.md)** - Make your first API call
-4. **[Explore examples](guides/examples.md)** - See real-world use cases
+4. **[Explore guides](guides/index.md)** - See usage patterns and examples
 
 Already familiar with the basics? Jump to:
 
 - **[API Reference](api/index.md)** - Complete method documentation
-- **[Best Practices](guides/best-practices.md)** - Optimize your implementation
-- **[Integration Patterns](guides/integration-patterns.md)** - Common usage scenarios
+- **[Properties API](api/properties.md)** - Property management operations
+- **[Guides](guides/index.md)** - Usage patterns and examples
 
 ---
 

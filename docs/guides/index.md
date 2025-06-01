@@ -8,37 +8,37 @@ Practical guides, best practices, and real-world examples for building applicati
 
 <div class="grid cards" markdown>
 
--   :material-shield-check:{ .lg .middle } **Error Handling**
+-   :material-api:{ .lg .middle } **API Reference**
 
     ---
 
-    Comprehensive patterns for robust error handling and recovery
+    Complete documentation of all available API methods and endpoints
 
-    [:octicons-arrow-right-24: Error Handling Guide](error-handling.md)
+    [:octicons-arrow-right-24: API Documentation](../api/index.md)
 
--   :material-star:{ .lg .middle } **Best Practices**
-
-    ---
-
-    Recommended patterns, optimizations, and production guidelines
-
-    [:octicons-arrow-right-24: Best Practices](best-practices.md)
-
--   :material-code-tags:{ .lg .middle } **Examples**
+-   :material-home:{ .lg .middle } **Properties API**
 
     ---
 
-    Real-world code examples and complete application scenarios
+    Detailed property management operations and examples
 
-    [:octicons-arrow-right-24: Code Examples](examples.md)
+    [:octicons-arrow-right-24: Properties Guide](../api/properties.md)
 
--   :material-puzzle:{ .lg .middle } **Integration Patterns**
+-   :material-rocket-launch:{ .lg .middle } **Quick Start**
 
     ---
 
-    Common integration approaches with external systems and workflows
+    Get started quickly with guided tutorials and examples
 
-    [:octicons-arrow-right-24: Integration Guide](integration-patterns.md)
+    [:octicons-arrow-right-24: Quick Start Guide](../getting-started/quickstart.md)
+
+-   :material-account-tie:{ .lg .middle } **Getting Started**
+
+    ---
+
+    Complete setup guide from installation to first API calls
+
+    [:octicons-arrow-right-24: Setup Guide](../getting-started/index.md)
 
 </div>
 
@@ -87,26 +87,26 @@ Learn how to integrate the Open To Close API with existing systems:
     **Building internal tools and workflows:**
     
     1. **[Quick Start Tutorial](../getting-started/quickstart.md)** - Get familiar with the API
-    2. **[Property Management Examples](examples.md#property-management)** - Core workflows
-    3. **[Best Practices](best-practices.md)** - Optimize your implementation
-    4. **[Integration Patterns](integration-patterns.md)** - Connect with existing tools
+    2. **[Properties API](../api/properties.md)** - Core property workflows
+    3. **[Authentication Setup](../getting-started/authentication.md)** - Secure API access
+    4. **[API Reference](../api/index.md)** - Explore all available operations
 
 === ":material-code-braces: Developer"
 
     **Building applications and integrations:**
     
     1. **[API Reference](../api/index.md)** - Understand all available methods
-    2. **[Error Handling](error-handling.md)** - Build robust applications  
-    3. **[Examples](examples.md)** - See complete implementations
-    4. **[Best Practices](best-practices.md)** - Follow industry standards
+    2. **[Properties API](../api/properties.md)** - Property management operations
+    3. **[Installation Guide](../getting-started/installation.md)** - Setup and configuration
+    4. **[Authentication](../getting-started/authentication.md)** - Security implementation
 
 === ":material-chart-line: Data Analyst"
 
     **Working with property and transaction data:**
     
-    1. **[Data Examples](examples.md#data-analysis)** - Extract and analyze data
-    2. **[Integration Patterns](integration-patterns.md)** - Connect to analytics tools
-    3. **[Best Practices](best-practices.md#performance)** - Optimize data operations
+    1. **[Properties API](../api/properties.md)** - Extract and analyze property data
+    2. **[Quick Start](../getting-started/quickstart.md)** - Get started with data extraction
+    3. **[API Reference](../api/index.md)** - Explore data endpoints
 
 ---
 
@@ -288,7 +288,7 @@ def health_check():
 
     - **[API Reference](../api/index.md)** - Complete method documentation
     - **[Getting Started](../getting-started/index.md)** - Installation and setup
-    - **[Reference Materials](../reference/index.md)** - Data types and specifications
+    - **[Properties API](../api/properties.md)** - Property management operations
 
 ---
 
@@ -296,10 +296,10 @@ def health_check():
 
 Ready to dive in? Here's your learning path:
 
-1. **[Review Best Practices](best-practices.md)** - Start with solid foundations
-2. **[Explore Examples](examples.md)** - See practical implementations  
-3. **[Learn Error Handling](error-handling.md)** - Build resilient applications
-4. **[Study Integration Patterns](integration-patterns.md)** - Connect with other systems
+1. **[Getting Started](../getting-started/index.md)** - Setup and configuration
+2. **[Quick Start Tutorial](../getting-started/quickstart.md)** - Make your first API calls
+3. **[Properties API](../api/properties.md)** - Learn property management
+4. **[API Reference](../api/index.md)** - Explore all available operations
 
 ---
 

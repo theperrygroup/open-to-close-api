@@ -376,8 +376,8 @@ debug_authentication()
 Once authentication is configured:
 
 1. **[Try the quick start guide](quickstart.md)** - Make your first authenticated API calls
-2. **[Explore configuration options](configuration.md)** - Learn about additional client settings
-3. **[Review error handling](../guides/error-handling.md)** - Handle authentication errors gracefully
+2. **[Try the quick start guide](quickstart.md)** - Make your first API calls
+3. **[Explore API documentation](../api/index.md)** - Learn about available operations
 
 ---
 

@@ -638,15 +638,15 @@ def robust_property_operations(property_id):
 ## 📚 Related Resources
 
 **Property Sub-Resources:**
-- **[Property Contacts](property-contacts.md)** - Associate people with properties
-- **[Property Documents](property-documents.md)** - Manage property files
-- **[Property Emails](property-emails.md)** - Track communications
-- **[Property Notes](property-notes.md)** - Add annotations
-- **[Property Tasks](property-tasks.md)** - Manage workflows
+- **Property Contacts** - Associate people with properties *(Documentation coming soon)*
+- **Property Documents** - Manage property files *(Documentation coming soon)*
+- **Property Emails** - Track communications *(Documentation coming soon)*
+- **Property Notes** - Add annotations *(Documentation coming soon)*
+- **Property Tasks** - Manage workflows *(Documentation coming soon)*
 
 **Related APIs:**
-- **[Contacts API](contacts.md)** - Manage people and relationships
-- **[Agents API](agents.md)** - Agent assignment and management
+- **Contacts API** - Manage people and relationships *(Documentation coming soon)*
+- **Agents API** - Agent assignment and management *(Documentation coming soon)*
 
 ---
 

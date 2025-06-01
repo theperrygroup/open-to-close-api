@@ -38,7 +38,7 @@ Get up and running with the Open To Close API Python client in just a few minute
 
     Advanced client configuration and environment options
 
-    [:octicons-arrow-right-24: Configure Client](configuration.md)
+    [:octicons-arrow-right-24: Quick Start](quickstart.md)
 
 </div>
 
@@ -118,13 +118,13 @@ New to the Open To Close API or Python API clients:
 1. **[Installation](installation.md)** - Set up your environment step by step
 2. **[Authentication](authentication.md)** - Learn about API keys and security
 3. **[Quick Start](quickstart.md)** - Guided tutorial with explanations
-4. **[Configuration](configuration.md)** - Understand all available options
+4. **[Explore API Documentation](../api/index.md)** - Understand all available options
 
 ### **Experienced Path**
 Familiar with API clients and Python development:
 
 1. **[Quick Start](quickstart.md)** - Jump straight to making API calls
-2. **[Configuration](configuration.md)** - Customize for your needs
+2. **[API Reference](../api/index.md)** - Explore available operations
 3. **[API Reference](../api/index.md)** - Explore all available methods
 
 ---
@@ -212,8 +212,7 @@ def test_api_client():
 
 ### **Getting Help**
 
-- **[Error Handling Guide](../guides/error-handling.md)** - Comprehensive error handling patterns
-- **[Best Practices](../guides/best-practices.md)** - Recommended usage patterns
+- **[Guides](../guides/index.md)** - Usage patterns and examples
 - **[GitHub Issues](https://github.com/theperrygroup/open-to-close/issues)** - Report bugs or request features
 
 ---
@@ -223,5 +222,5 @@ def test_api_client():
 Once you've completed the setup:
 
 1. **[Explore the API Reference](../api/index.md)** - See all available methods
-2. **[Check out Examples](../guides/examples.md)** - Real-world usage patterns
-3. **[Learn Best Practices](../guides/best-practices.md)** - Optimize your implementation 
+2. **[Explore Guides](../guides/index.md)** - Usage patterns and examples
+3. **[Review Properties API](../api/properties.md)** - Complete property management 
