@@ -51,7 +51,8 @@ class UsersAPI(BaseClient):
         if isinstance(response, list):
             return response
         elif isinstance(response, dict):
-            return response.get("data", [])
+            data = response.get("data", [])
+            return data if isinstance(data, list) else []
         return []
 
     def create_user(self, user_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -80,7 +81,10 @@ class UsersAPI(BaseClient):
         response = self.post("/users", json_data=user_data)
         if isinstance(response, dict) and response.get("id"):
             return response
-        return response.get("data", {}) if isinstance(response, dict) else {}
+        if isinstance(response, dict):
+            data = response.get("data", {})
+            return data if isinstance(data, dict) else {}
+        return {}
 
     def retrieve_user(self, user_id: int) -> Dict[str, Any]:
         """Retrieve a specific user by their ID.
@@ -105,7 +109,10 @@ class UsersAPI(BaseClient):
         response = self.get(f"/users/{user_id}")
         if isinstance(response, dict) and response.get("id"):
             return response
-        return response.get("data", {}) if isinstance(response, dict) else {}
+        if isinstance(response, dict):
+            data = response.get("data", {})
+            return data if isinstance(data, dict) else {}
+        return {}
 
     def update_user(self, user_id: int, user_data: Dict[str, Any]) -> Dict[str, Any]:
         """Update an existing user.
@@ -134,7 +141,10 @@ class UsersAPI(BaseClient):
         response = self.put(f"/users/{user_id}", json_data=user_data)
         if isinstance(response, dict) and response.get("id"):
             return response
-        return response.get("data", {}) if isinstance(response, dict) else {}
+        if isinstance(response, dict):
+            data = response.get("data", {})
+            return data if isinstance(data, dict) else {}
+        return {}
 
     def delete_user(self, user_id: int) -> Dict[str, Any]:
         """Delete a user by their ID.

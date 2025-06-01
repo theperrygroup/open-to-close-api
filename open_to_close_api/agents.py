@@ -51,7 +51,8 @@ class AgentsAPI(BaseClient):
         if isinstance(response, list):
             return response
         elif isinstance(response, dict):
-            return response.get("data", [])
+            data = response.get("data", [])
+            return data if isinstance(data, list) else []
         return []
 
     def create_agent(self, agent_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -80,7 +81,10 @@ class AgentsAPI(BaseClient):
         response = self.post("/agents", json_data=agent_data)
         if isinstance(response, dict) and response.get("id"):
             return response
-        return response.get("data", {}) if isinstance(response, dict) else {}
+        if isinstance(response, dict):
+            data = response.get("data", {})
+            return data if isinstance(data, dict) else {}
+        return {}
 
     def retrieve_agent(self, agent_id: int) -> Dict[str, Any]:
         """Retrieve a specific agent by their ID.
@@ -105,7 +109,10 @@ class AgentsAPI(BaseClient):
         response = self.get(f"/agents/{agent_id}")
         if isinstance(response, dict) and response.get("id"):
             return response
-        return response.get("data", {}) if isinstance(response, dict) else {}
+        if isinstance(response, dict):
+            data = response.get("data", {})
+            return data if isinstance(data, dict) else {}
+        return {}
 
     def update_agent(self, agent_id: int, agent_data: Dict[str, Any]) -> Dict[str, Any]:
         """Update an existing agent.
@@ -134,7 +141,10 @@ class AgentsAPI(BaseClient):
         response = self.put(f"/agents/{agent_id}", json_data=agent_data)
         if isinstance(response, dict) and response.get("id"):
             return response
-        return response.get("data", {}) if isinstance(response, dict) else {}
+        if isinstance(response, dict):
+            data = response.get("data", {})
+            return data if isinstance(data, dict) else {}
+        return {}
 
     def delete_agent(self, agent_id: int) -> Dict[str, Any]:
         """Delete an agent by their ID.

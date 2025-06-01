@@ -4,31 +4,17 @@ from typing import Any, Dict, Optional
 import requests
 from dotenv import load_dotenv
 
-from .agents import AgentsAPI  # Import AgentsAPI
-from .contacts import ContactsAPI  # Import ContactsAPI
-
-# from .contact_roles import ContactRolesAPI # Removed
-# from .file_roles import FileRolesAPI # Removed
-from .properties import PropertiesAPI  # Import PropertiesAPI
-from .property_contacts import PropertyContactsAPI  # Import PropertyContactsAPI
-from .property_documents import PropertyDocumentsAPI  # Import PropertyDocumentsAPI
-from .property_emails import PropertyEmailsAPI  # Import PropertyEmailsAPI
-
-# from .property_fields import PropertyFieldsAPI # Removed
-# from .property_field_sections import PropertyFieldSectionsAPI # Removed
-# from .property_field_groups import PropertyFieldGroupsAPI # Removed
-from .property_notes import PropertyNotesAPI  # Import PropertyNotesAPI
-from .property_tasks import PropertyTasksAPI  # Import PropertyTasksAPI
-
-# from .time_zones import TimeZonesAPI # Removed
-from .tags import TagsAPI  # Import TagsAPI
-
-# from .property_templates import PropertyTemplatesAPI # Removed
-from .teams import TeamsAPI  # Import TeamsAPI
-from .users import UsersAPI  # Import UsersAPI
-
-# from .events import EventsAPI # Removed
-# from .transactions import TransactionsAPI # Removed
+from .agents import AgentsAPI
+from .contacts import ContactsAPI
+from .properties import PropertiesAPI
+from .property_contacts import PropertyContactsAPI
+from .property_documents import PropertyDocumentsAPI
+from .property_emails import PropertyEmailsAPI
+from .property_notes import PropertyNotesAPI
+from .property_tasks import PropertyTasksAPI
+from .tags import TagsAPI
+from .teams import TeamsAPI
+from .users import UsersAPI
 
 
 class OpenToCloseAPI:
