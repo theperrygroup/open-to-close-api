@@ -373,6 +373,7 @@ class TestBaseClient:
             files=None,
             params={"api_token": "test_key"},
         )
+        assert result == {"data": "test"}
 
     @patch("open_to_close.base_client.requests.Session.request")
     def test_request_with_files(self, mock_session_request: Mock) -> None:

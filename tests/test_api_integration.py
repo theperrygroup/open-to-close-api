@@ -99,7 +99,8 @@ try:
         )
         if isinstance(property_contacts_response, list):
             print(
-                f"Found {len(property_contacts_response)} contacts for property {property_id_for_contacts}."
+                f"Found {len(property_contacts_response)} contacts for "
+                f"property {property_id_for_contacts}."
             )
             if property_contacts_response:
                 print("First property contact data:")
@@ -110,7 +111,8 @@ try:
             and isinstance(property_contacts_response["data"], list)
         ):
             print(
-                f"Found {len(property_contacts_response['data'])} contacts for property {property_id_for_contacts}."
+                f"Found {len(property_contacts_response['data'])} contacts for "
+                f"property {property_id_for_contacts}."
             )
             if property_contacts_response["data"]:
                 print("First property contact data:")
@@ -136,7 +138,8 @@ try:
         )
         if isinstance(property_documents_response, list):
             print(
-                f"Found {len(property_documents_response)} documents for property {property_id_for_documents}."
+                f"Found {len(property_documents_response)} documents for "
+                f"property {property_id_for_documents}."
             )
             if property_documents_response:
                 print("First property document data:")
@@ -147,7 +150,8 @@ try:
             and isinstance(property_documents_response["data"], list)
         ):
             print(
-                f"Found {len(property_documents_response['data'])} documents for property {property_id_for_documents}."
+                f"Found {len(property_documents_response['data'])} documents for "
+                f"property {property_id_for_documents}."
             )
             if property_documents_response["data"]:
                 print("First property document data:")
@@ -182,7 +186,8 @@ try:
             and isinstance(property_emails_response["data"], list)
         ):
             print(
-                f"Found {len(property_emails_response['data'])} emails for property {property_id_for_emails}."
+                f"Found {len(property_emails_response['data'])} emails for "
+                f"property {property_id_for_emails}."
             )
             if property_emails_response["data"]:
                 print("First property email data:")
@@ -217,7 +222,8 @@ try:
             and isinstance(property_notes_response["data"], list)
         ):
             print(
-                f"Found {len(property_notes_response['data'])} notes for property {property_id_for_notes}."
+                f"Found {len(property_notes_response['data'])} notes for "
+                f"property {property_id_for_notes}."
             )
             if property_notes_response["data"]:
                 print("First property note data:")
@@ -251,7 +257,8 @@ try:
             and isinstance(property_tasks_response["data"], list)
         ):
             print(
-                f"Found {len(property_tasks_response['data'])} tasks for property {property_id_for_tasks}."
+                f"Found {len(property_tasks_response['data'])} tasks for "
+                f"property {property_id_for_tasks}."
             )
             if property_tasks_response["data"]:
                 print("First property task data:")

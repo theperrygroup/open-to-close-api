@@ -7,11 +7,7 @@ import pytest
 import requests
 
 from open_to_close import OpenToCloseAPI
-from open_to_close.exceptions import (
-    AuthenticationError,
-    NotFoundError,
-    ValidationError,
-)
+from open_to_close.exceptions import AuthenticationError
 
 
 @pytest.fixture

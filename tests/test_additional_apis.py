@@ -6,15 +6,6 @@ import pytest
 import requests
 
 from open_to_close import OpenToCloseAPI
-from open_to_close.exceptions import (
-    AuthenticationError,
-    NetworkError,
-    NotFoundError,
-    OpenToCloseAPIError,
-    RateLimitError,
-    ServerError,
-    ValidationError,
-)
 
 
 @pytest.fixture
