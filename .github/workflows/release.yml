@@ -105,7 +105,9 @@ jobs:
     - name: Publish to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
-        password: ${{ secrets.PYPI_API_TOKEN }}
+        # Using Trusted Publishing - no password needed
+        # Set up at: https://pypi.org/manage/project/open-to-close/settings/publishing/
+        attestations: true
         # Uncomment the next line to publish to Test PyPI first
         # repository-url: https://test.pypi.org/legacy/
 
