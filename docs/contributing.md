@@ -153,14 +153,15 @@ pre-commit run --all-files
 
 ```
 tests/
-├── unit/                    # Unit tests for individual components
-│   ├── test_base_client.py
-│   ├── test_agents.py
-│   ├── test_contacts.py
-│   └── ...
-├── integration/             # Integration tests with real API
-│   ├── test_full_workflow.py
-│   └── ...
+├── test_base_client.py      # Base client unit tests
+├── test_agents.py           # Agents API tests
+├── test_contacts.py         # Contacts API tests
+├── test_properties.py       # Properties API tests
+├── test_additional_apis.py  # Property-related sub-resources
+├── test_core_apis.py        # Core API functionality
+├── test_exceptions.py       # Exception handling tests
+├── test_api_integration.py  # Integration tests with real API
+├── test_smoke.py            # Basic smoke tests
 └── fixtures/                # Test data and fixtures
     ├── sample_responses.json
     └── ...
@@ -252,11 +253,11 @@ pytest
 # Run with coverage
 pytest --cov=open_to_close_api
 
-# Run only unit tests
-pytest tests/unit/
+# Run only unit tests (by marker)
+pytest -m "not integration"
 
-# Run only integration tests
-pytest tests/integration/
+# Run only integration tests (by marker)
+pytest -m integration
 
 # Run specific test file
 pytest tests/unit/test_contacts.py

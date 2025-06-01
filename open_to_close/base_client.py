@@ -59,47 +59,47 @@ class BaseClient:
 
         if response.status_code in (200, 201):
             return response_data
-        elif response.status_code == 204:
+        if response.status_code == 204:
             return {}
-        elif response.status_code == 400:
+        if response.status_code == 400:
             raise ValidationError(
                 f"Bad request: {response_data.get('message', 'Invalid request')}",
                 status_code=400,
                 response_data=response_data,
             )
-        elif response.status_code == 401:
+        if response.status_code == 401:
             message = response_data.get("message", "Invalid credentials")
             raise AuthenticationError(
                 f"Authentication failed: {message}",
                 status_code=401,
                 response_data=response_data,
             )
-        elif response.status_code == 404:
+        if response.status_code == 404:
             raise NotFoundError(
                 f"Resource not found: {response_data.get('message', 'Not found')}",
                 status_code=404,
                 response_data=response_data,
             )
-        elif response.status_code == 429:
+        if response.status_code == 429:
             message = response_data.get("message", "Too many requests")
             raise RateLimitError(
                 f"Rate limit exceeded: {message}",
                 status_code=429,
                 response_data=response_data,
             )
-        elif 500 <= response.status_code < 600:
+        if 500 <= response.status_code < 600:
             message = response_data.get("message", "Internal server error")
             raise ServerError(
                 f"Server error: {message}",
                 status_code=response.status_code,
                 response_data=response_data,
             )
-        else:
-            raise OpenToCloseAPIError(
-                f"Unexpected error: {response_data.get('message', 'Unknown error')}",
-                status_code=response.status_code,
-                response_data=response_data,
-            )
+
+        raise OpenToCloseAPIError(
+            f"Unexpected error: {response_data.get('message', 'Unknown error')}",
+            status_code=response.status_code,
+            response_data=response_data,
+        )
 
     def _process_response_data(self, response: Dict[str, Any]) -> Dict[str, Any]:
         """Process API response data with consistent format handling.
@@ -128,7 +128,7 @@ class BaseClient:
         """
         if isinstance(response, list):
             return response
-        elif isinstance(response, dict):
+        if isinstance(response, dict):
             data = response.get("data", [])
             return data if isinstance(data, list) else []
         return []
@@ -137,6 +137,7 @@ class BaseClient:
         self,
         method: str,
         endpoint: str,
+        *,
         data: Optional[Dict[str, Any]] = None,
         json_data: Optional[Union[Dict[str, Any], List[Dict[str, Any]]]] = None,
         files: Optional[Dict[str, Any]] = None,
@@ -162,7 +163,7 @@ class BaseClient:
             return self._handle_response(response)
 
         except requests.exceptions.RequestException as e:
-            raise NetworkError(f"Network error: {str(e)}")
+            raise NetworkError(f"Network error: {str(e)}") from e
 
     def get(
         self, endpoint: str, params: Optional[Dict[str, Any]] = None
