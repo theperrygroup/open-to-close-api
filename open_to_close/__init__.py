@@ -23,7 +23,7 @@ from .tags import TagsAPI
 from .teams import TeamsAPI
 from .users import UsersAPI
 
-__version__ = "2.1.1"
+__version__ = "2.2.0"
 __all__ = [
     "OpenToCloseAPI",
     # Service Clients
