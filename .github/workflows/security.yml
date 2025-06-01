@@ -1,0 +1,342 @@
+name: Security Analysis
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run security scans weekly on Sundays at 2 AM UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+
+permissions:
+  security-events: write
+  contents: read
+  actions: read
+
+env:
+  PYTHON_VERSION: "3.11"
+
+jobs:
+  codeql-analysis:
+    name: CodeQL Security Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: read
+      actions: read
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: python
+        queries: +security-and-quality
+        config: |
+          paths-ignore:
+            - tests/
+            - docs/
+            - htmlcov/
+            - .venv/
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e ".[dev]"
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:python"
+        upload: true
+
+  dependency-security:
+    name: Dependency Security Scanning
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install security scanning tools
+      run: |
+        python -m pip install --upgrade pip
+        pip install safety pip-audit cyclonedx-bom
+
+    - name: Install project dependencies
+      run: |
+        pip install -e ".[dev]"
+
+    - name: Run Safety vulnerability check
+      run: |
+        safety check --json --output safety-report.json || true
+        safety check --short-report
+
+    - name: Run pip-audit vulnerability check
+      run: |
+        pip-audit --format=json --output=pip-audit-report.json || true
+        pip-audit --desc
+
+    - name: Generate Software Bill of Materials (SBOM)
+      run: |
+        cyclonedx-py -o sbom.json
+
+    - name: Upload dependency security artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: dependency-security-reports
+        path: |
+          safety-report.json
+          pip-audit-report.json
+          sbom.json
+        retention-days: 90
+
+  static-analysis:
+    name: Static Security Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install static analysis tools
+      run: |
+        pip install bandit semgrep dlint
+
+    - name: Run Bandit security linter
+      run: |
+        bandit -r open_to_close/ -f json -o bandit-report.json || true
+        bandit -r open_to_close/ -ll -i
+
+    - name: Run Semgrep security analysis
+      run: |
+        semgrep --config=auto --json --output=semgrep-report.json open_to_close/ || true
+        semgrep --config=auto open_to_close/
+
+    - name: Run dlint for security issues
+      run: |
+        dlint open_to_close/ --json > dlint-report.json || true
+        dlint open_to_close/
+
+    - name: Upload static analysis artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: static-analysis-reports
+        path: |
+          bandit-report.json
+          semgrep-report.json
+          dlint-report.json
+        retention-days: 90
+
+  secrets-detection:
+    name: Secrets Detection
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Run TruffleHog secrets detection
+      uses: trufflesecurity/trufflehog@v3.63.7
+      with:
+        path: ./
+        base: ${{ github.event.repository.default_branch }}
+        head: HEAD
+        extra_args: --debug --only-verified
+
+    - name: Run GitLeaks secrets detection
+      uses: gitleaks/gitleaks-action@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  license-compliance:
+    name: License Compliance
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install license checking tools
+      run: |
+        pip install pip-licenses license-expression
+
+    - name: Install project dependencies
+      run: |
+        pip install -e ".[dev]"
+
+    - name: Generate license report
+      run: |
+        pip-licenses --format=json --output-file=licenses.json
+        pip-licenses --format=table > licenses.txt
+        pip-licenses --format=csv --output-file=licenses.csv
+
+    - name: Check for problematic licenses
+      run: |
+        # Fail if GPL, AGPL, or other copyleft licenses are found
+        pip-licenses --format=table --fail-on="GPL v2;GPL v3;AGPL v3;LGPL"
+
+    - name: Upload license compliance artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: license-compliance-reports
+        path: |
+          licenses.json
+          licenses.txt
+          licenses.csv
+        retention-days: 365
+
+  container-security:
+    name: Container Security Scanning
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.modified, 'Dockerfile') || github.event_name == 'schedule'
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+  security-scorecard:
+    name: OSSF Security Scorecard
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      id-token: write
+      actions: read
+      contents: read
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+
+    - name: Run analysis
+      uses: ossf/scorecard-action@v2.3.1
+      with:
+        results_file: results.sarif
+        results_format: sarif
+        publish_results: true
+
+    - name: Upload SARIF results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: results.sarif
+
+  security-summary:
+    name: Security Analysis Summary
+    runs-on: ubuntu-latest
+    needs: [codeql-analysis, dependency-security, static-analysis, secrets-detection, license-compliance]
+    if: always()
+
+    steps:
+    - name: Download all security reports
+      uses: actions/download-artifact@v4
+
+    - name: Generate security summary
+      run: |
+        echo "## 🛡️ Security Analysis Summary" > security-summary.md
+        echo "" >> security-summary.md
+        echo "| Analysis Type | Status |" >> security-summary.md
+        echo "|---------------|--------|" >> security-summary.md
+        echo "| CodeQL Analysis | ${{ needs.codeql-analysis.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> security-summary.md
+        echo "| Dependency Security | ${{ needs.dependency-security.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> security-summary.md
+        echo "| Static Analysis | ${{ needs.static-analysis.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> security-summary.md
+        echo "| Secrets Detection | ${{ needs.secrets-detection.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> security-summary.md
+        echo "| License Compliance | ${{ needs.license-compliance.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> security-summary.md
+        echo "" >> security-summary.md
+        echo "**Generated:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> security-summary.md
+        
+        cat security-summary.md
+
+    - name: Upload security summary
+      uses: actions/upload-artifact@v4
+      with:
+        name: security-analysis-summary
+        path: security-summary.md
+        retention-days: 30
+
+    - name: Comment PR with security summary
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const summaryContent = fs.readFileSync('security-summary.md', 'utf8');
+          
+          const { data: comments } = await github.rest.issues.listComments({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+          });
+          
+          const botComment = comments.find(comment => 
+            comment.user.type === 'Bot' && 
+            comment.body.includes('🛡️ Security Analysis Summary')
+          );
+          
+          const commentBody = `${summaryContent}
+          
+          📊 **Analysis Details:**
+          - **Workflow Run:** [#${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          - **Commit:** \`${{ github.sha }}\`
+          - **Reports:** Available in workflow artifacts`;
+          
+          if (botComment) {
+            await github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: botComment.id,
+              body: commentBody
+            });
+          } else {
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: commentBody
+            });
+          } 

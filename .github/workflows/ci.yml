@@ -5,16 +5,27 @@ on:
     branches: [ main, develop ]
   pull_request:
     branches: [ main, develop ]
+  schedule:
+    # Run security scans weekly on Sundays at 3 AM UTC
+    - cron: '0 3 * * 0'
+
+# Set workflow-level environment variables
+env:
+  PYTHON_DEFAULT_VERSION: "3.11"
 
 jobs:
+
+
   test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
@@ -25,8 +36,9 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/pyproject.toml') }}
+        key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml', '**/requirements*.txt') }}
         restore-keys: |
+          ${{ runner.os }}-pip-${{ matrix.python-version }}-
           ${{ runner.os }}-pip-
 
     - name: Install dependencies
@@ -34,13 +46,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install build twine
         pip install -e ".[dev]"
-
-    - name: Lint with flake8
-      run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
 
     - name: Check code formatting with black
       run: |
@@ -50,6 +55,13 @@ jobs:
       run: |
         isort --check-only --diff .
 
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
+
     - name: Type checking with mypy
       run: |
         mypy open_to_close/ --ignore-missing-imports
@@ -58,55 +70,172 @@ jobs:
       env:
         OPEN_TO_CLOSE_API_KEY: ${{ secrets.OPEN_TO_CLOSE_API_KEY }}
       run: |
-        pytest --cov=open_to_close --cov-report=xml --cov-report=term-missing
+        pytest --cov=open_to_close --cov-report=xml --cov-report=term-missing --cov-report=html
 
     - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
+      if: matrix.python-version == env.PYTHON_DEFAULT_VERSION
       with:
         file: ./coverage.xml
         flags: unittests
         name: codecov-umbrella
+        token: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: false
 
-  security:
+    - name: Upload coverage HTML report
+      uses: actions/upload-artifact@v4
+      if: matrix.python-version == env.PYTHON_DEFAULT_VERSION
+      with:
+        name: coverage-html-report
+        path: htmlcov/
+        retention-days: 30
+
+  license-compliance:
+    name: License Compliance Check
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_DEFAULT_VERSION }}
+
+    - name: Install license checking tools
+      run: |
+        pip install pip-licenses licensecheck
+
+    - name: Check dependency licenses
+      run: |
+        pip install -e ".[dev]"
+        pip-licenses --format=json --output-file=licenses.json
+        pip-licenses --format=table
+        
+        # Check for problematic licenses
+        pip-licenses --format=table --fail-on="GPL;AGPL;LGPL"
+
+    - name: Upload license report
+      uses: actions/upload-artifact@v4
+      with:
+        name: license-report
+        path: licenses.json
+        retention-days: 90
+
+  dependency-security:
+    name: Dependency Security Scan
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
     
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: "3.11"
+        python-version: ${{ env.PYTHON_DEFAULT_VERSION }}
     
-    - name: Install safety
-      run: pip install safety
+    - name: Install dependencies and security tools
+      run: |
+        python -m pip install --upgrade pip
+        pip install safety pip-audit
+        pip install -e ".[dev]"
     
-    - name: Check for security vulnerabilities
-      run: safety check --json
+    - name: Run Safety check
+      run: |
+        safety check --json --output safety-report.json || true
+        safety check
+
+    - name: Run pip-audit
+      run: |
+        pip-audit --format=json --output=pip-audit-report.json || true
+        pip-audit
+
+    - name: Upload security reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: dependency-security-reports
+        path: |
+          safety-report.json
+          pip-audit-report.json
+        retention-days: 30
 
   build:
+    name: Build Package
     runs-on: ubuntu-latest
-    needs: [test, security]
+    needs: [test, dependency-security]
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
     
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: "3.11"
+        python-version: ${{ env.PYTHON_DEFAULT_VERSION }}
     
     - name: Install build dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install build twine
+        pip install build twine check-manifest
+    
+    - name: Check package manifest
+      run: check-manifest
     
     - name: Build package
       run: python -m build
     
-    - name: Check package
-      run: twine check dist/*
+    - name: Check package integrity
+      run: |
+        twine check dist/*
+        
+        # Verify package can be installed
+        pip install dist/*.whl
+        python -c "import open_to_close; print(f'Successfully imported version {open_to_close.__version__}')"
     
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: dist
-        path: dist/ 
+        name: dist-${{ github.sha }}
+        path: dist/
+        retention-days: 30
+
+  configuration-validation:
+    name: Validate Configuration Files
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Validate YAML files
+      run: |
+        # Check all YAML files for syntax errors
+        find . -name "*.yml" -o -name "*.yaml" | grep -v node_modules | xargs -I {} python -c "
+        import yaml, sys
+        try:
+            with open('{}', 'r') as f:
+                yaml.safe_load(f)
+            print('✅ Valid: {}')
+        except Exception as e:
+            print('❌ Invalid: {} - {}'.format('{}', e))
+            sys.exit(1)
+        "
+
+    - name: Validate JSON files
+      run: |
+        # Check all JSON files for syntax errors
+        find . -name "*.json" | grep -v node_modules | xargs -I {} python -c "
+        import json, sys
+        try:
+            with open('{}', 'r') as f:
+                json.load(f)
+            print('✅ Valid: {}')
+        except Exception as e:
+            print('❌ Invalid: {} - {}'.format('{}', e))
+            sys.exit(1)
+        "
+
+    - name: Validate pyproject.toml
+      run: |
+        pip install toml-sort validate-pyproject
+        validate-pyproject pyproject.toml
+        toml-sort --check pyproject.toml 

@@ -1,0 +1,415 @@
+name: Performance Monitoring
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run performance tests daily at 4 AM UTC
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: "3.11"
+
+jobs:
+  performance-testing:
+    name: Performance Testing
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e ".[dev]"
+        pip install pytest-benchmark memory-profiler psutil
+
+    - name: Run performance benchmarks
+      env:
+        OPEN_TO_CLOSE_API_KEY: ${{ secrets.OPEN_TO_CLOSE_API_KEY }}
+      run: |
+        # Run benchmarks with pytest-benchmark
+        pytest tests/ -k "benchmark" --benchmark-json=benchmark_results.json --benchmark-sort=mean || true
+        
+        # Run memory profiling tests
+        python -m pytest tests/ -k "memory" --profile || true
+
+    - name: Upload benchmark results
+      uses: actions/upload-artifact@v4
+      with:
+        name: performance-benchmarks
+        path: |
+          benchmark_results.json
+          .prof
+        retention-days: 30
+
+    - name: Performance regression check
+      run: |
+        # Simple performance regression check
+        python -c "
+        import json
+        import sys
+        
+        try:
+            with open('benchmark_results.json', 'r') as f:
+                results = json.load(f)
+            
+            # Check if any benchmark is significantly slower
+            slow_benchmarks = []
+            for benchmark in results.get('benchmarks', []):
+                mean_time = benchmark.get('stats', {}).get('mean', 0)
+                if mean_time > 5.0:  # 5 seconds threshold
+                    slow_benchmarks.append({
+                        'name': benchmark.get('name', 'unknown'),
+                        'mean_time': mean_time
+                    })
+            
+            if slow_benchmarks:
+                print('⚠️ Slow benchmarks detected:')
+                for bench in slow_benchmarks:
+                    print(f'  - {bench[\"name\"]}: {bench[\"mean_time\"]:.2f}s')
+                sys.exit(1)
+            else:
+                print('✅ All benchmarks within acceptable thresholds')
+        except FileNotFoundError:
+            print('ℹ️ No benchmark results found - skipping regression check')
+        except Exception as e:
+            print(f'⚠️ Error checking performance: {e}')
+        "
+
+  build-time-monitoring:
+    name: Build Time Monitoring
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Monitor dependency installation time
+      run: |
+        echo "📦 Monitoring dependency installation..."
+        start_time=$(date +%s)
+        
+        python -m pip install --upgrade pip
+        pip_upgrade_time=$(date +%s)
+        
+        pip install -e ".[dev]"
+        dev_install_time=$(date +%s)
+        
+        pip install build twine
+        build_tools_time=$(date +%s)
+        
+        # Calculate durations
+        pip_duration=$((pip_upgrade_time - start_time))
+        dev_duration=$((dev_install_time - pip_upgrade_time))
+        build_duration=$((build_tools_time - dev_install_time))
+        total_duration=$((build_tools_time - start_time))
+        
+        echo "⏱️ Installation timing:"
+        echo "  Pip upgrade: ${pip_duration}s"
+        echo "  Dev dependencies: ${dev_duration}s"
+        echo "  Build tools: ${build_duration}s"
+        echo "  Total: ${total_duration}s"
+        
+        # Save metrics
+        cat > build_metrics.json << EOF
+        {
+          "pip_upgrade_seconds": $pip_duration,
+          "dev_install_seconds": $dev_duration,
+          "build_tools_seconds": $build_duration,
+          "total_install_seconds": $total_duration,
+          "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+          "python_version": "${{ env.PYTHON_VERSION }}",
+          "runner_os": "${{ runner.os }}"
+        }
+        EOF
+
+    - name: Monitor test execution time
+      env:
+        OPEN_TO_CLOSE_API_KEY: ${{ secrets.OPEN_TO_CLOSE_API_KEY }}
+      run: |
+        echo "🧪 Monitoring test execution..."
+        start_time=$(date +%s)
+        
+        pytest --durations=10 --tb=short > test_timing.txt 2>&1 || true
+        
+        end_time=$(date +%s)
+        test_duration=$((end_time - start_time))
+        
+        echo "⏱️ Test execution time: ${test_duration}s"
+        
+        # Extract slowest tests from pytest output
+        echo "🐌 Slowest tests:"
+        grep -E "^[0-9]+\.[0-9]+s (setup|call|teardown)" test_timing.txt | head -5 || echo "No timing info available"
+        
+        # Update metrics
+        jq --arg test_duration "$test_duration" '.test_execution_seconds = ($test_duration | tonumber)' build_metrics.json > tmp.json && mv tmp.json build_metrics.json
+
+    - name: Monitor package build time
+      run: |
+        echo "📦 Monitoring package build..."
+        start_time=$(date +%s)
+        
+        python -m build
+        
+        end_time=$(date +%s)
+        build_duration=$((end_time - start_time))
+        
+        echo "⏱️ Package build time: ${build_duration}s"
+        
+        # Check package sizes
+        ls -lh dist/
+        
+        # Update metrics
+        jq --arg build_duration "$build_duration" '.package_build_seconds = ($build_duration | tonumber)' build_metrics.json > tmp.json && mv tmp.json build_metrics.json
+
+    - name: Upload performance metrics
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-performance-metrics
+        path: |
+          build_metrics.json
+          test_timing.txt
+        retention-days: 90
+
+  resource-monitoring:
+    name: Resource Usage Monitoring
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Monitor system resources
+      run: |
+        echo "💻 System resource monitoring..."
+        
+        # System info
+        echo "🖥️ System Information:"
+        uname -a
+        lscpu | grep -E "(Model name|CPU\(s\)|Thread|Core)"
+        free -h
+        df -h /
+        
+        # Create resource monitoring script
+        cat > monitor_resources.py << 'EOF'
+        import psutil
+        import time
+        import json
+        from datetime import datetime
+        
+        def monitor_resources(duration=60, interval=5):
+            """Monitor system resources for a given duration."""
+            metrics = []
+            start_time = time.time()
+            
+            while time.time() - start_time < duration:
+                cpu_percent = psutil.cpu_percent(interval=1)
+                memory = psutil.virtual_memory()
+                disk = psutil.disk_usage('/')
+                
+                metrics.append({
+                    'timestamp': datetime.utcnow().isoformat(),
+                    'cpu_percent': cpu_percent,
+                    'memory_used_gb': memory.used / (1024**3),
+                    'memory_percent': memory.percent,
+                    'disk_used_gb': disk.used / (1024**3),
+                    'disk_percent': (disk.used / disk.total) * 100
+                })
+                
+                time.sleep(interval)
+            
+            return metrics
+        
+        if __name__ == "__main__":
+            print("Starting resource monitoring...")
+            metrics = monitor_resources(duration=30, interval=2)
+            
+            with open('resource_metrics.json', 'w') as f:
+                json.dump(metrics, f, indent=2)
+            
+            # Calculate averages
+            if metrics:
+                avg_cpu = sum(m['cpu_percent'] for m in metrics) / len(metrics)
+                avg_memory = sum(m['memory_percent'] for m in metrics) / len(metrics)
+                max_memory = max(m['memory_used_gb'] for m in metrics)
+                
+                print(f"📊 Resource Usage Summary:")
+                print(f"  Average CPU: {avg_cpu:.1f}%")
+                print(f"  Average Memory: {avg_memory:.1f}%")
+                print(f"  Peak Memory: {max_memory:.2f} GB")
+        EOF
+        
+        python monitor_resources.py
+
+    - name: Set up Python and run resource-intensive operations
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Monitor during package operations
+      run: |
+        # Start background monitoring
+        python monitor_resources.py &
+        MONITOR_PID=$!
+        
+        # Run package operations
+        python -m pip install --upgrade pip
+        pip install -e ".[dev]"
+        python -m build
+        
+        # Stop monitoring
+        sleep 2
+        kill $MONITOR_PID 2>/dev/null || true
+
+    - name: Upload resource metrics
+      uses: actions/upload-artifact@v4
+      with:
+        name: resource-usage-metrics
+        path: resource_metrics.json
+        retention-days: 30
+
+  workflow-analytics:
+    name: Workflow Analytics
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Analyze workflow performance
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          
+          // Get recent workflow runs
+          const { data: runs } = await github.rest.actions.listWorkflowRuns({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            workflow_id: 'ci.yml',
+            per_page: 50
+          });
+          
+          console.log(`📊 Analyzing ${runs.workflow_runs.length} recent CI runs...`);
+          
+          const analytics = {
+            total_runs: runs.workflow_runs.length,
+            success_rate: 0,
+            average_duration_minutes: 0,
+            recent_failures: [],
+            performance_trends: {}
+          };
+          
+          let successful_runs = 0;
+          let total_duration = 0;
+          let duration_count = 0;
+          
+          for (const run of runs.workflow_runs) {
+            if (run.conclusion === 'success') {
+              successful_runs++;
+            } else if (run.conclusion === 'failure') {
+              analytics.recent_failures.push({
+                id: run.id,
+                created_at: run.created_at,
+                head_sha: run.head_sha.substring(0, 7)
+              });
+            }
+            
+            if (run.created_at && run.updated_at) {
+              const start = new Date(run.created_at);
+              const end = new Date(run.updated_at);
+              const duration = (end - start) / (1000 * 60); // minutes
+              total_duration += duration;
+              duration_count++;
+            }
+          }
+          
+          analytics.success_rate = (successful_runs / analytics.total_runs * 100).toFixed(1);
+          analytics.average_duration_minutes = duration_count > 0 ? 
+            (total_duration / duration_count).toFixed(1) : 0;
+          
+          // Keep only recent failures (last 5)
+          analytics.recent_failures = analytics.recent_failures.slice(0, 5);
+          
+          console.log(`✅ Success Rate: ${analytics.success_rate}%`);
+          console.log(`⏱️ Average Duration: ${analytics.average_duration_minutes} minutes`);
+          console.log(`❌ Recent Failures: ${analytics.recent_failures.length}`);
+          
+          // Save analytics
+          fs.writeFileSync('workflow_analytics.json', JSON.stringify(analytics, null, 2));
+
+    - name: Upload workflow analytics
+      uses: actions/upload-artifact@v4
+      with:
+        name: workflow-analytics
+        path: workflow_analytics.json
+        retention-days: 90
+
+  performance-summary:
+    name: Performance Summary
+    runs-on: ubuntu-latest
+    needs: [performance-testing, build-time-monitoring, resource-monitoring]
+    if: always()
+
+    steps:
+    - name: Download all performance artifacts
+      uses: actions/download-artifact@v4
+
+    - name: Generate performance summary
+      run: |
+        echo "## ⚡ Performance Analysis Summary" > performance-summary.md
+        echo "" >> performance-summary.md
+        echo "**Run ID:** ${{ github.run_id }}" >> performance-summary.md
+        echo "**Commit:** ${{ github.sha }}" >> performance-summary.md
+        echo "**Date:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> performance-summary.md
+        echo "" >> performance-summary.md
+        
+        # Build metrics
+        if [ -f build-performance-metrics/build_metrics.json ]; then
+          echo "### 📦 Build Performance" >> performance-summary.md
+          echo "" >> performance-summary.md
+          
+          total_time=$(jq -r '.total_install_seconds // "N/A"' build-performance-metrics/build_metrics.json)
+          test_time=$(jq -r '.test_execution_seconds // "N/A"' build-performance-metrics/build_metrics.json)
+          build_time=$(jq -r '.package_build_seconds // "N/A"' build-performance-metrics/build_metrics.json)
+          
+          echo "- **Total Install Time:** ${total_time}s" >> performance-summary.md
+          echo "- **Test Execution Time:** ${test_time}s" >> performance-summary.md
+          echo "- **Package Build Time:** ${build_time}s" >> performance-summary.md
+          echo "" >> performance-summary.md
+        fi
+        
+        # Job status
+        echo "### 🎯 Job Results" >> performance-summary.md
+        echo "" >> performance-summary.md
+        echo "| Job | Status |" >> performance-summary.md
+        echo "|-----|--------|" >> performance-summary.md
+        echo "| Performance Testing | ${{ needs.performance-testing.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> performance-summary.md
+        echo "| Build Time Monitoring | ${{ needs.build-time-monitoring.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> performance-summary.md
+        echo "| Resource Monitoring | ${{ needs.resource-monitoring.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> performance-summary.md
+        echo "" >> performance-summary.md
+        
+        cat performance-summary.md
+
+    - name: Upload performance summary
+      uses: actions/upload-artifact@v4
+      with:
+        name: performance-analysis-summary
+        path: performance-summary.md
+        retention-days: 30 
