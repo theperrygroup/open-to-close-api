@@ -2,8 +2,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from open_to_close_api.client import OpenToCloseAPI
-from open_to_close_api.contacts import ContactsAPI
+from open_to_close.client import OpenToCloseAPI
+from open_to_close.contacts import ContactsAPI
 
 
 @pytest.fixture

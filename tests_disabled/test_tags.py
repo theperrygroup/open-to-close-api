@@ -2,8 +2,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from open_to_close_api.client import OpenToCloseAPI
-from open_to_close_api.tags import TagsAPI
+from open_to_close.client import OpenToCloseAPI
+from open_to_close.tags import TagsAPI
 
 
 @pytest.fixture

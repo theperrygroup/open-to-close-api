@@ -1,4 +1,4 @@
-from open_to_close_api.client import OpenToCloseAPI
+from open_to_close.client import OpenToCloseAPI
 
 # Initialize the API client
 # The API key will be loaded from the .env file by the client's __init__ method

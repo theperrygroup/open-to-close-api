@@ -2,8 +2,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from open_to_close_api.client import OpenToCloseAPI
-from open_to_close_api.property_emails import PropertyEmailsAPI
+from open_to_close.client import OpenToCloseAPI
+from open_to_close.property_emails import PropertyEmailsAPI
 
 
 @pytest.fixture
