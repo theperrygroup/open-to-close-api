@@ -6,7 +6,10 @@ from .base_client import BaseClient
 
 
 class ContactsAPI(BaseClient):
-    """Client for contacts API endpoints."""
+    """Client for contacts API endpoints.
+
+    This client provides methods to manage contacts in the Open To Close platform.
+    """
 
     def __init__(
         self, api_key: Optional[str] = None, base_url: Optional[str] = None
@@ -22,37 +25,146 @@ class ContactsAPI(BaseClient):
     def list_contacts(
         self, params: Optional[Dict[str, Any]] = None
     ) -> List[Dict[str, Any]]:
-        """Retrieve a list of contacts."""
+        """Retrieve a list of contacts.
+
+        Args:
+            params: Optional dictionary of query parameters for filtering
+
+        Returns:
+            A list of dictionaries, where each dictionary represents a contact
+
+        Raises:
+            OpenToCloseAPIError: If the API request fails
+            ValidationError: If parameters are invalid
+            AuthenticationError: If authentication fails
+
+        Example:
+            ```python
+            # Get all contacts
+            contacts = client.contacts.list_contacts()
+
+            # Get contacts with custom parameters
+            contacts = client.contacts.list_contacts(params={"limit": 50})
+            ```
+        """
         response = self.get("/contacts", params=params)
         if isinstance(response, list):
             return response
         elif isinstance(response, dict):
-            return response.get("data", [])
+            data = response.get("data", [])
+            return data if isinstance(data, list) else []
         return []
 
     def create_contact(self, contact_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Create a new contact."""
+        """Create a new contact.
+
+        Args:
+            contact_data: A dictionary containing the contact's information
+
+        Returns:
+            A dictionary representing the newly created contact
+
+        Raises:
+            OpenToCloseAPIError: If the API request fails
+            ValidationError: If contact data is invalid
+            AuthenticationError: If authentication fails
+
+        Example:
+            ```python
+            contact = client.contacts.create_contact({
+                "name": "John Doe",
+                "email": "john@example.com",
+                "phone": "+1234567890"
+            })
+            ```
+        """
         response = self.post("/contacts", json_data=contact_data)
         if isinstance(response, dict) and response.get("id"):
             return response
-        return response.get("data", {}) if isinstance(response, dict) else {}
+        if isinstance(response, dict):
+            data = response.get("data", {})
+            return data if isinstance(data, dict) else {}
+        return {}
 
     def retrieve_contact(self, contact_id: int) -> Dict[str, Any]:
-        """Retrieve a specific contact by ID."""
+        """Retrieve a specific contact by their ID.
+
+        Args:
+            contact_id: The ID of the contact to retrieve
+
+        Returns:
+            A dictionary representing the contact
+
+        Raises:
+            NotFoundError: If the contact is not found
+            OpenToCloseAPIError: If the API request fails
+            AuthenticationError: If authentication fails
+
+        Example:
+            ```python
+            contact = client.contacts.retrieve_contact(123)
+            print(f"Contact name: {contact['name']}")
+            ```
+        """
         response = self.get(f"/contacts/{contact_id}")
         if isinstance(response, dict) and response.get("id"):
             return response
-        return response.get("data", {}) if isinstance(response, dict) else {}
+        if isinstance(response, dict):
+            data = response.get("data", {})
+            return data if isinstance(data, dict) else {}
+        return {}
 
     def update_contact(
         self, contact_id: int, contact_data: Dict[str, Any]
     ) -> Dict[str, Any]:
-        """Update an existing contact."""
+        """Update an existing contact.
+
+        Args:
+            contact_id: The ID of the contact to update
+            contact_data: A dictionary containing the fields to update
+
+        Returns:
+            A dictionary representing the updated contact
+
+        Raises:
+            NotFoundError: If the contact is not found
+            ValidationError: If contact data is invalid
+            OpenToCloseAPIError: If the API request fails
+            AuthenticationError: If authentication fails
+
+        Example:
+            ```python
+            updated_contact = client.contacts.update_contact(123, {
+                "name": "Jane Doe",
+                "email": "jane@example.com"
+            })
+            ```
+        """
         response = self.put(f"/contacts/{contact_id}", json_data=contact_data)
         if isinstance(response, dict) and response.get("id"):
             return response
-        return response.get("data", {}) if isinstance(response, dict) else {}
+        if isinstance(response, dict):
+            data = response.get("data", {})
+            return data if isinstance(data, dict) else {}
+        return {}
 
     def delete_contact(self, contact_id: int) -> Dict[str, Any]:
-        """Delete a contact by ID."""
+        """Delete a contact by their ID.
+
+        Args:
+            contact_id: The ID of the contact to delete
+
+        Returns:
+            A dictionary containing the API response
+
+        Raises:
+            NotFoundError: If the contact is not found
+            OpenToCloseAPIError: If the API request fails
+            AuthenticationError: If authentication fails
+
+        Example:
+            ```python
+            result = client.contacts.delete_contact(123)
+            ```
+        """
         return self.delete(f"/contacts/{contact_id}")

@@ -1,95 +1,167 @@
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+"""Tags client for Open To Close API."""
 
-if TYPE_CHECKING:  # pragma: no cover
-    from .client import OpenToCloseAPI
+from typing import Any, Dict, List, Optional
+
+from .base_client import BaseClient
 
 
-class TagsAPI:
-    """Handles API requests for Tag related endpoints."""
+class TagsAPI(BaseClient):
+    """Client for tags API endpoints.
+    
+    This client provides methods to manage tags in the Open To Close platform.
+    """
 
-    def __init__(self, client: "OpenToCloseAPI"):
-        """Initializes the TagsAPI with a client instance.
+    def __init__(
+        self, api_key: Optional[str] = None, base_url: Optional[str] = None
+    ) -> None:
+        """Initialize the tags client.
 
         Args:
-            client: The OpenToCloseAPI client instance.
+            api_key: API key for authentication
+            base_url: Base URL for the API
         """
-        self._client = client
+        super().__init__(api_key=api_key, base_url=base_url)
 
     def list_tags(
         self, params: Optional[Dict[str, Any]] = None
     ) -> List[Dict[str, Any]]:
-        """Retrieves a list of tags.
+        """Retrieve a list of tags.
 
         Args:
-            params: Optional dictionary of query parameters.
+            params: Optional dictionary of query parameters for filtering
 
         Returns:
-            A list of dictionaries, where each dictionary represents a tag.
+            A list of dictionaries, where each dictionary represents a tag
+
+        Raises:
+            OpenToCloseAPIError: If the API request fails
+            ValidationError: If parameters are invalid
+            AuthenticationError: If authentication fails
+
+        Example:
+            ```python
+            # Get all tags
+            tags = client.tags.list_tags()
+
+            # Get tags with filtering
+            tags = client.tags.list_tags(params={"limit": 50})
+            ```
         """
-        response = self._client._request("GET", "/tags", params=params)
-        json_response = response.json()
-        if isinstance(json_response, list):
-            return json_response
-        elif isinstance(json_response, dict):
-            return json_response.get("data", [])
+        response = self.get("/tags", params=params)
+        if isinstance(response, list):
+            return response
+        elif isinstance(response, dict):
+            data = response.get("data", [])
+            return data if isinstance(data, list) else []
         return []
 
     def create_tag(self, tag_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Creates a new tag.
+        """Create a new tag.
 
         Args:
-            tag_data: A dictionary containing the tag's information.
+            tag_data: A dictionary containing the tag's information
 
         Returns:
-            A dictionary representing the newly created tag.
+            A dictionary representing the newly created tag
+
+        Raises:
+            OpenToCloseAPIError: If the API request fails
+            ValidationError: If tag data is invalid
+            AuthenticationError: If authentication fails
+
+        Example:
+            ```python
+            tag = client.tags.create_tag({
+                "name": "VIP Client",
+                "color": "#ff0000"
+            })
+            ```
         """
-        response = self._client._request("POST", "/tags", json_data=tag_data)
-        json_response = response.json()
-        if isinstance(json_response, dict) and json_response.get("id"):
-            return json_response
-        return json_response.get("data", {})
+        response = self.post("/tags", json_data=tag_data)
+        if isinstance(response, dict) and response.get("id"):
+            return response
+        if isinstance(response, dict):
+            data = response.get("data", {})
+            return data if isinstance(data, dict) else {}
+        return {}
 
     def retrieve_tag(self, tag_id: int) -> Dict[str, Any]:
-        """Retrieves a specific tag by its ID.
+        """Retrieve a specific tag by its ID.
 
         Args:
-            tag_id: The ID of the tag to retrieve.
+            tag_id: The ID of the tag to retrieve
 
         Returns:
-            A dictionary representing the tag.
+            A dictionary representing the tag
+
+        Raises:
+            NotFoundError: If the tag is not found
+            OpenToCloseAPIError: If the API request fails
+            AuthenticationError: If authentication fails
+
+        Example:
+            ```python
+            tag = client.tags.retrieve_tag(123)
+            print(f"Tag name: {tag['name']}")
+            ```
         """
-        response = self._client._request("GET", f"/tags/{tag_id}")
-        json_response = response.json()
-        if isinstance(json_response, dict) and json_response.get("id"):
-            return json_response
-        return json_response.get("data", {})
+        response = self.get(f"/tags/{tag_id}")
+        if isinstance(response, dict) and response.get("id"):
+            return response
+        if isinstance(response, dict):
+            data = response.get("data", {})
+            return data if isinstance(data, dict) else {}
+        return {}
 
     def update_tag(self, tag_id: int, tag_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Updates an existing tag.
+        """Update an existing tag.
 
         Args:
-            tag_id: The ID of the tag to update.
-            tag_data: A dictionary containing the fields to update.
+            tag_id: The ID of the tag to update
+            tag_data: A dictionary containing the fields to update
 
         Returns:
-            A dictionary representing the updated tag.
+            A dictionary representing the updated tag
+
+        Raises:
+            NotFoundError: If the tag is not found
+            ValidationError: If tag data is invalid
+            OpenToCloseAPIError: If the API request fails
+            AuthenticationError: If authentication fails
+
+        Example:
+            ```python
+            updated_tag = client.tags.update_tag(123, {
+                "name": "Premium Client",
+                "color": "#00ff00"
+            })
+            ```
         """
-        response = self._client._request("PUT", f"/tags/{tag_id}", json_data=tag_data)
-        json_response = response.json()
-        if isinstance(json_response, dict) and json_response.get("id"):
-            return json_response
-        return json_response.get("data", {})
+        response = self.put(f"/tags/{tag_id}", json_data=tag_data)
+        if isinstance(response, dict) and response.get("id"):
+            return response
+        if isinstance(response, dict):
+            data = response.get("data", {})
+            return data if isinstance(data, dict) else {}
+        return {}
 
     def delete_tag(self, tag_id: int) -> Dict[str, Any]:
-        """Deletes a tag by its ID.
+        """Delete a tag by its ID.
 
         Args:
-            tag_id: The ID of the tag to delete.
+            tag_id: The ID of the tag to delete
 
         Returns:
-            A dictionary containing the API response.
+            A dictionary containing the API response
+
+        Raises:
+            NotFoundError: If the tag is not found
+            OpenToCloseAPIError: If the API request fails
+            AuthenticationError: If authentication fails
+
+        Example:
+            ```python
+            result = client.tags.delete_tag(123)
+            ```
         """
-        response = self._client._request("DELETE", f"/tags/{tag_id}")
-        if response.status_code == 204:
-            return {}
-        return response.json()
+        return self.delete(f"/tags/{tag_id}")

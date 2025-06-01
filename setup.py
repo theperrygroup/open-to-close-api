@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="open-to-close-api",
-    version="1.0.0",
+    version="1.0.1",
     author="John Perry",
     author_email="john@theperry.group",
     description="A Python client for the Open To Close API.",

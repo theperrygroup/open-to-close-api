@@ -34,7 +34,8 @@ class BaseClient:
         self.api_key = api_key or os.getenv("OPEN_TO_CLOSE_API_KEY")
         if not self.api_key:
             raise AuthenticationError(
-                "API key is required. Set OPEN_TO_CLOSE_API_KEY environment variable or pass api_key parameter."
+                "API key is required. Set OPEN_TO_CLOSE_API_KEY environment variable "
+                "or pass api_key parameter."
             )
 
         self.base_url = base_url or "https://api.opentoclose.com/v1"
@@ -64,8 +65,9 @@ class BaseClient:
                 response_data=response_data,
             )
         elif response.status_code == 401:
+            message = response_data.get('message', 'Invalid credentials')
             raise AuthenticationError(
-                f"Authentication failed: {response_data.get('message', 'Invalid credentials')}",
+                f"Authentication failed: {message}",
                 status_code=401,
                 response_data=response_data,
             )
@@ -76,14 +78,16 @@ class BaseClient:
                 response_data=response_data,
             )
         elif response.status_code == 429:
+            message = response_data.get('message', 'Too many requests')
             raise RateLimitError(
-                f"Rate limit exceeded: {response_data.get('message', 'Too many requests')}",
+                f"Rate limit exceeded: {message}",
                 status_code=429,
                 response_data=response_data,
             )
         elif 500 <= response.status_code < 600:
+            message = response_data.get('message', 'Internal server error')
             raise ServerError(
-                f"Server error: {response_data.get('message', 'Internal server error')}",
+                f"Server error: {message}",
                 status_code=response.status_code,
                 response_data=response_data,
             )

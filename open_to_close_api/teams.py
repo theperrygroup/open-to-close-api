@@ -1,97 +1,167 @@
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+"""Teams client for Open To Close API."""
 
-if TYPE_CHECKING:  # pragma: no cover
-    from .client import OpenToCloseAPI
+from typing import Any, Dict, List, Optional
+
+from .base_client import BaseClient
 
 
-class TeamsAPI:
-    """Handles API requests for Team related endpoints."""
+class TeamsAPI(BaseClient):
+    """Client for teams API endpoints.
+    
+    This client provides methods to manage teams in the Open To Close platform.
+    """
 
-    def __init__(self, client: "OpenToCloseAPI"):
-        """Initializes the TeamsAPI with a client instance.
+    def __init__(
+        self, api_key: Optional[str] = None, base_url: Optional[str] = None
+    ) -> None:
+        """Initialize the teams client.
 
         Args:
-            client: The OpenToCloseAPI client instance.
+            api_key: API key for authentication
+            base_url: Base URL for the API
         """
-        self._client = client
+        super().__init__(api_key=api_key, base_url=base_url)
 
     def list_teams(
         self, params: Optional[Dict[str, Any]] = None
     ) -> List[Dict[str, Any]]:
-        """Retrieves a list of teams.
+        """Retrieve a list of teams.
 
         Args:
-            params: Optional dictionary of query parameters.
+            params: Optional dictionary of query parameters for filtering
 
         Returns:
-            A list of dictionaries, where each dictionary represents a team.
+            A list of dictionaries, where each dictionary represents a team
+
+        Raises:
+            OpenToCloseAPIError: If the API request fails
+            ValidationError: If parameters are invalid
+            AuthenticationError: If authentication fails
+
+        Example:
+            ```python
+            # Get all teams
+            teams = client.teams.list_teams()
+
+            # Get teams with filtering
+            teams = client.teams.list_teams(params={"limit": 50})
+            ```
         """
-        response = self._client._request("GET", "/teams", params=params)
-        json_response = response.json()
-        if isinstance(json_response, list):
-            return json_response
-        elif isinstance(json_response, dict):
-            return json_response.get("data", [])
+        response = self.get("/teams", params=params)
+        if isinstance(response, list):
+            return response
+        elif isinstance(response, dict):
+            data = response.get("data", [])
+            return data if isinstance(data, list) else []
         return []
 
     def create_team(self, team_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Creates a new team.
+        """Create a new team.
 
         Args:
-            team_data: A dictionary containing the team's information.
+            team_data: A dictionary containing the team's information
 
         Returns:
-            A dictionary representing the newly created team.
+            A dictionary representing the newly created team
+
+        Raises:
+            OpenToCloseAPIError: If the API request fails
+            ValidationError: If team data is invalid
+            AuthenticationError: If authentication fails
+
+        Example:
+            ```python
+            team = client.teams.create_team({
+                "name": "Sales Team",
+                "description": "Main sales team for residential properties"
+            })
+            ```
         """
-        response = self._client._request("POST", "/teams", json_data=team_data)
-        json_response = response.json()
-        if isinstance(json_response, dict) and json_response.get("id"):
-            return json_response
-        return json_response.get("data", {})
+        response = self.post("/teams", json_data=team_data)
+        if isinstance(response, dict) and response.get("id"):
+            return response
+        if isinstance(response, dict):
+            data = response.get("data", {})
+            return data if isinstance(data, dict) else {}
+        return {}
 
     def retrieve_team(self, team_id: int) -> Dict[str, Any]:
-        """Retrieves a specific team by its ID.
+        """Retrieve a specific team by its ID.
 
         Args:
-            team_id: The ID of the team to retrieve.
+            team_id: The ID of the team to retrieve
 
         Returns:
-            A dictionary representing the team.
+            A dictionary representing the team
+
+        Raises:
+            NotFoundError: If the team is not found
+            OpenToCloseAPIError: If the API request fails
+            AuthenticationError: If authentication fails
+
+        Example:
+            ```python
+            team = client.teams.retrieve_team(123)
+            print(f"Team name: {team['name']}")
+            ```
         """
-        response = self._client._request("GET", f"/teams/{team_id}")
-        json_response = response.json()
-        if isinstance(json_response, dict) and json_response.get("id"):
-            return json_response
-        return json_response.get("data", {})
+        response = self.get(f"/teams/{team_id}")
+        if isinstance(response, dict) and response.get("id"):
+            return response
+        if isinstance(response, dict):
+            data = response.get("data", {})
+            return data if isinstance(data, dict) else {}
+        return {}
 
     def update_team(self, team_id: int, team_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Updates an existing team.
+        """Update an existing team.
 
         Args:
-            team_id: The ID of the team to update.
-            team_data: A dictionary containing the fields to update.
+            team_id: The ID of the team to update
+            team_data: A dictionary containing the fields to update
 
         Returns:
-            A dictionary representing the updated team.
+            A dictionary representing the updated team
+
+        Raises:
+            NotFoundError: If the team is not found
+            ValidationError: If team data is invalid
+            OpenToCloseAPIError: If the API request fails
+            AuthenticationError: If authentication fails
+
+        Example:
+            ```python
+            updated_team = client.teams.update_team(123, {
+                "name": "Senior Sales Team",
+                "description": "Updated team description"
+            })
+            ```
         """
-        response = self._client._request(
-            "PUT", f"/teams/{team_id}", json_data=team_data
-        )
-        json_response = response.json()
-        if isinstance(json_response, dict) and json_response.get("id"):
-            return json_response
-        return json_response.get("data", {})
+        response = self.put(f"/teams/{team_id}", json_data=team_data)
+        if isinstance(response, dict) and response.get("id"):
+            return response
+        if isinstance(response, dict):
+            data = response.get("data", {})
+            return data if isinstance(data, dict) else {}
+        return {}
 
     def delete_team(self, team_id: int) -> Dict[str, Any]:
-        """Deletes a team by its ID.
+        """Delete a team by its ID.
 
         Args:
-            team_id: The ID of the team to delete.
+            team_id: The ID of the team to delete
 
         Returns:
-            A dictionary containing the API response.
+            A dictionary containing the API response
+
+        Raises:
+            NotFoundError: If the team is not found
+            OpenToCloseAPIError: If the API request fails
+            AuthenticationError: If authentication fails
+
+        Example:
+            ```python
+            result = client.teams.delete_team(123)
+            ```
         """
-        response = self._client._request("DELETE", f"/teams/{team_id}")
-        if response.status_code == 204:
-            return {}
-        return response.json()
+        return self.delete(f"/teams/{team_id}")

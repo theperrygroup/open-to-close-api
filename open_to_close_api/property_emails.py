@@ -1,116 +1,186 @@
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+"""Property emails client for Open To Close API."""
 
-if TYPE_CHECKING:  # pragma: no cover
-    from .client import OpenToCloseAPI
+from typing import Any, Dict, List, Optional
+
+from .base_client import BaseClient
 
 
-class PropertyEmailsAPI:
-    """Handles API requests for Property Email related endpoints."""
+class PropertyEmailsAPI(BaseClient):
+    """Client for property emails API endpoints.
+    
+    This client provides methods to manage emails associated with specific properties
+    in the Open To Close platform.
+    """
 
-    def __init__(self, client: "OpenToCloseAPI"):
-        """Initializes the PropertyEmailsAPI with a client instance.
+    def __init__(
+        self, api_key: Optional[str] = None, base_url: Optional[str] = None
+    ) -> None:
+        """Initialize the property emails client.
 
         Args:
-            client: The OpenToCloseAPI client instance.
+            api_key: API key for authentication
+            base_url: Base URL for the API
         """
-        self._client = client
+        super().__init__(api_key=api_key, base_url=base_url)
 
     def list_property_emails(
         self, property_id: int, params: Optional[Dict[str, Any]] = None
     ) -> List[Dict[str, Any]]:
-        """Retrieves a list of emails for a specific property.
+        """Retrieve a list of emails for a specific property.
 
         Args:
-            property_id: The ID of the property.
-            params: Optional dictionary of query parameters.
+            property_id: The ID of the property
+            params: Optional dictionary of query parameters for filtering
 
         Returns:
-            A list of dictionaries, where each dictionary represents a property email.
+            A list of dictionaries, where each dictionary represents a property email
+
+        Raises:
+            OpenToCloseAPIError: If the API request fails
+            NotFoundError: If the property is not found
+            ValidationError: If parameters are invalid
+            AuthenticationError: If authentication fails
+
+        Example:
+            ```python
+            # Get all emails for a property
+            emails = client.property_emails.list_property_emails(123)
+
+            # Get emails with filtering
+            emails = client.property_emails.list_property_emails(
+                123, params={"limit": 10}
+            )
+            ```
         """
-        response = self._client._request(
-            "GET", f"/properties/{property_id}/emails", params=params
-        )
-        json_response = response.json()
-        if isinstance(json_response, list):
-            return json_response
-        elif isinstance(json_response, dict):
-            return json_response.get("data", [])
+        response = self.get(f"/properties/{property_id}/emails", params=params)
+        if isinstance(response, list):
+            return response
+        elif isinstance(response, dict):
+            data = response.get("data", [])
+            return data if isinstance(data, list) else []
         return []
 
     def create_property_email(
         self, property_id: int, email_data: Dict[str, Any]
     ) -> Dict[str, Any]:
-        """Adds an email to a specific property.
+        """Add an email to a specific property.
 
         Args:
-            property_id: The ID of the property.
-            email_data: A dictionary containing the email's information.
+            property_id: The ID of the property
+            email_data: A dictionary containing the email's information to be added
 
         Returns:
-            A dictionary representing the newly added property email.
+            A dictionary representing the newly added property email
+
+        Raises:
+            OpenToCloseAPIError: If the API request fails
+            ValidationError: If email data is invalid
+            NotFoundError: If the property is not found
+            AuthenticationError: If authentication fails
+
+        Example:
+            ```python
+            email = client.property_emails.create_property_email(123, {
+                "subject": "Property Update",
+                "body": "Property status has been updated."
+            })
+            ```
         """
-        response = self._client._request(
-            "POST", f"/properties/{property_id}/emails", json_data=email_data
-        )
-        json_response = response.json()
-        if isinstance(json_response, dict) and json_response.get("id"):
-            return json_response
-        return json_response.get("data", {})
+        response = self.post(f"/properties/{property_id}/emails", json_data=email_data)
+        if isinstance(response, dict) and response.get("id"):
+            return response
+        if isinstance(response, dict):
+            data = response.get("data", {})
+            return data if isinstance(data, dict) else {}
+        return {}
 
     def retrieve_property_email(
         self, property_id: int, email_id: int
     ) -> Dict[str, Any]:
-        """Retrieves a specific email for a specific property.
+        """Retrieve a specific email for a specific property.
 
         Args:
-            property_id: The ID of the property.
-            email_id: The ID of the email to retrieve.
+            property_id: The ID of the property
+            email_id: The ID of the email to retrieve
 
         Returns:
-            A dictionary representing the property email.
+            A dictionary representing the property email
+
+        Raises:
+            NotFoundError: If the property or email is not found
+            OpenToCloseAPIError: If the API request fails
+            AuthenticationError: If authentication fails
+
+        Example:
+            ```python
+            email = client.property_emails.retrieve_property_email(123, 456)
+            print(f"Email subject: {email['subject']}")
+            ```
         """
-        response = self._client._request(
-            "GET", f"/properties/{property_id}/emails/{email_id}"
-        )
-        json_response = response.json()
-        if isinstance(json_response, dict) and json_response.get("id"):
-            return json_response
-        return json_response.get("data", {})
+        response = self.get(f"/properties/{property_id}/emails/{email_id}")
+        if isinstance(response, dict) and response.get("id"):
+            return response
+        if isinstance(response, dict):
+            data = response.get("data", {})
+            return data if isinstance(data, dict) else {}
+        return {}
 
     def update_property_email(
         self, property_id: int, email_id: int, email_data: Dict[str, Any]
     ) -> Dict[str, Any]:
-        """Updates a specific email for a specific property.
+        """Update a specific email for a specific property.
 
         Args:
-            property_id: The ID of the property.
-            email_id: The ID of the email to update.
-            email_data: A dictionary containing the fields to update.
+            property_id: The ID of the property
+            email_id: The ID of the email to update
+            email_data: A dictionary containing the fields to update
 
         Returns:
-            A dictionary representing the updated property email.
-        """
-        response = self._client._request(
-            "PUT", f"/properties/{property_id}/emails/{email_id}", json_data=email_data
-        )
-        json_response = response.json()
-        if isinstance(json_response, dict) and json_response.get("id"):
-            return json_response
-        return json_response.get("data", {})
+            A dictionary representing the updated property email
 
-    def delete_property_email(self, property_id: int, email_id: int) -> Dict[str, Any]:
-        """Removes an email from a specific property.
+        Raises:
+            NotFoundError: If the property or email is not found
+            ValidationError: If email data is invalid
+            OpenToCloseAPIError: If the API request fails
+            AuthenticationError: If authentication fails
+
+        Example:
+            ```python
+            updated_email = client.property_emails.update_property_email(
+                123, 456, {"subject": "Updated Property Status"}
+            )
+            ```
+        """
+        response = self.put(
+            f"/properties/{property_id}/emails/{email_id}", json_data=email_data
+        )
+        if isinstance(response, dict) and response.get("id"):
+            return response
+        if isinstance(response, dict):
+            data = response.get("data", {})
+            return data if isinstance(data, dict) else {}
+        return {}
+
+    def delete_property_email(
+        self, property_id: int, email_id: int
+    ) -> Dict[str, Any]:
+        """Remove an email from a specific property.
 
         Args:
-            property_id: The ID of the property.
-            email_id: The ID of the email to remove.
+            property_id: The ID of the property
+            email_id: The ID of the email to remove
 
         Returns:
-            A dictionary containing the API response.
+            A dictionary containing the API response
+
+        Raises:
+            NotFoundError: If the property or email is not found
+            OpenToCloseAPIError: If the API request fails
+            AuthenticationError: If authentication fails
+
+        Example:
+            ```python
+            result = client.property_emails.delete_property_email(123, 456)
+            ```
         """
-        response = self._client._request(
-            "DELETE", f"/properties/{property_id}/emails/{email_id}"
-        )
-        if response.status_code == 204:
-            return {}
-        return response.json()
+        return self.delete(f"/properties/{property_id}/emails/{email_id}")
