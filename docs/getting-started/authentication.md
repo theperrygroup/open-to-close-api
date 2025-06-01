@@ -97,16 +97,7 @@ The most secure and flexible approach for production environments:
     # Add OPEN_TO_CLOSE_API_KEY to user or system environment variables
     ```
 
-=== ":material-docker: Docker"
 
-    ```dockerfile
-    # In Dockerfile
-    ENV OPEN_TO_CLOSE_API_KEY=""
-    
-    # Or in docker-compose.yml
-    environment:
-      - OPEN_TO_CLOSE_API_KEY=${OPEN_TO_CLOSE_API_KEY}
-    ```
 
 Then use the client without explicit configuration:
 
