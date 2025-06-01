@@ -1,0 +1,94 @@
+/* Extra CSS for Open To Close API Documentation */
+
+/* Enhanced grid cards styling */
+.md-grid {
+  max-width: 76rem;
+}
+
+/* Custom admonition styling */
+.md-typeset .admonition.success {
+  border-color: #4caf50;
+}
+
+.md-typeset .admonition.success > .admonition-title {
+  background-color: rgba(76, 175, 80, 0.1);
+  border-color: #4caf50;
+}
+
+/* Code block enhancements */
+.md-typeset .highlight pre {
+  border-radius: 0.2rem;
+}
+
+/* Table styling improvements */
+.md-typeset table:not([class]) {
+  border-radius: 0.2rem;
+  overflow: hidden;
+  box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.05);
+}
+
+.md-typeset table:not([class]) th {
+  background-color: var(--md-primary-fg-color--light);
+  color: var(--md-primary-bg-color);
+  font-weight: 600;
+}
+
+/* Grid cards responsive improvements */
+@media screen and (max-width: 76.1875em) {
+  .md-grid.cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Enhanced navigation */
+.md-nav__item .md-nav__link--active {
+  font-weight: 600;
+}
+
+/* API method signature styling */
+.md-typeset .method-signature {
+  background-color: var(--md-code-bg-color);
+  border-left: 0.2rem solid var(--md-accent-fg-color);
+  padding: 1rem;
+  border-radius: 0.2rem;
+  margin: 1rem 0;
+}
+
+/* Parameter table styling */
+.md-typeset .parameters-table th {
+  background-color: var(--md-primary-fg-color--light);
+  color: var(--md-primary-bg-color);
+}
+
+/* Status indicators */
+.status-available { color: #4caf50; }
+.status-limited { color: #ff9800; }
+.status-deprecated { color: #f44336; }
+
+/* Custom card hover effects */
+.md-typeset .grid.cards > * {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.md-typeset .grid.cards > *:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Enhanced code copy button */
+.md-code__copy {
+  transition: opacity 0.2s ease-in-out;
+}
+
+/* Custom spacing for sections */
+.md-typeset h2 {
+  margin-top: 2rem;
+}
+
+/* Enhanced table of contents */
+.md-nav--secondary .md-nav__title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+} 

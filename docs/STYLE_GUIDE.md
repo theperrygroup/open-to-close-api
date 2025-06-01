@@ -14,7 +14,7 @@ This comprehensive style guide establishes standards for creating consistent, hi
 
 **Prohibited Tones**:
 - ❌ Overly casual or colloquial language
-- ❌ Condescending or patronizing language  
+- ❌ Condescending or patronizing language
 - ❌ Overly technical jargon without explanation
 - ❌ Vague or ambiguous statements
 
@@ -86,6 +86,104 @@ This comprehensive style guide establishes standards for creating consistent, hi
 - If it covers more than one primary task
 - If it contains more than 10 main sections
 
+**❌ Don't: Poor Content Organization**
+```markdown
+# Everything About Our API
+
+This page covers installation, authentication, making API calls, error handling,
+rate limits, webhooks, data types, examples, troubleshooting, and more!
+
+First let's talk about installing...
+Then we need to authenticate...
+Now let's make some calls...
+Oh wait, here's how to handle errors...
+Did we mention rate limits?
+...continues for 5,000+ words without clear structure...
+```
+
+**✅ Do: Well-Structured Content**
+```markdown
+# Getting Started Guide
+
+Learn how to install and authenticate with the API in under 10 minutes.
+
+## Prerequisites
+- Python 3.8 or higher
+- Valid API key
+
+## Installation
+[Clear installation steps]
+
+## Authentication
+[Clear authentication steps]
+
+## Your First API Call
+[Simple example]
+
+## Next Steps
+- [Advanced Usage Guide](advanced.md)
+- [API Reference](api/index.md)
+- [Error Handling](errors.md)
+```
+
+**❌ Don't: Poor Writing Style**
+```markdown
+# API Stuff
+
+Obviously you'll want to install this thing first. It's really easy, just run the command.
+
+The API is pretty cool and does lots of things. You can get data and stuff.
+
+Simply authenticate by doing the authentication thing. Easy!
+
+Here's some code:
+```python
+x = client.get()
+```
+
+That's it! Super simple right?
+```
+
+**✅ Do: Professional Writing Style**
+```markdown
+# API Quick Start
+
+Install and configure the API client to start making requests.
+
+## Installation
+
+Install the client using pip:
+
+```bash
+pip install api-client
+```
+
+## Authentication
+
+Configure your API key in the environment:
+
+```bash
+export API_KEY="your_key_here"
+```
+
+## First Request
+
+Make your first API call:
+
+```python
+from api_client import Client
+
+client = Client()
+data = client.get_resources()
+print(f"Retrieved {len(data)} resources")
+```
+
+## Next Steps
+
+- [Authentication Guide](auth.md) - Detailed authentication setup
+- [API Reference](api/index.md) - Complete method documentation
+```
+
 ## 🎨 Modern Visual Layout and Styling
 
 ### Material Design Grid Cards
@@ -122,6 +220,48 @@ This comprehensive style guide establishes standards for creating consistent, hi
 - Group 2-6 cards per grid for optimal visual balance
 - Always include the `{ .lg .middle }` classes for proper icon sizing
 
+**❌ Don't: Poor Card Implementation**
+```markdown
+<div class="grid cards" markdown>
+
+-   **Stuff**
+
+    Some things you can do
+
+    [Click here](page.md)
+
+-   **More Stuff**
+
+    Other things
+
+    [Link](another-page.md)
+
+</div>
+```
+
+**✅ Do: Professional Card Implementation**
+```markdown
+<div class="grid cards" markdown>
+
+-   :material-api:{ .lg .middle } **API Reference**
+
+    ---
+
+    Complete method documentation with examples and parameters
+
+    [:octicons-arrow-right-24: View API Docs](api/index.md)
+
+-   :material-rocket-launch:{ .lg .middle } **Quick Start**
+
+    ---
+
+    Get up and running in under 5 minutes
+
+    [:octicons-arrow-right-24: Start Tutorial](getting-started/quickstart.md)
+
+</div>
+```
+
 ### Tabbed Content Organization
 
 **Use Case**: Organize related information that users might want to compare or choose between.
@@ -131,7 +271,7 @@ This comprehensive style guide establishes standards for creating consistent, hi
 === "Tab Name 1"
     Content for first tab with examples and explanations.
 
-=== "Tab Name 2"  
+=== "Tab Name 2"
     Content for second tab with different approach or information.
 
 === "Tab Name 3"
@@ -144,6 +284,44 @@ This comprehensive style guide establishes standards for creating consistent, hi
 - Present different operating system instructions
 - Show before/after examples
 - Maximum 5 tabs per section for usability
+
+**❌ Don't: Confusing Tab Organization**
+```markdown
+=== "Example"
+    Some code here without context or explanation.
+
+=== "Another Thing"
+    Different topic entirely that doesn't relate to the first tab.
+
+=== "Tab 3"
+    Vague title with unclear content organization.
+```
+
+**✅ Do: Clear Tab Organization**
+```markdown
+=== ":material-rocket-launch: Basic Operation"
+
+    ```python
+    # Simple resource creation
+    client = APIClient()
+    resource = client.create_resource(
+        name="example",
+        type="standard"
+    )
+    ```
+
+=== ":material-cog: Advanced Configuration"
+
+    ```python
+    # Advanced setup with configuration
+    client = APIClient()
+    resource = client.create_resource(
+        name="example",
+        configuration=config_data,
+        options=advanced_options
+    )
+    ```
+```
 
 ### Visual Admonitions with Emojis
 
@@ -178,23 +356,40 @@ This comprehensive style guide establishes standards for creating consistent, hi
 - Use sparingly (maximum 3 per page)
 - Choose colors that support the message intent
 
-**Advanced Admonition Examples**:
-
+**❌ Don't: Admonition Overuse and Misuse**
 ```markdown
-!!! example "Live Example"
-    Working code example with explanation of each step.
+!!! warning "Warning"
+    This is important.
 
-!!! success "Service Status: Available ✅"
-    Current status and availability information.
+!!! warning "Another Warning"
+    This is also important.
 
-!!! warning "Temporary Limitation ⚠️"
-    Known issues or temporary restrictions.
+!!! info "Note"
+    Just some regular information that could be normal text.
 
-!!! info "Developer Note 📝"
-    Technical insights and implementation details.
+!!! tip "Tip"
+    Something obvious that everyone already knows.
 
-!!! tip "Pro Tip 💡"
-    Expert advice and optimization suggestions.
+!!! example "Example"
+    # Bad code example without explanation
+    x = 1
+```
+
+**✅ Do: Strategic Admonition Usage**
+```markdown
+!!! warning "Security Considerations ⚠️"
+    Never log sensitive credentials in error messages. Always sanitize authentication errors before logging.
+
+!!! example "Complete Usage Example"
+    ```python
+    # Initialize client with proper error handling
+    try:
+        client = APIClient()
+        data = client.fetch_items(status="active")
+        print(f"Found {len(data)} active items")
+    except AuthenticationError:
+        print("Please check your API key configuration")
+    ```
 ```
 
 ### Visual Status System
@@ -206,7 +401,7 @@ This comprehensive style guide establishes standards for creating consistent, hi
 !!! success "✅ Properties API"
     Fully operational with real-time data access.
 
-<!-- Service Issues -->  
+<!-- Service Issues -->
 !!! warning "⚠️ Member Data Service"
     Experiencing intermittent delays (< 5 second impact).
 
@@ -217,7 +412,7 @@ This comprehensive style guide establishes standards for creating consistent, hi
 
 **Implementation Status Patterns**:
 - ✅ **Available**: Feature is fully implemented and tested
-- 🚧 **In Development**: Feature is being actively developed  
+- 🚧 **In Development**: Feature is being actively developed
 - 📋 **Planned**: Feature is planned for future releases
 - ⚠️ **Limited**: Feature has known limitations or constraints
 - ❌ **Deprecated**: Feature will be removed in future versions
@@ -227,7 +422,7 @@ This comprehensive style guide establishes standards for creating consistent, hi
 **Required Visual Hierarchy**:
 
 1. **Hero Section**: Title + brief overview with visual elements
-2. **Navigation Cards**: Grid of options for major sections  
+2. **Navigation Cards**: Grid of options for major sections
 3. **Tabbed Examples**: Organized code/content with clear labels
 4. **Progressive Sections**: Simple → intermediate → advanced
 5. **Visual Callouts**: Strategic admonitions for key information
@@ -252,7 +447,7 @@ Brief engaging overview that explains value and scope.
 === "Simple Example"
     Basic code example with explanation
 
-=== "Advanced Example"  
+=== "Advanced Example"
     More complex example with additional features
 
 !!! tip "Best Practice"
@@ -265,7 +460,7 @@ More detailed content organized in clear sections.
 ## What's Next?
 
 - 📚 [Related Guide](link.md) - Brief description
-- 🚀 [Next Steps](link.md) - Logical progression  
+- 🚀 [Next Steps](link.md) - Logical progression
 - 💡 [Examples](link.md) - Practical applications
 ```
 
@@ -275,7 +470,7 @@ More detailed content organized in clear sections.
 
 **Documentation Hierarchy**:
 1. **Getting Started** - Onboarding journey with clear steps
-2. **Guides** - Task-oriented how-to documentation  
+2. **Guides** - Task-oriented how-to documentation
 3. **API Reference** - Complete technical documentation
 4. **Examples** - Practical code samples by complexity
 5. **Reference** - Quick lookup materials
@@ -351,6 +546,424 @@ More detailed content organized in clear sections.
 - Integration patterns with external systems
 - Dashboard and analytics implementations
 
+---
+
+## 🎭 Advanced Visual Design System
+
+### Comprehensive Visual Hierarchy
+
+**Strategic Use of Horizontal Rules**: Create clear visual breaks and sections using horizontal rules (`---`) to:
+- Separate major sections of content
+- Create breathing room between dense information
+- Establish clear content boundaries
+- Guide the reader's eye through the page flow
+
+**Implementation Pattern**:
+```markdown
+# Main Page Title
+
+Opening description that sets context.
+
+---
+
+## 🚀 Primary Section
+
+Main content with grid cards or key information.
+
+---
+
+## 📋 Secondary Section
+
+Supporting content with examples or references.
+
+---
+
+## 🎯 Final Section
+
+Conclusion, next steps, or additional resources.
+```
+
+### Advanced Grid Card Patterns
+
+**Multi-Level Card Systems**: Use different card layouts for different information types:
+
+**Primary Navigation Cards** (Section landing pages):
+```markdown
+<div class="grid cards" markdown>
+
+-   :material-api:{ .lg .middle } **Core API**
+
+    ---
+
+    Create and manage primary resources with full CRUD operations
+
+    [:octicons-arrow-right-24: Core API Reference](core-api.md)
+
+-   :material-database:{ .lg .middle } **Data Management**
+
+    ---
+
+    Work with live data, manage relationships, and handle processing
+
+    [:octicons-arrow-right-24: Data API](data-api.md)
+
+</div>
+```
+
+**Feature Overview Cards** (Highlighting capabilities):
+```markdown
+<div class="grid cards" markdown>
+
+-   :material-home: **Resource Management**
+
+    ---
+
+    Complete resource lifecycle from creation to completion with automated workflows
+
+-   :material-account-group: **User & Team Operations**
+
+    ---
+
+    Comprehensive user search, team management, and relationship tools
+
+</div>
+```
+
+**Quick Action Cards** (Getting started flows):
+```markdown
+<div class="grid cards" markdown>
+
+-   :material-download:{ .lg .middle } **Installation**
+
+    ---
+
+    Install the Python client and set up your development environment
+
+    [:octicons-arrow-right-24: Install Now](installation.md)
+
+</div>
+```
+
+### Strategic Tabbed Content Design
+
+**Multi-Pattern Tab Usage**: Use tabs for different organizational needs:
+
+**Code Example Tabs** (Different approaches):
+```markdown
+=== ":material-rocket-launch: Basic Operation"
+
+    ```python
+    # Simple resource creation
+    client = APIClient()
+    resource = client.create_resource(
+        name="example",
+        type="standard"
+    )
+    ```
+
+=== ":material-cog: Advanced Configuration"
+
+    ```python
+    # Advanced setup with configuration
+    client = APIClient()
+    resource = client.create_resource(
+        name="example",
+        configuration=config_data,
+        options=advanced_options
+    )
+    ```
+```
+
+**Feature Comparison Tabs** (Different options):
+```markdown
+=== ":material-auto-fix: Automatic (Recommended)"
+
+    The client automatically detects your API key from environment variables.
+
+=== ":material-key-variant: Explicit"
+
+    Pass your API key directly to the client constructor.
+```
+
+**Progressive Complexity Tabs** (Skill levels):
+```markdown
+=== "Basic Usage"
+
+    Simple examples for getting started quickly.
+
+=== "Error Handling"
+
+    Production-ready examples with comprehensive error handling.
+
+=== "Advanced Filtering"
+
+    Complex queries with filtering, sorting, and pagination.
+```
+
+### Advanced Admonition Strategy
+
+**Color-Coded Information Architecture**: Use admonitions to create a visual information hierarchy:
+
+**Success/Available (Green)**:
+```markdown
+!!! success "✅ Properties API"
+    Fully operational with real-time data access.
+
+!!! abstract "Main Client"
+    The **`APIClient`** serves as the main entry point, providing access to all API modules through a unified interface.
+```
+
+**Information/Tips (Blue)**:
+```markdown
+!!! info "Getting Started"
+    Before using any API methods, you need to set up authentication.
+
+!!! tip "Additional Resources"
+    - **[Data Types & Enums](link.md)** - Type definitions
+    - **[Exception Reference](link.md)** - Error handling guide
+```
+
+**Warnings/Important (Orange)**:
+```markdown
+!!! warning "Security Considerations"
+    Never log API keys in error messages.
+
+!!! warning "Temporary Limitation ⚠️"
+    Known issues or temporary restrictions.
+```
+
+**Examples/Code (Gray)**:
+```markdown
+!!! example "Live Example"
+    Working code example with explanation of each step.
+```
+
+### Professional Typography Hierarchy
+
+**Emoji-Enhanced Headers**: Use strategic emoji placement for visual scanning:
+
+```markdown
+## 🚀 API Overview        # Primary feature sections
+## 📋 Quick Reference     # Reference/lookup sections
+## 🔧 Client Setup        # Configuration/setup
+## 📖 API Endpoints       # Documentation sections
+## 🎯 Key Features        # Highlighting capabilities
+## 📚 Related Documentation # Cross-references
+## 🔍 Method Lookup       # Search/navigation aids
+```
+
+**Semantic Header Patterns**:
+- **🚀** - Getting started, launching, primary actions
+- **📋** - Lists, references, quick access information
+- **🔧** - Setup, configuration, technical implementation
+- **📖** - Documentation, guides, learning materials
+- **🎯** - Goals, objectives, key points
+- **📚** - Resources, additional information
+- **🔍** - Search, lookup, finding information
+- **💡** - Tips, insights, best practices
+- **⚡** - Quick actions, shortcuts
+- **🆘** - Help, troubleshooting, support
+
+### Advanced Cross-Reference Systems
+
+**Multi-Level Reference Patterns**: Create comprehensive navigation systems:
+
+**End-of-Page Reference Blocks**:
+```markdown
+---
+
+## 📚 Related Documentation
+
+!!! tip "Additional Resources"
+
+    - **[Data Types & Enums](../reference/data-types.md)** - Type definitions and constants
+    - **[Exception Reference](../reference/exceptions.md)** - Error handling guide
+    - **[Examples & Guides](../guides/examples.md)** - Practical usage examples
+    - **[Authentication Setup](../getting-started/authentication.md)** - Client configuration
+
+---
+
+## 🚀 Quick Start
+
+New to the API? Start here:
+
+1. **[Install the client](../getting-started/installation.md)** - Get up and running
+2. **[Configure authentication](../getting-started/authentication.md)** - Set up your API key
+3. **[Try the quick start](../getting-started/quickstart.md)** - Make your first API call
+4. **[Explore examples](../guides/examples.md)** - See real-world use cases
+```
+
+**In-Content Cross-References**:
+```markdown
+### **🏗️ Core Features**
+Build and manage primary application resources:
+
+- **[Core API](core-api.md)** - Create new resources with full configuration
+- **[Data Management](data-management.md)** - Manage live data and processing
+
+### **👥 Users & Organizations**
+Work with users, teams, and contacts:
+
+- **[User Management](users.md)** - Search and manage user information
+- **[Team Operations](teams.md)** - User search and team management
+```
+
+### Advanced Page Structure Templates
+
+**Landing Page Template**:
+```markdown
+# Section Title
+
+Brief engaging overview that explains value and scope.
+
+---
+
+## 🚀 Quick Navigation
+
+<div class="grid cards" markdown>
+[2-6 primary navigation cards]
+</div>
+
+---
+
+## 📋 Quick Reference
+
+### Core Components
+
+!!! abstract "Main Concept"
+    Brief explanation of the main concept or entry point.
+
+!!! abstract "Specialized Components"
+    - **Component 1**: Brief description
+    - **Component 2**: Brief description
+
+### Common Patterns
+
+=== "Basic Usage"
+    Simple example with minimal configuration.
+
+=== "Error Handling"
+    Production-ready example with error handling.
+
+=== "Advanced Features"
+    Complex example showing advanced capabilities.
+
+---
+
+## 🔧 Setup Section
+
+!!! info "Getting Started"
+    Prerequisites and initial setup information.
+
+### Quick Setup
+[Code example for basic setup]
+
+---
+
+## 📖 Detailed Sections by Category
+
+### **🏗️ Category 1**
+Description and overview:
+- **[Item 1](link.md)** - Brief description
+- **[Item 2](link.md)** - Brief description
+
+### **👥 Category 2**
+Description and overview:
+- **[Item 3](link.md)** - Brief description
+- **[Item 4](link.md)** - Brief description
+
+---
+
+## 🎯 Key Features
+
+### **Feature 1**
+- Bullet point highlighting capability
+- Technical details and benefits
+
+### **Feature 2**
+- Another capability
+- More technical details
+
+---
+
+## 📚 Related Documentation
+
+!!! tip "Additional Resources"
+    - **[Related Guide](link.md)** - Description
+    - **[Another Resource](link.md)** - Description
+
+---
+
+## 🚀 Quick Start
+
+Logical progression for new users:
+1. **[Step 1](link.md)** - Description
+2. **[Step 2](link.md)** - Description
+
+---
+
+## 🔍 Quick Lookup
+
+[Final navigation section for specific searches]
+```
+
+**Content Page Template**:
+```markdown
+# Page Title
+
+Brief overview paragraph explaining what this page covers.
+
+---
+
+## Overview Section
+
+Detailed explanation with visual elements.
+
+### Subsection
+
+=== ":material-icon: Option 1"
+    Content for first approach/option.
+
+=== ":material-icon: Option 2"
+    Content for second approach/option.
+
+!!! tip "Best Practice"
+    Strategic admonition with actionable advice.
+
+### Another Subsection
+
+More content with examples and explanations.
+
+---
+
+## Advanced Topics
+
+More detailed content for experienced users.
+
+---
+
+## Cross-References
+
+- **[Related Page](link.md)** - Brief description
+- **[Another Page](link.md)** - Brief description
+```
+
+### Visual Scanning Optimization
+
+**Strategic Information Density**: Balance dense technical information with visual breathing room:
+
+**Dense Information Blocks**: Use tables, lists, and code blocks for comprehensive reference.
+
+**Visual Relief Elements**: Use horizontal rules, admonitions, and white space to prevent cognitive overload.
+
+**Scannable Elements**: Use emojis, icons, and consistent formatting to enable quick visual scanning.
+
+**Progressive Disclosure**: Start with overview cards, then provide detailed sections, ending with comprehensive reference materials.
+
+This comprehensive visual design system creates documentation that is both professional and highly functional, enabling users to quickly find information while providing the depth needed for complex technical tasks.
+
+---
+
 ## 🎨 Formatting Standards
 
 ### Markdown Conventions
@@ -410,10 +1023,10 @@ More detailed content organized in clear sections.
 def example_function(parameter: str) -> dict:
     """
     Brief description of what the function does.
-    
+
     Args:
         parameter: Description of the parameter
-        
+
     Returns:
         Description of return value
     """
@@ -432,6 +1045,46 @@ print(response)  # Expected output
 - Include error handling where appropriate
 - Show expected output or results
 - Follow the project's code style conventions
+
+**❌ Don't: Poor Code Examples**
+```python
+# Bad example - unclear, untested, no context
+def func(x):
+    y = api.call(x)
+    return y
+
+# Usage
+result = func("stuff")
+```
+
+**✅ Do: Quality Code Examples**
+```python
+# Clear, descriptive example with context
+def fetch_user_data(user_id: str) -> Dict[str, Any]:
+    """
+    Retrieve user information by ID.
+
+    Args:
+        user_id: Unique identifier for the user
+
+    Returns:
+        Dictionary containing user profile data
+
+    Raises:
+        UserNotFoundError: If user doesn't exist
+    """
+    try:
+        response = api_client.get_user(user_id)
+        return response.data
+    except APIError as e:
+        logger.error(f"Failed to fetch user {user_id}: {e}")
+        raise
+
+# Usage example
+user_data = fetch_user_data("user123")
+print(f"Retrieved data for {user_data['name']}")
+# Expected output: Retrieved data for John Doe
+```
 
 #### Command Line Examples
 
@@ -452,31 +1105,48 @@ Output text here
 
 ### Visual Elements
 
-#### Admonitions and Callouts
+#### Links and References
 
-**Usage Guidelines**:
+**Link Text**:
+- Use descriptive, action-oriented text
+- Never use "click here" or "read more"
+- Keep link text under 60 characters
+- Make context clear without surrounding text
 
-**Note** (general information):
-!!! note "Optional Title"
-    General information that provides additional context or background.
+**Examples**:
+- ✅ "View the installation guide"
+- ✅ "Download the latest release"
+- ❌ "Click here for more information"
+- ❌ "Read more"
 
-**Tip** (helpful suggestions):
-!!! tip "Pro Tip"
-    Helpful suggestions or best practices that can improve the user experience.
+**❌ Don't: Poor Link Patterns**
+```markdown
+For more information, [click here](link.md).
 
-**Warning** (important cautions):
-!!! warning "Important"
-    Information about potential problems or important considerations.
+You can [read more](link.md) about this topic.
 
-**Danger** (critical alerts):
-!!! danger "Critical"
-    Information about actions that could cause data loss or system problems.
+Check out [this](link1.md) and [this](link2.md) and [this](link3.md).
 
-**Requirements**:
-- Use sparingly (maximum 3 per page)
-- Keep content under 100 words
-- Always include a descriptive title
-- Use appropriate emoji for visual scanning
+See the documentation [here](link.md) for details.
+```
+
+**✅ Do: Descriptive Link Patterns**
+```markdown
+Learn more in the [Authentication Setup Guide](auth.md).
+
+Download the [latest Python client](downloads.md).
+
+Explore [API examples](examples.md), [error handling patterns](errors.md),
+and [best practices guide](best-practices.md).
+
+Review the [complete API reference](api/index.md) for detailed method documentation.
+```
+
+**Link Types**:
+- **Internal links**: Use relative paths (`../guides/setup.md`)
+- **External links**: Always open in same tab unless specifically noted
+- **Code references**: Link to specific lines when possible
+- **API references**: Link to exact method or endpoint
 
 #### Tables
 
@@ -490,14 +1160,14 @@ Output text here
 **API Documentation Tables**:
 
 For method parameters (matches mkdocstrings output):
-| Name | Type | Description | Default |
-|------|------|-------------|---------|
+| Name | Type | Required | Description | Default |
+|------|------|----------|-------------|---------|
 | **kwargs | Any | Additional OData parameters (top, select, orderby, etc.) | {} |
 
 For method returns:
 | Type | Description |
 |------|-------------|
-| Dict[str, Any] | Dictionary containing active property listings |
+| Dict[str, Any] | Dictionary containing active resource data |
 
 **Table Formatting Guidelines**:
 - Use consistent column widths for readability
@@ -514,25 +1184,21 @@ For method returns:
 | email | string | Yes | Valid email address |
 | age | integer | No | User's age in years |
 
-#### Links and References
+**❌ Don't: Poor Table Structure**
+| Param | Desc |
+|-------|------|
+| stuff | does things |
+| other | also does things that are really long and wordy and hard to read in a table cell |
+| ??? | unclear purpose |
 
-**Link Text**:
-- Use descriptive, action-oriented text
-- Never use "click here" or "read more"
-- Keep link text under 60 characters
-- Make context clear without surrounding text
+**✅ Do: Clear Table Structure**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| user_id | string | Yes | Unique user identifier |
+| include_metadata | boolean | No | Include additional user metadata |
+| format | string | No | Response format (json, xml) |
 
-**Examples**:
-- ✅ "View the installation guide"
-- ✅ "Download the latest release"
-- ❌ "Click here for more information"
-- ❌ "Read more"
-
-**Link Types**:
-- **Internal links**: Use relative paths (`../guides/setup.md`)
-- **External links**: Always open in same tab unless specifically noted
-- **Code references**: Link to specific lines when possible
-- **API references**: Link to exact method or endpoint
+---
 
 ## 🔧 Technical Documentation
 
@@ -564,6 +1230,59 @@ For method returns:
 - Document any side effects or state changes
 - Include version information for deprecated methods
 
+#### Method Documentation Template (mkdocstrings)
+
+For Python method documentation that auto-generates with mkdocstrings, ensure your docstrings follow this pattern:
+
+```python
+def get_active_resources(self, **kwargs) -> Dict[str, Any]:
+    """
+    Get resources with Active status.
+
+    Convenience method to retrieve only active resource entries. This is one of the most common
+    queries for data-driven applications.
+
+    Args:
+        **kwargs: Additional query parameters (limit, fields, sort, etc.)
+
+    Returns:
+        Dictionary containing active resource data
+
+    Example:
+        ```python
+        # Get all active resources
+        active_resources = client.resources.get_active_resources(limit=100)
+
+        # Get active resources with specific fields
+        active_resources = client.resources.get_active_resources(
+            fields=["id", "name", "status"],
+            sort="name"
+        )
+        ```
+
+    Raises:
+        APIError: If the request fails
+        ValidationError: If parameters are invalid
+    """
+```
+
+**Key Documentation Elements for Methods:**
+
+1. **Method Signature**: Clear method name with parameters
+2. **Brief Description**: One-line summary of functionality
+3. **Detailed Description**: Explain use cases and context
+4. **Parameters Table**: Auto-generated from Args docstring section
+5. **Returns Table**: Auto-generated from Returns docstring section
+6. **Collapsible Examples**: Use example blocks in docstrings
+7. **Error Information**: Document exceptions in Raises section
+
+**mkdocstrings Integration Tips**:
+- Use Google-style docstrings for best formatting
+- Include realistic examples in docstring Example blocks
+- Use proper type hints for parameter and return type display
+- Keep examples concise but functional
+- Use meaningful variable names in examples
+
 ### Error Documentation
 
 #### Error Message Standards
@@ -592,444 +1311,6 @@ For method returns:
 **See Also**: [Authentication Guide](../guides/authentication.md)
 ```
 
-## 🎯 User Experience Guidelines
-
-### Navigation and Structure
-
-#### Information Architecture
-
-**Page Organization**:
-- Group related information together
-- Use progressive disclosure (simple → complex)
-- Provide multiple entry points for different user types
-- Include clear navigation paths between related topics
-
-**Table of Contents**:
-- Required for pages over 1,000 words
-- Maximum 3 levels deep
-- Use descriptive, scannable titles
-- Include estimated reading time for long sections
-
-#### Cross-References
-
-**Internal Linking Strategy**:
-- Link to relevant information contextually
-- Provide "See Also" sections for related topics
-- Use consistent link text for the same destinations
-- Avoid excessive linking within paragraphs
-
-### Accessibility Standards
-
-#### Content Accessibility
-
-**Requirements**:
-- Use descriptive alt text for all images
-- Provide text alternatives for video content
-- Use sufficient color contrast (4.5:1 minimum)
-- Structure content with proper heading hierarchy
-- Write at a 9th-grade reading level or lower
-
-**Image Guidelines**:
-- Alt text should describe the image content and context
-- Use empty alt text (`alt=""`) for decorative images
-- Keep alt text under 125 characters
-- Don't start with "Image of" or "Picture of"
-
-#### Screen Reader Compatibility
-
-**Best Practices**:
-- Use semantic HTML elements
-- Provide skip navigation links
-- Use descriptive link text
-- Include form labels and instructions
-- Test with screen reader software
-
-### International Considerations
-
-#### Writing for Global Audiences
-
-**Guidelines**:
-- Avoid idioms, slang, and cultural references
-- Use simple sentence structures
-- Define technical terms on first use
-- Provide glossaries for complex terminology
-- Consider right-to-left reading patterns in design
-
-#### Localization Preparation
-
-**Requirements**:
-- Avoid embedding text in images
-- Use flexible layouts that accommodate text expansion
-- Separate content from formatting
-- Use Unicode-compliant text encoding
-- Plan for date/time format variations
-
-## 📊 Quality Assurance
-
-### Content Review Process
-
-#### Review Checklist
-
-**Technical Accuracy**:
-- [ ] All code examples tested and functional
-- [ ] API endpoints verified and current
-- [ ] Screenshots current and accurate
-- [ ] Links functional and pointing to correct destinations
-- [ ] Version numbers and compatibility information current
-
-**Editorial Quality**:
-- [ ] Grammar and spelling checked
-- [ ] Tone consistent with style guide
-- [ ] Headings follow hierarchy rules
-- [ ] Lists use parallel structure
-- [ ] Formatting follows style guide conventions
-
-**User Experience**:
-- [ ] Information architecture logical
-- [ ] Prerequisites clearly stated
-- [ ] Next steps provided
-- [ ] Error scenarios addressed
-- [ ] Multiple user paths considered
-
-### Maintenance Standards
-
-#### Update Frequency
-
-**Content Types and Update Schedule**:
-- **Getting Started guides**: Review monthly
-- **API documentation**: Update with each release
-- **Screenshots**: Update quarterly or with UI changes
-- **Code examples**: Test with each major version
-- **External links**: Check quarterly
-
-#### Version Control
-
-**Documentation Versioning**:
-- Tag documentation versions with software releases
-- Maintain changelog for documentation updates
-- Archive outdated versions but keep accessible
-- Use semantic versioning for major documentation changes
-
-#### Metrics and Analytics
-
-**Track These Metrics**:
-- Page views and time on page
-- User feedback scores and comments
-- Search query analysis
-- Exit points and bounce rates
-- Mobile vs desktop usage patterns
-
-**Regular Reviews**:
-- Monthly analytics review
-- Quarterly user feedback analysis
-- Annual comprehensive content audit
-- Ongoing competitor analysis
-
-## 🛠️ Tools and Automation
-
-### Writing Tools
-
-#### Required Tools
-
-**Grammar and Style**:
-- Grammar checker (Grammarly, ProWritingAid, or similar)
-- Readability analyzer (Hemingway Editor or similar)
-- Spell checker with technical dictionary
-- Markdown linter for formatting consistency
-
-**Testing Tools**:
-- Link checker for broken links
-- Accessibility scanner (WAVE, aXe, or similar)
-- Mobile responsiveness tester
-- Performance monitoring tools
-
-### Style Enforcement
-
-#### Automated Checks
-
-**Implement These Checks**:
-- Markdown formatting validation
-- Heading structure verification
-- Link validation (internal and external)
-- Image alt text presence
-- Code block language specification
-
-**Style Guide Automation**:
-- Create custom dictionaries for spell checkers
-- Develop style guide templates
-- Set up automated style checking in CI/CD
-- Use consistent file naming conventions
-
-### Content Management
-
-#### File Organization
-
-**Directory Structure**:
-```
-docs/
-├── index.md                    # Landing page
-├── getting-started/           # User onboarding
-├── guides/                   # How-to documentation
-├── api/                     # API reference
-├── examples/               # Code examples
-├── reference/             # Quick reference
-├── development/          # Contributor docs
-├── assets/              # Images and media
-│   ├── images/
-│   ├── videos/
-│   └── downloads/
-└── templates/          # Documentation templates
-    ├── guide-template.md
-    ├── api-template.md
-    └── tutorial-template.md
-```
-
-**File Naming Conventions**:
-- Use lowercase with hyphens: `user-management.md`
-- Be descriptive but concise: `api-authentication-guide.md`
-- Use consistent prefixes for related files: `api-*.md`
-- Include version numbers for versioned docs: `migration-v2-to-v3.md`
-
-## 📋 Templates and Examples
-
-### Page Templates
-
-#### Guide Template
-
-```markdown
-# Page Title
-
-Brief overview paragraph explaining what this guide covers and who it's for.
-
-## Prerequisites
-
-- List any required knowledge
-- Include links to prerequisite reading
-- Mention required tools or setup
-
-## Overview
-
-More detailed explanation of what users will accomplish.
-
-## Step-by-step Instructions
-
-### Step 1: Descriptive heading
-
-Detailed instructions with code examples.
-
-### Step 2: Next step
-
-Continue with clear, actionable steps.
-
-## Troubleshooting
-
-Common issues and solutions.
-
-## Next Steps
-
-- Link to related guides
-- Suggest logical next actions
-- Point to additional resources
-
-## Additional Resources
-
-- Links to related documentation
-- External references
-- Community resources
-```
-
-#### API Reference Template
-
-```markdown
-# API Endpoint Name
-
-Brief description of what this endpoint does.
-
-## HTTP Request
-
-```
-METHOD /api/v1/endpoint
-```
-
-## Parameters
-
-| Parameter | Type | Required | Description | Example |
-|-----------|------|----------|-------------|---------|
-| param1 | string | Yes | Description | "value" |
-
-## Request Example
-
-```language
-Code example here
-```
-
-## Response Example
-
-```json
-{
-  "example": "response"
-}
-```
-
-## Error Responses
-
-List common error scenarios.
-
-## Rate Limiting
-
-Explain any rate limits.
-```
-
-#### Method Documentation Template (mkdocstrings)
-
-For Python method documentation that auto-generates with mkdocstrings, ensure your docstrings follow this pattern:
-
-```python
-def get_active_properties(self, **kwargs) -> Dict[str, Any]:
-    """
-    Get properties with Active status.
-    
-    Convenience method to retrieve only active property listings. This is one of the most common
-    queries for real estate applications.
-    
-    Args:
-        **kwargs: Additional OData parameters (top, select, orderby, etc.)
-        
-    Returns:
-        Dictionary containing active property listings
-        
-    Example:
-        ```python
-        # Get all active properties
-        active_properties = client.property.get_active_properties(top=100)
-        
-        # Get active properties with specific fields
-        active_properties = client.property.get_active_properties(
-            select=["ListingId", "ListPrice", "UnparsedAddress"],
-            orderby="ListPrice"
-        )
-        ```
-        
-    Raises:
-        WFRMLSError: If the request fails
-        ValidationError: If parameters are invalid
-    """
-```
-
-**Key Documentation Elements for Methods:**
-
-1. **Method Signature**: Clear method name with parameters
-2. **Brief Description**: One-line summary of functionality  
-3. **Detailed Description**: Explain use cases and context
-4. **Parameters Table**: Auto-generated from Args docstring section
-5. **Returns Table**: Auto-generated from Returns docstring section
-6. **Collapsible Examples**: Use example blocks in docstrings
-7. **Error Information**: Document exceptions in Raises section
-
-**mkdocstrings Integration Tips:**
-- Use Google-style docstrings for best formatting
-- Include realistic examples in docstring Example blocks
-- Use proper type hints for parameter and return type display
-- Keep examples concise but functional
-- Use meaningful variable names in examples
-
-### Content Examples
-
-#### Effective vs Ineffective Examples
-
-**❌ Poor Example**:
-```markdown
-# Setup
-
-Just run the install command and you're good to go! It's really easy.
-
-```bash
-npm install
-```
-
-That's it!
-```
-
-**✅ Good Example**:
-```markdown
-# Installation
-
-Install the package using npm to add it to your project dependencies.
-
-## Prerequisites
-
-- Node.js 14.0 or higher
-- npm 6.0 or higher
-
-## Install Command
-
-```bash
-# Install the package
-npm install package-name
-
-# Verify installation
-npm list package-name
-```
-
-## Verification
-
-Confirm the installation was successful:
-
-```javascript
-const package = require('package-name');
-console.log(package.version); // Should output version number
-```
-
-## Next Steps
-
-- [Configure the package](configuration.md)
-- [View usage examples](examples.md)
-```
-
-## 🎯 Visual Design Principles
-
-### Color and Visual Hierarchy
-
-**Status Colors**: Use consistent color coding throughout documentation:
-- **Green (✅)**: Available features, success states, working examples
-- **Orange (⚠️)**: Warnings, important considerations, temporary issues  
-- **Red (❌)**: Errors, deprecated features, critical issues
-- **Blue (📝)**: Information, tips, additional context
-- **Purple (🚀)**: Advanced features, next steps, future features
-
-### Icon Usage Standards
-
-**Material Design Icons**: Use meaningful, consistent icons throughout:
-- `:material-home:` - Properties, main sections
-- `:material-account-group:` - Members, users, people
-- `:material-office-building:` - Offices, organizations
-- `:material-calendar:` - Events, scheduling, time-based
-- `:material-api:` - APIs, technical interfaces
-- `:material-code:` - Code examples, development
-- `:material-book:` - Documentation, guides, learning
-- `:material-rocket:` - Getting started, quick actions
-
-**Emoji Enhancement**: Strategic emoji use for quick visual scanning:
-- 🎯 for goals, objectives, targeting
-- 📚 for learning, documentation, guides  
-- 🚀 for getting started, quick actions
-- 💡 for tips, insights, ideas
-- ⚠️ for warnings, important notes
-- ✅ for success, available features
-- 🔧 for tools, technical setup
-- 📊 for data, analytics, reporting
-
-### Responsive Visual Design
-
-**Mobile-First Considerations**:
-- Grid cards stack vertically on mobile
-- Tabs remain functional on small screens
-- Code blocks scroll horizontally when needed
-- Navigation cards maintain readability
-- Admonitions work well on all screen sizes
-
-This style guide creates modern, professional documentation that users can navigate intuitively while maintaining technical accuracy and comprehensive coverage.
-
 ---
 
-*Last updated: [Date] | Version: 1.0 | Next review: [Date + 6 months]* 
+*Last updated: [Date] | Version: 1.0 | Next review: [Date + 6 months]*

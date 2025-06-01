@@ -1,488 +1,472 @@
-# Quick Start Guide
+# Quick Start
 
-Get up and running with the Open To Close API in 5 minutes with this hands-on tutorial.
+Get up and running with the Open To Close API in under 5 minutes. This tutorial walks you through making your first API calls and exploring core functionality.
 
-!!! tip "🚀 Before You Start"
-    This guide assumes you have Python 3.8+ installed and the Open To Close API client ready to go. 
+!!! note "Prerequisites"
+    📋 Before starting, ensure you have:
     
-    **New to the client?** → [Installation Guide](installation.md)
+    - Python 3.8+ installed
+    - `open-to-close` package installed 
+    - API key configured in environment variables
 
-## 🎯 What You'll Learn
+---
 
-By the end of this guide, you'll be able to:
+## 🚀 Your First API Call
 
-- ✅ Initialize the API client
-- ✅ Authenticate with your API key  
-- ✅ Perform basic CRUD operations
-- ✅ Handle errors gracefully
-- ✅ Use advanced features
+Let's start with the most basic operation - initializing the client and making a simple request:
 
-## 📋 Step 1: Installation & Setup
+```python
+from open_to_close import OpenToCloseAPI
 
-=== "Quick Install"
-    ```bash
-    pip install open-to-close
-    ```
+# Initialize the client (uses OPEN_TO_CLOSE_API_KEY environment variable)
+client = OpenToCloseAPI()
 
-    !!! success "✅ Ready to go!"
-        If you already have the client installed, skip to [Step 2](#step-2-set-your-api-key).
+# Make your first API call
+properties = client.properties.list_properties()
+print(f"Found {len(properties)} properties in your account")
+```
 
-=== "Verify Installation"
+!!! success "Expected Output"
+    ✅ You should see output like: `Found 42 properties in your account`
+
+---
+
+## 🏗️ Core Operations Tutorial
+
+Let's explore the main operations you'll use with the Open To Close API:
+
+### **Step 1: Working with Properties**
+
+Properties are central to the Open To Close platform. Let's explore property operations:
+
+=== ":material-list-box: List Properties"
+
     ```python
-    import open_to_close
-    print(f"Version: {open_to_close.__version__}")
+    # Get all properties (with pagination)
+    properties = client.properties.list_properties()
+    
+    # Get properties with custom parameters
+    recent_properties = client.properties.list_properties(
+        params={"limit": 10, "sort": "-created_at"}
+    )
+    
+    print(f"Total properties: {len(properties)}")
+    print(f"Recent properties: {len(recent_properties)}")
+    
+    # Display property details
+    for prop in recent_properties[:3]:
+        print(f"Property {prop['id']}: {prop.get('address', 'No address')}")
     ```
 
-## 🔑 Step 2: Set Your API Key
+=== ":material-plus: Create Property"
 
-!!! warning "🔐 API Key Required"
-    You'll need a valid Open To Close API key. Contact your administrator if you don't have one.
-
-=== "Environment Variable"
-    **Linux/macOS:**
-    ```bash
-    export OPEN_TO_CLOSE_API_KEY="your_api_key_here"
-    ```
-
-    **Windows:**
-    ```cmd
-    set OPEN_TO_CLOSE_API_KEY=your_api_key_here
-    ```
-
-=== ".env File"
-    Create a `.env` file in your project directory:
-    ```env
-    OPEN_TO_CLOSE_API_KEY=your_actual_api_key_here
-    ```
-
-    !!! tip "💡 Recommended"
-        The `.env` file approach is perfect for development and keeps your API key secure.
-
-## 🔌 Step 3: Initialize the Client
-
-=== "Basic Initialization"
     ```python
-    from open_to_close import OpenToCloseAPI
-
-    # Initialize with environment variable
-    client = OpenToCloseAPI()
+    # Create a new property
+    new_property = client.properties.create_property({
+        "address": "123 Main Street",
+        "city": "New York",
+        "state": "NY",
+        "zip_code": "10001",
+        "property_type": "Single Family Home",
+        "status": "Active"
+    })
+    
+    print(f"Created property with ID: {new_property['id']}")
+    print(f"Address: {new_property['address']}")
     ```
 
-=== "With Direct API Key"
+=== ":material-pencil: Update Property"
+
     ```python
-    from open_to_close import OpenToCloseAPI
-
-    # Initialize with API key directly (not recommended for production)
-    client = OpenToCloseAPI(api_key="your_api_key")
+    # Update an existing property
+    property_id = new_property['id']  # From creation above
+    
+    updated_property = client.properties.update_property(property_id, {
+        "status": "Under Contract",
+        "notes": "Updated via API"
+    })
+    
+    print(f"Updated property {property_id}")
+    print(f"New status: {updated_property['status']}")
     ```
 
-=== "With Error Handling"
+### **Step 2: Managing Contacts**
+
+Contacts represent people involved in your real estate transactions:
+
+=== ":material-account-group: List & Create Contacts"
+
     ```python
-    from open_to_close import OpenToCloseAPI, AuthenticationError
-
-    try:
-        client = OpenToCloseAPI()
-        print("✅ Client initialized successfully!")
-    except AuthenticationError:
-        print("❌ Invalid API key")
-    except Exception as e:
-        print(f"⚠️ Initialization failed: {e}")
-    ```
-
-## 📝 Step 4: Your First API Calls
-
-### Working with Contacts
-
-!!! example "👥 Contact Management"
-
-=== "List Contacts"
-    ```python
-    try:
-        contacts = client.contacts.list_contacts()
-        print(f"Found {len(contacts)} contacts")
-        
-        # Show first 5 contacts
-        for contact in contacts[:5]:
-            name = f"{contact.get('first_name', '')} {contact.get('last_name', '')}"
-            print(f"- {name.strip()}")
-            
-    except Exception as e:
-        print(f"Error listing contacts: {e}")
-    ```
-
-    **Expected Output:**
-    ```
-    Found 23 contacts
-    - John Doe
-    - Jane Smith
-    - Mike Johnson
-    - Sarah Wilson
-    - Tom Brown
-    ```
-
-=== "Create Contact"
-    ```python
-    # Define new contact data
-    new_contact = {
+    # List existing contacts
+    contacts = client.contacts.list_contacts(params={"limit": 5})
+    print(f"Found {len(contacts)} contacts")
+    
+    # Create a new contact
+    new_contact = client.contacts.create_contact({
         "first_name": "John",
         "last_name": "Doe",
         "email": "john.doe@example.com",
-        "phone": "+1234567890"
-    }
-
-    try:
-        contact = client.contacts.create_contact(new_contact)
-        print(f"✅ Created contact with ID: {contact['id']}")
-    except Exception as e:
-        print(f"❌ Error creating contact: {e}")
-    ```
-
-=== "Retrieve Contact"
-    ```python
-    contact_id = 123  # Replace with actual contact ID
-
-    try:
-        contact = client.contacts.retrieve_contact(contact_id)
-        print(f"Contact Details:")
-        print(f"  Name: {contact['first_name']} {contact['last_name']}")
-        print(f"  Email: {contact['email']}")
-    except NotFoundError:
-        print(f"❌ Contact {contact_id} not found")
-    except Exception as e:
-        print(f"⚠️ Error retrieving contact: {e}")
-    ```
-
-### Working with Properties
-
-!!! example "🏠 Property Management"
-
-=== "List Properties"
-    ```python
-    try:
-        properties = client.properties.list_properties()
-        print(f"Found {len(properties)} properties")
-        
-        # Show first 3 properties with details
-        for prop in properties[:3]:
-            print(f"📍 {prop.get('address', 'Address not available')}")
-            print(f"   Price: ${prop.get('price', 'N/A')}")
-            print(f"   Status: {prop.get('status', 'Unknown')}")
-            print()
-            
-    except Exception as e:
-        print(f"Error listing properties: {e}")
-    ```
-
-=== "Create Property"
-    ```python
-    new_property = {
-        "address": "123 Main St, Anytown, ST 12345",
-        "price": 350000,
-        "bedrooms": 3,
-        "bathrooms": 2,
-        "square_feet": 1800,
-        "status": "active"
-    }
-
-    try:
-        property_obj = client.properties.create_property(new_property)
-        print(f"✅ Created property with ID: {property_obj['id']}")
-        print(f"   Address: {property_obj['address']}")
-    except Exception as e:
-        print(f"❌ Error creating property: {e}")
-    ```
-
-### Working with Property Documents
-
-!!! example "📄 Document Management"
-
-=== "List Documents"
-    ```python
-    property_id = 123  # Replace with actual property ID
-
-    try:
-        documents = client.property_documents.list_property_documents(property_id)
-        print(f"Property has {len(documents)} documents")
-        
-        for doc in documents:
-            print(f"📄 {doc.get('title', 'Untitled')}")
-            print(f"   Type: {doc.get('document_type', 'Unknown')}")
-            print(f"   Description: {doc.get('description', 'No description')}")
-            print()
-            
-    except Exception as e:
-        print(f"Error listing documents: {e}")
-    ```
-
-=== "Add Document"
-    ```python
-    property_id = 123  # Replace with actual property ID
+        "phone": "+1234567890",
+        "contact_type": "Client"
+    })
     
-    new_document = {
-        "title": "Purchase Agreement",
-        "description": "Initial purchase agreement draft",
-        "document_type": "contract"
-    }
-
-    try:
-        document = client.property_documents.create_property_document(
-            property_id, new_document
-        )
-        print(f"✅ Created document with ID: {document['id']}")
-        print(f"   Title: {document['title']}")
-    except Exception as e:
-        print(f"❌ Error creating document: {e}")
+    print(f"Created contact: {new_contact['first_name']} {new_contact['last_name']}")
     ```
 
-## 🛡️ Step 5: Error Handling
+=== ":material-home-account: Link Contact to Property"
 
-!!! warning "⚠️ Production-Ready Error Handling"
-    Always implement proper error handling for production applications.
-
-=== "Comprehensive Example"
     ```python
-    from open_to_close import (
-        OpenToCloseAPI,
-        AuthenticationError,
-        ValidationError,
-        NotFoundError,
-        RateLimitError
+    # Associate the contact with a property
+    property_contact = client.property_contacts.create_property_contact(
+        property_id=new_property['id'],
+        contact_data={
+            "contact_id": new_contact['id'],
+            "role": "Buyer",
+            "primary": True
+        }
     )
-
-    client = OpenToCloseAPI()
-
-    def safe_get_contact(contact_id):
-        try:
-            contact = client.contacts.retrieve_contact(contact_id)
-            return contact
-        except NotFoundError:
-            print(f"❌ Contact {contact_id} not found")
-        except AuthenticationError:
-            print("🔐 Check your API key")
-        except ValidationError as e:
-            print(f"📝 Invalid data: {e}")
-        except RateLimitError:
-            print("⏱️ Rate limit exceeded, please wait")
-        except Exception as e:
-            print(f"⚠️ Unexpected error: {e}")
-        return None
-
-    # Usage
-    contact = safe_get_contact(999999)
-    if contact:
-        print(f"Found contact: {contact['first_name']} {contact['last_name']}")
+    
+    print(f"Linked contact {new_contact['id']} to property {new_property['id']}")
+    print(f"Role: {property_contact['role']}")
     ```
 
-=== "Error Types"
-    | Exception | When It Occurs | Typical Response |
-    |-----------|----------------|------------------|
-    | `AuthenticationError` | Invalid API key | Check credentials |
-    | `NotFoundError` | Resource doesn't exist | Verify ID or create new |
-    | `ValidationError` | Invalid request data | Fix data format |
-    | `RateLimitError` | Too many requests | Wait and retry |
-    | `ConnectionError` | Network issues | Check internet connection |
+### **Step 3: Adding Property Documentation**
 
-## 🚀 Step 6: Available Resources
+Keep track of important documents and communications:
 
-!!! info "📚 Complete Resource Overview"
-    The client provides access to all Open To Close API resources with consistent interfaces.
+=== ":material-note-text: Add Notes"
 
-<div class="grid cards" markdown>
+    ```python
+    # Add a note to the property
+    note = client.property_notes.create_property_note(
+        property_id=new_property['id'],
+        note_data={
+            "content": "Initial client consultation completed. Ready to schedule property showing.",
+            "note_type": "General",
+            "created_by": "API User"
+        }
+    )
+    
+    print(f"Added note {note['id']} to property {new_property['id']}")
+    ```
 
--   :material-account:{ .lg .middle } **Agents**
+=== ":material-calendar-check: Create Tasks"
 
-    ---
+    ```python
+    # Create a task for the property
+    task = client.property_tasks.create_property_task(
+        property_id=new_property['id'],
+        task_data={
+            "title": "Schedule property inspection",
+            "description": "Coordinate with buyer for property inspection appointment",
+            "due_date": "2024-01-15",
+            "priority": "High",
+            "assigned_to": "Agent Name"
+        }
+    )
+    
+    print(f"Created task '{task['title']}' for property {new_property['id']}")
+    ```
 
-    `client.agents` - Agent management and profiles
+=== ":material-email: Track Communications"
 
--   :material-contacts:{ .lg .middle } **Contacts**
+    ```python
+    # Log an email communication
+    email = client.property_emails.create_property_email(
+        property_id=new_property['id'],
+        email_data={
+            "subject": "Property Information Packet",
+            "sender": "agent@realestate.com",
+            "recipient": "john.doe@example.com",
+            "body": "Please find attached the property information packet...",
+            "sent_date": "2024-01-10T10:30:00Z"
+        }
+    )
+    
+    print(f"Logged email communication: {email['subject']}")
+    ```
 
-    ---
+---
 
-    `client.contacts` - Customer contact management
+## 📋 Working with Teams and Users
 
--   :material-home:{ .lg .middle } **Properties**
-
-    ---
-
-    `client.properties` - Property listings and data
-
--   :material-account-group:{ .lg .middle } **Teams**
-
-    ---
-
-    `client.teams` - Team organization
-
--   :material-tag:{ .lg .middle } **Tags**
-
-    ---
-
-    `client.tags` - Flexible tagging system
-
--   :material-account-circle:{ .lg .middle } **Users**
-
-    ---
-
-    `client.users` - User account management
-
--   :material-file-document:{ .lg .middle } **Property Documents**
-
-    ---
-
-    `client.property_documents` - Document management
-
--   :material-email:{ .lg .middle } **Property Emails**
-
-    ---
-
-    `client.property_emails` - Email communications
-
--   :material-note-text:{ .lg .middle } **Property Notes**
-
-    ---
-
-    `client.property_notes` - Notes and comments
-
--   :material-checkbox-marked-circle:{ .lg .middle } **Property Tasks**
-
-    ---
-
-    `client.property_tasks` - Task management
-
--   :material-account-multiple:{ .lg .middle } **Property Contacts**
-
-    ---
-
-    `client.property_contacts` - Contact relationships
-
--   :material-plus:{ .lg .middle } **More Resources**
-
-    ---
-
-    Additional endpoints and functionality
-
-</div>
-
-## 🎉 Step 7: Complete Example
-
-Put it all together with a real-world scenario:
-
-!!! example "🏆 Real-World Example"
+Manage your team and user assignments:
 
 ```python
-from open_to_close import OpenToCloseAPI, NotFoundError
+# List teams in your organization
+teams = client.teams.list_teams()
+print(f"Available teams: {len(teams)}")
 
-def property_management_demo():
-    """Complete example: Create contact, property, and add documentation."""
+# List users
+users = client.users.list_users(params={"limit": 10})
+print(f"Team members: {len(users)}")
+
+# Get agents (users with agent role)
+agents = client.agents.list_agents()
+print(f"Active agents: {len(agents)}")
+
+# Display team information
+for team in teams[:3]:
+    print(f"Team: {team.get('name', 'Unnamed')} (ID: {team['id']})")
+```
+
+---
+
+## 🔍 Real-World Example: Complete Property Workflow
+
+Let's combine everything into a realistic workflow - onboarding a new property listing:
+
+```python
+from open_to_close import OpenToCloseAPI
+from datetime import datetime, timedelta
+
+def onboard_new_listing():
+    """Complete workflow for onboarding a new property listing."""
+    client = OpenToCloseAPI()
     
+    print("🏠 Starting property onboarding workflow...")
+    
+    # Step 1: Create the property
+    property_data = client.properties.create_property({
+        "address": "456 Oak Avenue",
+        "city": "Los Angeles", 
+        "state": "CA",
+        "zip_code": "90210",
+        "property_type": "Condo",
+        "bedrooms": 2,
+        "bathrooms": 2,
+        "square_feet": 1200,
+        "listing_price": 750000,
+        "status": "Coming Soon"
+    })
+    
+    property_id = property_data['id']
+    print(f"✅ Created property {property_id}: {property_data['address']}")
+    
+    # Step 2: Create and link the seller contact
+    seller = client.contacts.create_contact({
+        "first_name": "Sarah",
+        "last_name": "Johnson", 
+        "email": "sarah.johnson@email.com",
+        "phone": "+1555123456",
+        "contact_type": "Seller"
+    })
+    
+    # Link seller to property
+    client.property_contacts.create_property_contact(
+        property_id=property_id,
+        contact_data={
+            "contact_id": seller['id'],
+            "role": "Seller",
+            "primary": True
+        }
+    )
+    print(f"✅ Linked seller {seller['first_name']} {seller['last_name']} to property")
+    
+    # Step 3: Add initial documentation
+    intake_note = client.property_notes.create_property_note(
+        property_id=property_id,
+        note_data={
+            "content": "Property intake completed. Seller motivated to close within 60 days. Property has been recently updated with new flooring and paint.",
+            "note_type": "Intake"
+        }
+    )
+    print(f"✅ Added intake notes")
+    
+    # Step 4: Create initial tasks
+    tasks = [
+        {
+            "title": "Professional photography",
+            "description": "Schedule photographer for listing photos",
+            "due_date": (datetime.now() + timedelta(days=3)).strftime("%Y-%m-%d"),
+            "priority": "High"
+        },
+        {
+            "title": "Comparative Market Analysis",
+            "description": "Complete CMA to verify listing price",
+            "due_date": (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d"),
+            "priority": "High"
+        },
+        {
+            "title": "Prepare listing documents",
+            "description": "Gather all required listing paperwork",
+            "due_date": (datetime.now() + timedelta(days=2)).strftime("%Y-%m-%d"),
+            "priority": "Medium"
+        }
+    ]
+    
+    for task_data in tasks:
+        task = client.property_tasks.create_property_task(
+            property_id=property_id,
+            task_data=task_data
+        )
+        print(f"✅ Created task: {task['title']}")
+    
+    # Step 5: Log initial communication
+    welcome_email = client.property_emails.create_property_email(
+        property_id=property_id,
+        email_data={
+            "subject": "Welcome to Our Listing Process",
+            "sender": "agent@realestate.com",
+            "recipient": seller['email'],
+            "body": "Thank you for choosing us to list your property. We've created your property profile and initial action items.",
+            "sent_date": datetime.now().isoformat()
+        }
+    )
+    print(f"✅ Logged welcome email to seller")
+    
+    print(f"\n🎉 Property onboarding complete!")
+    print(f"Property ID: {property_id}")
+    print(f"Address: {property_data['address']}")
+    print(f"Seller: {seller['first_name']} {seller['last_name']}")
+    print(f"Tasks created: {len(tasks)}")
+    
+    return property_id
+
+# Run the workflow
+if __name__ == "__main__":
+    property_id = onboard_new_listing()
+```
+
+---
+
+## 🔧 Error Handling Example
+
+Always implement proper error handling in production code:
+
+```python
+from open_to_close import OpenToCloseAPI
+from open_to_close.exceptions import (
+    NotFoundError, 
+    ValidationError, 
+    AuthenticationError,
+    OpenToCloseAPIError
+)
+
+def safe_api_operations():
+    """Example of proper error handling."""
     client = OpenToCloseAPI()
     
     try:
-        # 1. Create a new contact
-        new_contact = {
-            "first_name": "Sarah",
-            "last_name": "Johnson",
-            "email": "sarah.johnson@example.com",
-            "phone": "+1555123456"
-        }
+        # Attempt to retrieve a property
+        property_data = client.properties.retrieve_property(999999)
+        print(f"Found property: {property_data['address']}")
         
-        contact = client.contacts.create_contact(new_contact)
-        print(f"✅ Created contact: {contact['first_name']} {contact['last_name']}")
+    except NotFoundError:
+        print("❌ Property not found - check the property ID")
         
-        # 2. Create a property
-        new_property = {
-            "address": "456 Oak Street, Springfield, IL 62701",
-            "price": 275000,
-            "bedrooms": 3,
-            "bathrooms": 2,
-            "square_feet": 1650,
-            "status": "active"
-        }
+    except ValidationError as e:
+        print(f"❌ Invalid request parameters: {e}")
         
-        property_obj = client.properties.create_property(new_property)
-        print(f"✅ Created property: {property_obj['address']}")
+    except AuthenticationError:
+        print("❌ Authentication failed - check your API key")
         
-        # 3. Add property documentation
-        document = {
-            "title": "Property Inspection Report",
-            "description": "Initial property inspection findings",
-            "document_type": "inspection"
-        }
-        
-        doc = client.property_documents.create_property_document(
-            property_obj['id'], document
-        )
-        print(f"✅ Added document: {doc['title']}")
-        
-        # 4. Create property task
-        task = {
-            "title": "Schedule showing",
-            "description": "Coordinate with Sarah Johnson for property viewing",
-            "due_date": "2024-01-15",
-            "priority": "high"
-        }
-        
-        new_task = client.property_tasks.create_property_task(
-            property_obj['id'], task
-        )
-        print(f"✅ Created task: {new_task['title']}")
-        
-        print("\n🎉 Complete workflow executed successfully!")
+    except OpenToCloseAPIError as e:
+        print(f"❌ API error occurred: {e}")
         
     except Exception as e:
-        print(f"❌ Error in workflow: {e}")
+        print(f"❌ Unexpected error: {e}")
 
-if __name__ == "__main__":
-    property_management_demo()
+# Test error handling
+safe_api_operations()
 ```
 
-## 📋 What's Next?
+---
 
-Choose your learning path:
+## 📊 Quick Data Exploration
 
-<div class="grid cards" markdown>
+Get a quick overview of your data:
 
--   :material-code-tags:{ .lg .middle } **Examples**
-
-    ---
-
-    Comprehensive real-world usage examples and patterns
-
-    [:octicons-arrow-right-24: View Examples](../guides/examples.md)
-
--   :material-api:{ .lg .middle } **API Reference**
-
-    ---
-
-    Complete technical documentation for all methods
-
-    [:octicons-arrow-right-24: API Documentation](../reference/api-reference.md)
-
--   :material-wrench:{ .lg .middle } **Troubleshooting**
-
-    ---
-
-    Common issues, solutions, and debugging tips
-
-    [:octicons-arrow-right-24: Get Help](../guides/troubleshooting.md)
-
--   :material-github:{ .lg .middle } **Contributing**
-
-    ---
-
-    Join our development community
-
-    [:octicons-arrow-right-24: Contribute](../development/contributing.md)
-
-</div>
-
-!!! success "🎯 Congratulations!"
-    You've successfully completed the quick start guide! You now know how to:
+```python
+def explore_account_data():
+    """Get an overview of data in your account."""
+    client = OpenToCloseAPI()
     
-    - ✅ Initialize the API client
-    - ✅ Perform CRUD operations  
-    - ✅ Handle errors properly
-    - ✅ Work with multiple resources
-    - ✅ Build complete workflows
+    try:
+        # Get counts of main resources
+        properties = client.properties.list_properties(params={"limit": 1000})
+        contacts = client.contacts.list_contacts(params={"limit": 1000})
+        agents = client.agents.list_agents()
+        teams = client.teams.list_teams()
+        
+        print("📊 Account Data Overview")
+        print("-" * 30)
+        print(f"Properties: {len(properties)}")
+        print(f"Contacts: {len(contacts)}")
+        print(f"Agents: {len(agents)}")
+        print(f"Teams: {len(teams)}")
+        
+        # Show recent activity (if properties exist)
+        if properties:
+            print(f"\nRecent Properties:")
+            for prop in properties[:5]:
+                print(f"  • {prop.get('address', 'No address')} ({prop.get('status', 'No status')})")
+        
+    except Exception as e:
+        print(f"Error exploring data: {e}")
 
-    **Ready for more?** Check out our comprehensive examples and API reference for advanced usage patterns. 
+# Run data exploration
+explore_account_data()
+```
+
+---
+
+## 🚀 Next Steps
+
+Congratulations! You've successfully made your first API calls. Here's what to explore next:
+
+### **Immediate Next Steps**
+1. **[Configuration Guide](configuration.md)** - Customize client settings for your environment
+2. **[Error Handling Guide](../guides/error-handling.md)** - Implement robust error handling
+3. **[Best Practices](../guides/best-practices.md)** - Learn recommended patterns and optimizations
+
+### **Explore More Features**
+- **[API Reference](../api/index.md)** - Complete documentation of all available methods
+- **[Examples](../guides/examples.md)** - More real-world usage scenarios
+- **[Integration Patterns](../guides/integration-patterns.md)** - Common integration approaches
+
+### **Build Something Real**
+Try implementing these common scenarios:
+- Build a property dashboard
+- Create an automated workflow
+- Integrate with your CRM system
+- Set up data synchronization
+
+---
+
+## 🎯 Quick Reference
+
+### **Common Operations**
+```python
+# Initialize client
+client = OpenToCloseAPI()
+
+# Core resource operations
+properties = client.properties.list_properties()
+property = client.properties.retrieve_property(123)
+new_property = client.properties.create_property(data)
+
+# Property sub-resources
+notes = client.property_notes.list_property_notes(property_id)
+tasks = client.property_tasks.list_property_tasks(property_id)
+contacts = client.property_contacts.list_property_contacts(property_id)
+```
+
+### **Resource Types**
+- **Properties**: Real estate listings and transactions
+- **Contacts**: People involved in transactions
+- **Agents**: Team members with agent roles
+- **Teams**: Organizational groups
+- **Users**: All system users
+- **Tags**: Classification and organization
+
+### **Sub-Resources (Property-specific)**
+- **Documents**: File attachments
+- **Emails**: Communication history  
+- **Notes**: Internal annotations
+- **Tasks**: Work items and reminders
+- **Contacts**: People associated with specific properties
+
+---
+
+*You're now ready to build powerful applications with the Open To Close API! 🎉* 
