@@ -57,7 +57,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin
+          pip install mkdocs mkdocs-material mkdocs-include-markdown-plugin mkdocs-minify-plugin mkdocs-mermaid2-plugin
           pip install -r requirements-dev.txt
 
       - name: Configure Git for MkDocs
@@ -121,7 +121,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin
+          pip install mkdocs mkdocs-material mkdocs-include-markdown-plugin mkdocs-minify-plugin mkdocs-mermaid2-plugin
 
       - name: Test documentation build
         run: |
