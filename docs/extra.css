@@ -1,0 +1,78 @@
+/* Custom styling for Open To Close API documentation */
+
+/* Improved code block styling */
+.highlight {
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Enhanced admonition styling */
+.md-typeset .admonition {
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: none;
+}
+
+/* Method signatures with better typography */
+.md-typeset h3 code {
+    background: var(--md-code-bg-color);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+/* Improved table styling */
+.md-typeset table:not([class]) {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Tab styling improvements */
+.md-typeset .tabbed-set {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Parameter and return type emphasis */
+.md-typeset .admonition.info .admonition-title::before {
+    content: "📋";
+}
+
+.md-typeset .admonition.success .admonition-title::before {
+    content: "✅";
+}
+
+.md-typeset .admonition.tip .admonition-title::before {
+    content: "💡";
+}
+
+.md-typeset .admonition.warning .admonition-title::before {
+    content: "⚠️";
+}
+
+.md-typeset .admonition.danger .admonition-title::before {
+    content: "🚨";
+}
+
+/* Better spacing for code examples */
+.md-typeset .highlight + .highlight {
+    margin-top: 1rem;
+}
+
+/* Enhanced navigation for API sections */
+.md-nav__item--section > .md-nav__link {
+    font-weight: 600;
+}
+
+/* Improved inline code styling */
+.md-typeset code {
+    border-radius: 4px;
+    padding: 2px 6px;
+}
+
+/* Better visual hierarchy for parameters */
+.md-typeset .admonition p strong {
+    color: var(--md-primary-fg-color);
+} 

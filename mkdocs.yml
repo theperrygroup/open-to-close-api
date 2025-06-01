@@ -122,7 +122,8 @@ nav:
     - Deployment Guide: deployment.md
 
 # Extra CSS and JavaScript
-# extra_css: []
+extra_css:
+  - extra.css
 # extra_javascript: []
 
 # Extra
