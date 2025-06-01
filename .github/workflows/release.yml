@@ -1,0 +1,188 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # Triggers on version tags like v1.0.0, v1.2.3
+
+permissions:
+  contents: write  # Required for creating releases
+  id-token: write  # Required for PyPI trusted publishing
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e ".[dev]"
+
+    - name: Test with pytest
+      env:
+        OPEN_TO_CLOSE_API_KEY: ${{ secrets.OPEN_TO_CLOSE_API_KEY }}
+      run: |
+        pytest --cov=open_to_close_api --cov-report=term-missing
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Full history for proper versioning
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: Install build dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build twine
+
+    - name: Verify version consistency
+      run: |
+        # Extract version from tag (remove 'v' prefix)
+        TAG_VERSION=${GITHUB_REF#refs/tags/v}
+        echo "Tag version: $TAG_VERSION"
+        
+        # Extract version from pyproject.toml
+        PYPROJECT_VERSION=$(grep -E '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')
+        echo "pyproject.toml version: $PYPROJECT_VERSION"
+        
+        # Extract version from __init__.py
+        INIT_VERSION=$(grep -E '^__version__ = ' open_to_close_api/__init__.py | sed 's/__version__ = "\(.*\)"/\1/')
+        echo "__init__.py version: $INIT_VERSION"
+        
+        # Check if all versions match
+        if [ "$TAG_VERSION" != "$PYPROJECT_VERSION" ] || [ "$TAG_VERSION" != "$INIT_VERSION" ]; then
+          echo "Version mismatch detected!"
+          echo "Tag: $TAG_VERSION"
+          echo "pyproject.toml: $PYPROJECT_VERSION" 
+          echo "__init__.py: $INIT_VERSION"
+          exit 1
+        fi
+        
+        echo "All versions match: $TAG_VERSION"
+
+    - name: Build package
+      run: python -m build
+
+    - name: Check package
+      run: twine check dist/*
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: dist
+        path: dist/
+
+  publish-pypi:
+    runs-on: ubuntu-latest
+    needs: build
+    environment: release  # Use environment for additional protection
+    
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: dist
+        path: dist/
+
+    - name: Publish to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        password: ${{ secrets.PYPI_API_TOKEN }}
+        # Uncomment the next line to publish to Test PyPI first
+        # repository-url: https://test.pypi.org/legacy/
+
+  create-github-release:
+    runs-on: ubuntu-latest
+    needs: [build, publish-pypi]
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: dist
+        path: dist/
+
+    - name: Generate changelog
+      id: changelog
+      run: |
+        # Extract version from tag
+        VERSION=${GITHUB_REF#refs/tags/}
+        echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+        
+        # Generate changelog (you can customize this)
+        echo "## Changes in $VERSION" > CHANGELOG.md
+        echo "" >> CHANGELOG.md
+        
+        # Get commits since last tag
+        LAST_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+        if [ -n "$LAST_TAG" ]; then
+          echo "### Commits since $LAST_TAG:" >> CHANGELOG.md
+          git log --pretty=format:"- %s" $LAST_TAG..HEAD >> CHANGELOG.md
+        else
+          echo "### Initial release" >> CHANGELOG.md
+          git log --pretty=format:"- %s" >> CHANGELOG.md
+        fi
+        
+        echo "" >> CHANGELOG.md
+        echo "### Package Information" >> CHANGELOG.md
+        echo "- **Python Support**: 3.8 - 3.12" >> CHANGELOG.md
+        echo "- **PyPI Package**: [open-to-close-api $VERSION](https://pypi.org/project/open-to-close-api/$VERSION/)" >> CHANGELOG.md
+        echo "- **Documentation**: [GitHub Docs](https://github.com/theperrygroup/open-to-close-api/blob/main/docs/README.md)" >> CHANGELOG.md
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        name: Open To Close API ${{ steps.changelog.outputs.VERSION }}
+        body_path: CHANGELOG.md
+        files: |
+          dist/*.tar.gz
+          dist/*.whl
+        draft: false
+        prerelease: ${{ contains(github.ref, '-') }}  # Mark as prerelease if version contains '-' (e.g., v1.0.0-beta)
+        generate_release_notes: true  # Auto-generate additional release notes
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  post-release:
+    runs-on: ubuntu-latest
+    needs: [publish-pypi, create-github-release]
+    if: always()  # Run even if previous jobs fail
+    
+    steps:
+    - name: Notify on success
+      if: needs.publish-pypi.result == 'success' && needs.create-github-release.result == 'success'
+      run: |
+        echo "🎉 Successfully released Open To Close API ${GITHUB_REF#refs/tags/}!"
+        echo "✅ Published to PyPI"
+        echo "✅ Created GitHub release"
+        echo "📦 Package available at: https://pypi.org/project/open-to-close-api/"
+
+    - name: Notify on failure
+      if: needs.publish-pypi.result == 'failure' || needs.create-github-release.result == 'failure'
+      run: |
+        echo "❌ Release failed for Open To Close API ${GITHUB_REF#refs/tags/}"
+        echo "PyPI publish: ${{ needs.publish-pypi.result }}"
+        echo "GitHub release: ${{ needs.create-github-release.result }}"
+        exit 1 

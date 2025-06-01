@@ -69,7 +69,12 @@ try:
 
     # Test the "List property contacts" endpoint
     print("\nTesting GET /v1/properties/{property_id}/contacts (List property contacts)...")
-    property_id_for_contacts = 985708  # From previous test
+    # Get a property ID from the properties list if available
+    property_id_for_contacts = None
+    if isinstance(properties_response, list) and properties_response:
+        property_id_for_contacts = properties_response[0].get('id')
+    elif isinstance(properties_response, dict) and 'data' in properties_response and properties_response['data']:
+        property_id_for_contacts = properties_response['data'][0].get('id')
     if property_id_for_contacts:
         property_contacts_response = client.property_contacts.list_property_contacts(property_id=property_id_for_contacts)
         if isinstance(property_contacts_response, list):
@@ -92,7 +97,7 @@ try:
 
     # Test the "List property documents" endpoint
     print("\nTesting GET /v1/properties/{property_id}/documents (List property documents)...")
-    property_id_for_documents = 985708  # From previous test
+    property_id_for_documents = property_id_for_contacts  # Use same property ID
     if property_id_for_documents:
         property_documents_response = client.property_documents.list_property_documents(property_id=property_id_for_documents)
         if isinstance(property_documents_response, list):
@@ -115,7 +120,7 @@ try:
 
     # Test the "List property emails" endpoint
     print("\nTesting GET /v1/properties/{property_id}/emails (List property emails)...")
-    property_id_for_emails = 985708  # From previous test
+    property_id_for_emails = property_id_for_contacts  # Use same property ID
     if property_id_for_emails:
         property_emails_response = client.property_emails.list_property_emails(property_id=property_id_for_emails)
         if isinstance(property_emails_response, list):
@@ -138,7 +143,7 @@ try:
 
     # Test the "List property notes" endpoint
     print("\nTesting GET /v1/properties/{property_id}/notes (List property notes)...")
-    property_id_for_notes = 985708  # From previous test
+    property_id_for_notes = property_id_for_contacts  # Use same property ID
     if property_id_for_notes:
         property_notes_response = client.property_notes.list_property_notes(property_id=property_id_for_notes)
         if isinstance(property_notes_response, list):
@@ -160,7 +165,7 @@ try:
 
     # Test the "List property tasks" endpoint
     print("\nTesting GET /v1/properties/{property_id}/tasks (List property tasks)...")
-    property_id_for_tasks = 985708  # From previous test
+    property_id_for_tasks = property_id_for_contacts  # Use same property ID
     if property_id_for_tasks:
         property_tasks_response = client.property_tasks.list_property_tasks(property_id=property_id_for_tasks)
         if isinstance(property_tasks_response, list):

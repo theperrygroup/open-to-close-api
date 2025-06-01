@@ -1,73 +1,78 @@
-# The Perry Group Python Style Guide
+# Open To Close API Client Style Guide
 
-This document outlines the coding standards and practices for the Perry Group Django projects. Following these guidelines ensures consistent, maintainable, and high-quality code.
+This document outlines the coding standards and practices for the Open To Close API Python client library. Following these guidelines ensures consistent, maintainable, and high-quality code.
 
 ## General Principles
 
 - **Readability**: Code should be easily readable by others
 - **Consistency**: Follow established patterns in the codebase
 - **Simplicity**: Prefer simpler solutions over complex ones
-- **Documentation**: Document code thoroughly with docstrings
-- **Type Safety**: Use type hints for all function parameters and return values
+- **Documentation**: Document code thoroughly with Google-style docstrings
+- **Type Safety**: Use comprehensive type hints for all function parameters and return values
+- **API-First Design**: Structure code around API endpoints and resources
 
 ## Code Organization
 
 ### File Structure
 
-- One class per file when possible (with exceptions for closely related small classes)
+- One API resource class per file (e.g., `contacts.py`, `properties.py`)
 - Group related functionality in modules
-- Follow Django's app-based organization
+- Follow resource-based organization matching API structure
+- Keep base functionality in `base_client.py`
+- Centralize exceptions in `exceptions.py`
 
 ### Import Order
 
 1. Python standard library imports
-2. Django and third-party imports
+2. Third-party imports (requests, etc.)
 3. Local application imports
 4. Import specific classes/functions rather than modules where practical
 
 Example:
 ```python
-import re
 import logging
+from typing import Dict, List, Optional, Union
 from datetime import datetime
-from typing import Dict, Optional
 
-from django.db import models
-from django.conf import settings
-from bs4 import BeautifulSoup
+import requests
+from requests.exceptions import RequestException
 
-from apps.core.helpers import clean_phone, clean_email
-from apps.opendoor_leads.models import OpendoorLead
+from .base_client import BaseClient
+from .exceptions import AuthenticationError, ValidationError
 ```
 
-## Code Style
+## API Client Design Patterns
 
-### Class Structure
+### Resource Classes
 
-- Use object-oriented design principles
-- Break large classes into smaller, focused ones
-- Follow single responsibility principle
+- Each API resource should have its own class
+- Inherit from `BaseClient` for common functionality
+- Follow RESTful method naming: `list_*`, `create_*`, `retrieve_*`, `update_*`, `delete_*`
 
 ```python
-class LeadExtractor:
-    """Extract lead data from external sources."""
+class ContactsAPI(BaseClient):
+    """API client for contact management endpoints."""
     
-    @staticmethod
-    def extract_data(source_data: Dict) -> Dict:
-        """Extract normalized lead data from source."""
-        # Implementation
+    def list_contacts(self, **params) -> List[Dict]:
+        """List all contacts with optional filtering."""
+        return self._get("/v1/contacts", params=params)
+    
+    def create_contact(self, contact_data: Dict) -> Dict:
+        """Create a new contact."""
+        return self._post("/v1/contacts", json=contact_data)
 ```
 
 ### Method Organization
 
-- Public methods first, followed by private methods
+- CRUD methods first (list, create, retrieve, update, delete)
+- Utility methods after CRUD operations
+- Private methods last
 - Group related methods together
-- Use descriptive method names
 
 ### Naming Conventions
 
-- **Classes**: `PascalCase`
-- **Functions/Methods**: `snake_case`
+- **Classes**: `PascalCase` ending with `API` (e.g., `ContactsAPI`)
+- **Methods**: `snake_case` with descriptive verbs (`list_contacts`, `create_property`)
 - **Variables**: `snake_case`
 - **Constants**: `UPPER_SNAKE_CASE`
 - **Private methods/attributes**: Prefix with underscore `_private_method`
@@ -77,12 +82,12 @@ class LeadExtractor:
 Use comprehensive type hints for all function/method signatures:
 
 ```python
-def process_lead(
-    lead_data: Dict[str, str], 
-    reference_id: str,
-    create_date: Optional[datetime] = None
-) -> Optional[Lead]:
-    """Process lead data and create a Lead object if valid."""
+def create_contact(
+    self,
+    contact_data: Dict[str, Union[str, int, float]],
+    validate: bool = True
+) -> Dict[str, Any]:
+    """Create a new contact with validation."""
     # Implementation
 ```
 
@@ -91,79 +96,139 @@ def process_lead(
 Use Google-style docstrings for all public methods, functions, and classes:
 
 ```python
-def clean_phone(phone: str) -> str:
-    """Clean and standardize phone number format.
+def list_properties(
+    self,
+    status: Optional[str] = None,
+    limit: int = 100
+) -> List[Dict[str, Any]]:
+    """List properties with optional filtering.
     
     Args:
-        phone: Raw phone number string
+        status: Filter by property status (e.g., 'active', 'closed')
+        limit: Maximum number of properties to return
         
     Returns:
-        Cleaned phone number in format (XXX) XXX-XXXX
+        List of property dictionaries containing property data
         
     Raises:
-        ValueError: If the phone number is invalid
+        AuthenticationError: If API key is invalid
+        ValidationError: If parameters are invalid
+        
+    Example:
+        >>> client = OpenToCloseAPI()
+        >>> properties = client.properties.list_properties(status='active', limit=50)
+        >>> print(f"Found {len(properties)} active properties")
     """
     # Implementation
 ```
 
 ## Error Handling
 
-- Use specific exception types
+- Use specific exception types for different error conditions
 - Always log exceptions with context
-- Handle errors at appropriate levels
+- Provide helpful error messages
+- Handle API rate limiting gracefully
 
 ```python
 try:
-    result = process_data(data)
-except ValueError as e:
-    logger.error(f"Invalid data format: {e}")
-    return None
-except ConnectionError as e:
-    logger.error(f"Failed to connect: {e}")
-    raise ServiceUnavailableError(f"Service unavailable: {e}")
+    response = self._request("GET", endpoint)
+    return response.json()
+except requests.exceptions.HTTPError as e:
+    if e.response.status_code == 401:
+        raise AuthenticationError("Invalid API key")
+    elif e.response.status_code == 422:
+        raise ValidationError(f"Invalid request data: {e.response.text}")
+    else:
+        raise APIError(f"Request failed: {e}")
+```
+
+## API Response Handling
+
+- Always validate API responses
+- Handle both list and paginated responses consistently
+- Normalize response formats when needed
+
+```python
+def _handle_response(self, response: requests.Response) -> Dict:
+    """Handle API response and extract data."""
+    try:
+        data = response.json()
+        # Handle paginated responses
+        if isinstance(data, dict) and 'data' in data:
+            return data['data']
+        return data
+    except ValueError:
+        raise APIError("Invalid JSON response from API")
 ```
 
 ## Testing
 
-- Write tests for all new functionality
-- Use descriptive test method names that explain what they test
+- Write tests for all public methods
+- Use mock responses for external API calls
+- Test error conditions and edge cases
 - Separate unit tests from integration tests
+
+```python
+def test_list_contacts_success(self, mock_get):
+    """Test successful contact listing."""
+    mock_get.return_value.json.return_value = [{"id": 1, "name": "John"}]
+    
+    client = ContactsAPI()
+    contacts = client.list_contacts()
+    
+    assert len(contacts) == 1
+    assert contacts[0]["name"] == "John"
+```
+
+## Configuration and Environment
+
+- Use environment variables for API keys and configuration
+- Provide sensible defaults
+- Support both `.env` files and direct environment variables
+
+```python
+class OpenToCloseAPI:
+    """Main API client."""
+    
+    def __init__(
+        self,
+        api_key: Optional[str] = None,
+        base_url: str = "https://api.opentoclose.com"
+    ):
+        self.api_key = api_key or os.getenv("OPEN_TO_CLOSE_API_KEY")
+        if not self.api_key:
+            raise AuthenticationError("API key is required")
+```
 
 ## Tools and Enforcement
 
 This project uses the following tools to enforce style:
 
-1. **Black**: For code formatting
-2. **isort**: For import sorting
-3. **mypy**: For type checking
+1. **Black**: For code formatting (line length 88)
+2. **isort**: For import sorting (profile: black)
+3. **mypy**: For type checking (strict mode)
 4. **flake8**: For linting
 5. **pylint**: For deeper code analysis
+6. **pytest**: For testing with 100% coverage requirement
 
-Configuration files for these tools are in the project root.
+## Documentation Standards
 
-## Models and Database
+- All public APIs must have comprehensive docstrings
+- Include usage examples in docstrings
+- Keep README.md updated with latest API changes
+- Use MkDocs for comprehensive documentation
+- Update changelog for all breaking changes
 
-- Always define `__str__` method for models
-- Include docstrings for model classes and complex fields
-- Use appropriate field types and validators
-- Add Meta classes with proper ordering and constraints
+## Version Management
 
-## Django-Specific Guidelines
-
-### Views
-- Use class-based views when appropriate
-- Keep view logic minimal, move business logic to services
-
-### Templates
-- Use consistent naming for templates
-- Keep templates DRY with proper inheritance
-
-### Forms
-- Add validation in form classes, not in views
-- Use model forms when appropriate
+- Follow semantic versioning (MAJOR.MINOR.PATCH)
+- Update version in `__init__.py`, `pyproject.toml`, and `setup.py`
+- Tag releases in git
+- Maintain backward compatibility in minor versions
 
 ## Git Commits
 
 - Write descriptive commit messages
 - Use present tense ("Add feature" not "Added feature")
-- Reference issue numbers in commit messages 
+- Reference issue numbers in commit messages
+- Keep commits focused and atomic 
