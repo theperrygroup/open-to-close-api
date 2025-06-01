@@ -7,7 +7,7 @@ from .base_client import BaseClient
 
 class TeamsAPI(BaseClient):
     """Client for teams API endpoints.
-    
+
     This client provides methods to manage teams in the Open To Close platform.
     """
 
@@ -43,17 +43,12 @@ class TeamsAPI(BaseClient):
             # Get all teams
             teams = client.teams.list_teams()
 
-            # Get teams with filtering
+            # Get teams with custom parameters
             teams = client.teams.list_teams(params={"limit": 50})
             ```
         """
         response = self.get("/teams", params=params)
-        if isinstance(response, list):
-            return response
-        elif isinstance(response, dict):
-            data = response.get("data", [])
-            return data if isinstance(data, list) else []
-        return []
+        return self._process_list_response(response)
 
     def create_team(self, team_data: Dict[str, Any]) -> Dict[str, Any]:
         """Create a new team.
@@ -73,17 +68,12 @@ class TeamsAPI(BaseClient):
             ```python
             team = client.teams.create_team({
                 "name": "Sales Team",
-                "description": "Main sales team for residential properties"
+                "description": "Primary sales team"
             })
             ```
         """
         response = self.post("/teams", json_data=team_data)
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        return self._process_response_data(response)
 
     def retrieve_team(self, team_id: int) -> Dict[str, Any]:
         """Retrieve a specific team by its ID.
@@ -106,12 +96,7 @@ class TeamsAPI(BaseClient):
             ```
         """
         response = self.get(f"/teams/{team_id}")
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        return self._process_response_data(response)
 
     def update_team(self, team_id: int, team_data: Dict[str, Any]) -> Dict[str, Any]:
         """Update an existing team.
@@ -132,18 +117,13 @@ class TeamsAPI(BaseClient):
         Example:
             ```python
             updated_team = client.teams.update_team(123, {
-                "name": "Senior Sales Team",
-                "description": "Updated team description"
+                "name": "Updated Sales Team",
+                "description": "Updated description"
             })
             ```
         """
         response = self.put(f"/teams/{team_id}", json_data=team_data)
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        return self._process_response_data(response)
 
     def delete_team(self, team_id: int) -> Dict[str, Any]:
         """Delete a team by its ID.

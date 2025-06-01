@@ -1,10 +1,7 @@
-import os
-from typing import Any, Dict, Optional
-
-import requests
-from dotenv import load_dotenv
+from typing import Optional
 
 from .agents import AgentsAPI
+from .base_client import DEFAULT_BASE_URL
 from .contacts import ContactsAPI
 from .properties import PropertiesAPI
 from .property_contacts import PropertyContactsAPI
@@ -61,19 +58,7 @@ class OpenToCloseAPI:
             AuthenticationError: If API key is not provided and not found in environment
         """
         self._api_key = api_key
-        self._base_url = base_url or "https://api.opentoclose.com/v1"
-
-        # Backward compatibility properties
-        load_dotenv()
-        self.api_key = self._api_key or os.getenv("OPEN_TO_CLOSE_API_KEY")
-        if not self.api_key:
-            raise ValueError(
-                "API key not provided and not found in environment variables."
-            )
-        self.base_url = self._base_url
-        self.headers = {
-            "Accept": "application/json",
-        }
+        self._base_url = base_url or DEFAULT_BASE_URL
 
         # Lazy initialization of service clients
         self._agents: Optional[AgentsAPI] = None
@@ -220,49 +205,3 @@ class OpenToCloseAPI:
         if self._users is None:
             self._users = UsersAPI(api_key=self._api_key, base_url=self._base_url)
         return self._users
-
-    def _request(
-        self,
-        method: str,
-        endpoint: str,
-        params: Optional[Dict[str, Any]] = None,
-        json_data: Optional[Dict[str, Any]] = None,
-    ) -> requests.Response:
-        """Make a request to the Open To Close API.
-
-        This method is kept for backward compatibility with existing tests.
-
-        Args:
-            method: The HTTP method (GET, POST, PUT, DELETE).
-            endpoint: The API endpoint (e.g., "/agents").
-            params: Optional dictionary of query parameters.
-            json_data: Optional dictionary of JSON data for the request body.
-
-        Returns:
-            The requests.Response object.
-
-        Raises:
-            requests.exceptions.RequestException: For network or HTTP errors.
-        """
-        import requests
-
-        url = f"{self._base_url}{endpoint}"
-
-        # Add api_token to params for all requests
-        if params is None:
-            params = {}
-        params["api_token"] = self._api_key
-
-        response = requests.request(
-            method, url, headers=self.headers, params=params, json=json_data
-        )
-
-        if response.status_code >= 400:
-            try:
-                error_details = response.json()
-                print(f"API Error Details: {error_details}")
-            except requests.exceptions.JSONDecodeError:
-                print(f"API Error Text: {response.text}")
-
-        response.raise_for_status()
-        return response

@@ -44,19 +44,11 @@ class PropertiesAPI(BaseClient):
             properties = client.properties.list_properties()
 
             # Get properties with custom parameters
-            properties = client.properties.list_properties(params={
-                "status": "active",
-                "limit": 50
-            })
+            properties = client.properties.list_properties(params={"limit": 50})
             ```
         """
         response = self.get("/properties", params=params)
-        if isinstance(response, list):
-            return response
-        elif isinstance(response, dict):
-            data = response.get("data", [])
-            return data if isinstance(data, list) else []
-        return []
+        return self._process_list_response(response)
 
     def create_property(self, property_data: Dict[str, Any]) -> Dict[str, Any]:
         """Create a new property.
@@ -75,20 +67,15 @@ class PropertiesAPI(BaseClient):
         Example:
             ```python
             property = client.properties.create_property({
-                "address": "123 Main St, City, ST 12345",
-                "price": 500000,
-                "bedrooms": 3,
-                "bathrooms": 2
+                "address": "123 Main St",
+                "city": "Anytown",
+                "state": "CA",
+                "zip": "12345"
             })
             ```
         """
         response = self.post("/properties", json_data=property_data)
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        return self._process_response_data(response)
 
     def retrieve_property(self, property_id: int) -> Dict[str, Any]:
         """Retrieve a specific property by its ID.
@@ -111,12 +98,7 @@ class PropertiesAPI(BaseClient):
             ```
         """
         response = self.get(f"/properties/{property_id}")
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        return self._process_response_data(response)
 
     def update_property(
         self, property_id: int, property_data: Dict[str, Any]
@@ -139,18 +121,13 @@ class PropertiesAPI(BaseClient):
         Example:
             ```python
             updated_property = client.properties.update_property(123, {
-                "price": 550000,
-                "status": "sold"
+                "status": "sold",
+                "sale_price": 350000
             })
             ```
         """
         response = self.put(f"/properties/{property_id}", json_data=property_data)
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        return self._process_response_data(response)
 
     def delete_property(self, property_id: int) -> Dict[str, Any]:
         """Delete a property by its ID.

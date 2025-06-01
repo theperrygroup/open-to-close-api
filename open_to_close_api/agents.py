@@ -48,12 +48,7 @@ class AgentsAPI(BaseClient):
             ```
         """
         response = self.get("/agents", params=params)
-        if isinstance(response, list):
-            return response
-        elif isinstance(response, dict):
-            data = response.get("data", [])
-            return data if isinstance(data, list) else []
-        return []
+        return self._process_list_response(response)
 
     def create_agent(self, agent_data: Dict[str, Any]) -> Dict[str, Any]:
         """Create a new agent.
@@ -79,12 +74,7 @@ class AgentsAPI(BaseClient):
             ```
         """
         response = self.post("/agents", json_data=agent_data)
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        return self._process_response_data(response)
 
     def retrieve_agent(self, agent_id: int) -> Dict[str, Any]:
         """Retrieve a specific agent by their ID.
@@ -107,12 +97,7 @@ class AgentsAPI(BaseClient):
             ```
         """
         response = self.get(f"/agents/{agent_id}")
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        return self._process_response_data(response)
 
     def update_agent(self, agent_id: int, agent_data: Dict[str, Any]) -> Dict[str, Any]:
         """Update an existing agent.
@@ -139,12 +124,7 @@ class AgentsAPI(BaseClient):
             ```
         """
         response = self.put(f"/agents/{agent_id}", json_data=agent_data)
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        return self._process_response_data(response)
 
     def delete_agent(self, agent_id: int) -> Dict[str, Any]:
         """Delete an agent by their ID.

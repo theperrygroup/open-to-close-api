@@ -48,12 +48,7 @@ class ContactsAPI(BaseClient):
             ```
         """
         response = self.get("/contacts", params=params)
-        if isinstance(response, list):
-            return response
-        elif isinstance(response, dict):
-            data = response.get("data", [])
-            return data if isinstance(data, list) else []
-        return []
+        return self._process_list_response(response)
 
     def create_contact(self, contact_data: Dict[str, Any]) -> Dict[str, Any]:
         """Create a new contact.
@@ -79,12 +74,7 @@ class ContactsAPI(BaseClient):
             ```
         """
         response = self.post("/contacts", json_data=contact_data)
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        return self._process_response_data(response)
 
     def retrieve_contact(self, contact_id: int) -> Dict[str, Any]:
         """Retrieve a specific contact by their ID.
@@ -107,12 +97,7 @@ class ContactsAPI(BaseClient):
             ```
         """
         response = self.get(f"/contacts/{contact_id}")
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        return self._process_response_data(response)
 
     def update_contact(
         self, contact_id: int, contact_data: Dict[str, Any]
@@ -141,12 +126,7 @@ class ContactsAPI(BaseClient):
             ```
         """
         response = self.put(f"/contacts/{contact_id}", json_data=contact_data)
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        return self._process_response_data(response)
 
     def delete_contact(self, contact_id: int) -> Dict[str, Any]:
         """Delete a contact by their ID.

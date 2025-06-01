@@ -7,7 +7,7 @@ from .base_client import BaseClient
 
 class TagsAPI(BaseClient):
     """Client for tags API endpoints.
-    
+
     This client provides methods to manage tags in the Open To Close platform.
     """
 
@@ -43,17 +43,12 @@ class TagsAPI(BaseClient):
             # Get all tags
             tags = client.tags.list_tags()
 
-            # Get tags with filtering
+            # Get tags with custom parameters
             tags = client.tags.list_tags(params={"limit": 50})
             ```
         """
         response = self.get("/tags", params=params)
-        if isinstance(response, list):
-            return response
-        elif isinstance(response, dict):
-            data = response.get("data", [])
-            return data if isinstance(data, list) else []
-        return []
+        return self._process_list_response(response)
 
     def create_tag(self, tag_data: Dict[str, Any]) -> Dict[str, Any]:
         """Create a new tag.
@@ -72,18 +67,13 @@ class TagsAPI(BaseClient):
         Example:
             ```python
             tag = client.tags.create_tag({
-                "name": "VIP Client",
-                "color": "#ff0000"
+                "name": "High Priority",
+                "color": "#FF0000"
             })
             ```
         """
         response = self.post("/tags", json_data=tag_data)
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        return self._process_response_data(response)
 
     def retrieve_tag(self, tag_id: int) -> Dict[str, Any]:
         """Retrieve a specific tag by its ID.
@@ -106,12 +96,7 @@ class TagsAPI(BaseClient):
             ```
         """
         response = self.get(f"/tags/{tag_id}")
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        return self._process_response_data(response)
 
     def update_tag(self, tag_id: int, tag_data: Dict[str, Any]) -> Dict[str, Any]:
         """Update an existing tag.
@@ -132,18 +117,13 @@ class TagsAPI(BaseClient):
         Example:
             ```python
             updated_tag = client.tags.update_tag(123, {
-                "name": "Premium Client",
-                "color": "#00ff00"
+                "name": "Updated Priority",
+                "color": "#00FF00"
             })
             ```
         """
         response = self.put(f"/tags/{tag_id}", json_data=tag_data)
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        return self._process_response_data(response)
 
     def delete_tag(self, tag_id: int) -> Dict[str, Any]:
         """Delete a tag by its ID.

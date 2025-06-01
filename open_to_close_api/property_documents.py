@@ -7,7 +7,7 @@ from .base_client import BaseClient
 
 class PropertyDocumentsAPI(BaseClient):
     """Client for property documents API endpoints.
-    
+
     This client provides methods to manage documents associated with specific properties
     in the Open To Close platform.
     """
@@ -48,17 +48,12 @@ class PropertyDocumentsAPI(BaseClient):
 
             # Get documents with filtering
             documents = client.property_documents.list_property_documents(
-                123, params={"limit": 10}
+                123, params={"type": "contract"}
             )
             ```
         """
         response = self.get(f"/properties/{property_id}/documents", params=params)
-        if isinstance(response, list):
-            return response
-        elif isinstance(response, dict):
-            data = response.get("data", [])
-            return data if isinstance(data, list) else []
-        return []
+        return self._process_list_response(response)
 
     def create_property_document(
         self, property_id: int, document_data: Dict[str, Any]
@@ -67,7 +62,7 @@ class PropertyDocumentsAPI(BaseClient):
 
         Args:
             property_id: The ID of the property
-            document_data: A dictionary containing the document's information to be added
+            document_data: A dictionary containing the document's information
 
         Returns:
             A dictionary representing the newly added property document
@@ -82,17 +77,15 @@ class PropertyDocumentsAPI(BaseClient):
             ```python
             document = client.property_documents.create_property_document(123, {
                 "name": "Purchase Agreement",
-                "file_url": "https://example.com/file.pdf"
+                "type": "contract",
+                "url": "https://example.com/document.pdf"
             })
             ```
         """
-        response = self.post(f"/properties/{property_id}/documents", json_data=document_data)
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        response = self.post(
+            f"/properties/{property_id}/documents", json_data=document_data
+        )
+        return self._process_response_data(response)
 
     def retrieve_property_document(
         self, property_id: int, document_id: int
@@ -118,12 +111,7 @@ class PropertyDocumentsAPI(BaseClient):
             ```
         """
         response = self.get(f"/properties/{property_id}/documents/{document_id}")
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        return self._process_response_data(response)
 
     def update_property_document(
         self, property_id: int, document_id: int, document_data: Dict[str, Any]
@@ -152,14 +140,10 @@ class PropertyDocumentsAPI(BaseClient):
             ```
         """
         response = self.put(
-            f"/properties/{property_id}/documents/{document_id}", json_data=document_data
+            f"/properties/{property_id}/documents/{document_id}",
+            json_data=document_data,
         )
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        return self._process_response_data(response)
 
     def delete_property_document(
         self, property_id: int, document_id: int

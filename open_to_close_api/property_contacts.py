@@ -7,7 +7,7 @@ from .base_client import BaseClient
 
 class PropertyContactsAPI(BaseClient):
     """Client for property contacts API endpoints.
-    
+
     This client provides methods to manage contacts associated with specific properties
     in the Open To Close platform.
     """
@@ -53,12 +53,7 @@ class PropertyContactsAPI(BaseClient):
             ```
         """
         response = self.get(f"/properties/{property_id}/contacts", params=params)
-        if isinstance(response, list):
-            return response
-        elif isinstance(response, dict):
-            data = response.get("data", [])
-            return data if isinstance(data, list) else []
-        return []
+        return self._process_list_response(response)
 
     def create_property_contact(
         self, property_id: int, contact_data: Dict[str, Any]
@@ -86,13 +81,10 @@ class PropertyContactsAPI(BaseClient):
             })
             ```
         """
-        response = self.post(f"/properties/{property_id}/contacts", json_data=contact_data)
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        response = self.post(
+            f"/properties/{property_id}/contacts", json_data=contact_data
+        )
+        return self._process_response_data(response)
 
     def retrieve_property_contact(
         self, property_id: int, contact_id: int
@@ -118,12 +110,7 @@ class PropertyContactsAPI(BaseClient):
             ```
         """
         response = self.get(f"/properties/{property_id}/contacts/{contact_id}")
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        return self._process_response_data(response)
 
     def update_property_contact(
         self, property_id: int, contact_id: int, contact_data: Dict[str, Any]
@@ -154,12 +141,7 @@ class PropertyContactsAPI(BaseClient):
         response = self.put(
             f"/properties/{property_id}/contacts/{contact_id}", json_data=contact_data
         )
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        return self._process_response_data(response)
 
     def delete_property_contact(
         self, property_id: int, contact_id: int

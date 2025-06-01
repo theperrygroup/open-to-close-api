@@ -41,9 +41,7 @@ class TestOpenToCloseAPIError:
         """Test error with all parameters."""
         response_data = {"error": "details"}
         error = OpenToCloseAPIError(
-            "Test error", 
-            status_code=422, 
-            response_data=response_data
+            "Test error", status_code=422, response_data=response_data
         )
         assert str(error) == "Test error"
         assert error.status_code == 422
@@ -233,4 +231,4 @@ class TestErrorRaising:
             raise ServerError("Test")
 
         with pytest.raises(OpenToCloseAPIError):
-            raise NetworkError("Test") 
+            raise NetworkError("Test")

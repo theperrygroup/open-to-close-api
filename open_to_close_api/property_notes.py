@@ -7,7 +7,7 @@ from .base_client import BaseClient
 
 class PropertyNotesAPI(BaseClient):
     """Client for property notes API endpoints.
-    
+
     This client provides methods to manage notes associated with specific properties
     in the Open To Close platform.
     """
@@ -48,17 +48,12 @@ class PropertyNotesAPI(BaseClient):
 
             # Get notes with filtering
             notes = client.property_notes.list_property_notes(
-                123, params={"limit": 10}
+                123, params={"author": "agent"}
             )
             ```
         """
         response = self.get(f"/properties/{property_id}/notes", params=params)
-        if isinstance(response, list):
-            return response
-        elif isinstance(response, dict):
-            data = response.get("data", [])
-            return data if isinstance(data, list) else []
-        return []
+        return self._process_list_response(response)
 
     def create_property_note(
         self, property_id: int, note_data: Dict[str, Any]
@@ -67,7 +62,7 @@ class PropertyNotesAPI(BaseClient):
 
         Args:
             property_id: The ID of the property
-            note_data: A dictionary containing the note's information to be added
+            note_data: A dictionary containing the note's information
 
         Returns:
             A dictionary representing the newly added property note
@@ -81,22 +76,16 @@ class PropertyNotesAPI(BaseClient):
         Example:
             ```python
             note = client.property_notes.create_property_note(123, {
-                "content": "Property inspection completed successfully.",
-                "private": False
+                "content": "Client showed strong interest in this property.",
+                "author": "John Agent",
+                "priority": "medium"
             })
             ```
         """
         response = self.post(f"/properties/{property_id}/notes", json_data=note_data)
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        return self._process_response_data(response)
 
-    def retrieve_property_note(
-        self, property_id: int, note_id: int
-    ) -> Dict[str, Any]:
+    def retrieve_property_note(self, property_id: int, note_id: int) -> Dict[str, Any]:
         """Retrieve a specific note for a specific property.
 
         Args:
@@ -118,12 +107,7 @@ class PropertyNotesAPI(BaseClient):
             ```
         """
         response = self.get(f"/properties/{property_id}/notes/{note_id}")
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        return self._process_response_data(response)
 
     def update_property_note(
         self, property_id: int, note_id: int, note_data: Dict[str, Any]
@@ -147,23 +131,16 @@ class PropertyNotesAPI(BaseClient):
         Example:
             ```python
             updated_note = client.property_notes.update_property_note(
-                123, 456, {"content": "Updated note content"}
+                123, 456, {"priority": "high"}
             )
             ```
         """
         response = self.put(
             f"/properties/{property_id}/notes/{note_id}", json_data=note_data
         )
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        return self._process_response_data(response)
 
-    def delete_property_note(
-        self, property_id: int, note_id: int
-    ) -> Dict[str, Any]:
+    def delete_property_note(self, property_id: int, note_id: int) -> Dict[str, Any]:
         """Remove a note from a specific property.
 
         Args:

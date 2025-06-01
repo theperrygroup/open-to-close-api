@@ -7,7 +7,7 @@ from .base_client import BaseClient
 
 class PropertyTasksAPI(BaseClient):
     """Client for property tasks API endpoints.
-    
+
     This client provides methods to manage tasks associated with specific properties
     in the Open To Close platform.
     """
@@ -53,12 +53,7 @@ class PropertyTasksAPI(BaseClient):
             ```
         """
         response = self.get(f"/properties/{property_id}/tasks", params=params)
-        if isinstance(response, list):
-            return response
-        elif isinstance(response, dict):
-            data = response.get("data", [])
-            return data if isinstance(data, list) else []
-        return []
+        return self._process_list_response(response)
 
     def create_property_task(
         self, property_id: int, task_data: Dict[str, Any]
@@ -88,12 +83,7 @@ class PropertyTasksAPI(BaseClient):
             ```
         """
         response = self.post(f"/properties/{property_id}/tasks", json_data=task_data)
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        return self._process_response_data(response)
 
     def retrieve_property_task(self, property_id: int, task_id: int) -> Dict[str, Any]:
         """Retrieve a specific task for a specific property.
@@ -117,12 +107,7 @@ class PropertyTasksAPI(BaseClient):
             ```
         """
         response = self.get(f"/properties/{property_id}/tasks/{task_id}")
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        return self._process_response_data(response)
 
     def update_property_task(
         self, property_id: int, task_id: int, task_data: Dict[str, Any]
@@ -150,13 +135,10 @@ class PropertyTasksAPI(BaseClient):
             )
             ```
         """
-        response = self.put(f"/properties/{property_id}/tasks/{task_id}", json_data=task_data)
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        response = self.put(
+            f"/properties/{property_id}/tasks/{task_id}", json_data=task_data
+        )
+        return self._process_response_data(response)
 
     def delete_property_task(self, property_id: int, task_id: int) -> Dict[str, Any]:
         """Remove a task from a specific property.

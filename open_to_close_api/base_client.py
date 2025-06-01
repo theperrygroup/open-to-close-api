@@ -18,6 +18,9 @@ from .exceptions import (
 
 load_dotenv()
 
+# Constants
+DEFAULT_BASE_URL = "https://api.opentoclose.com/v1"
+
 
 class BaseClient:
     """Base client with common functionality."""
@@ -38,7 +41,7 @@ class BaseClient:
                 "or pass api_key parameter."
             )
 
-        self.base_url = base_url or "https://api.opentoclose.com/v1"
+        self.base_url = base_url or DEFAULT_BASE_URL
         self.session = requests.Session()
         self.session.headers.update(
             {
@@ -65,7 +68,7 @@ class BaseClient:
                 response_data=response_data,
             )
         elif response.status_code == 401:
-            message = response_data.get('message', 'Invalid credentials')
+            message = response_data.get("message", "Invalid credentials")
             raise AuthenticationError(
                 f"Authentication failed: {message}",
                 status_code=401,
@@ -78,14 +81,14 @@ class BaseClient:
                 response_data=response_data,
             )
         elif response.status_code == 429:
-            message = response_data.get('message', 'Too many requests')
+            message = response_data.get("message", "Too many requests")
             raise RateLimitError(
                 f"Rate limit exceeded: {message}",
                 status_code=429,
                 response_data=response_data,
             )
         elif 500 <= response.status_code < 600:
-            message = response_data.get('message', 'Internal server error')
+            message = response_data.get("message", "Internal server error")
             raise ServerError(
                 f"Server error: {message}",
                 status_code=response.status_code,
@@ -97,6 +100,38 @@ class BaseClient:
                 status_code=response.status_code,
                 response_data=response_data,
             )
+
+    def _process_response_data(self, response: Dict[str, Any]) -> Dict[str, Any]:
+        """Process API response data with consistent format handling.
+
+        Args:
+            response: Raw response from API
+
+        Returns:
+            Processed response data
+        """
+        if isinstance(response, dict) and response.get("id"):
+            return response
+        if isinstance(response, dict):
+            data = response.get("data", {})
+            return data if isinstance(data, dict) else {}
+        return {}
+
+    def _process_list_response(self, response: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """Process API response for list endpoints with consistent format handling.
+
+        Args:
+            response: Raw response from API
+
+        Returns:
+            List of processed response data
+        """
+        if isinstance(response, list):
+            return response
+        elif isinstance(response, dict):
+            data = response.get("data", [])
+            return data if isinstance(data, list) else []
+        return []
 
     def _request(
         self,

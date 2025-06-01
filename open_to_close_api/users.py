@@ -48,12 +48,7 @@ class UsersAPI(BaseClient):
             ```
         """
         response = self.get("/users", params=params)
-        if isinstance(response, list):
-            return response
-        elif isinstance(response, dict):
-            data = response.get("data", [])
-            return data if isinstance(data, list) else []
-        return []
+        return self._process_list_response(response)
 
     def create_user(self, user_data: Dict[str, Any]) -> Dict[str, Any]:
         """Create a new user.
@@ -79,12 +74,7 @@ class UsersAPI(BaseClient):
             ```
         """
         response = self.post("/users", json_data=user_data)
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        return self._process_response_data(response)
 
     def retrieve_user(self, user_id: int) -> Dict[str, Any]:
         """Retrieve a specific user by their ID.
@@ -107,12 +97,7 @@ class UsersAPI(BaseClient):
             ```
         """
         response = self.get(f"/users/{user_id}")
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        return self._process_response_data(response)
 
     def update_user(self, user_id: int, user_data: Dict[str, Any]) -> Dict[str, Any]:
         """Update an existing user.
@@ -139,12 +124,7 @@ class UsersAPI(BaseClient):
             ```
         """
         response = self.put(f"/users/{user_id}", json_data=user_data)
-        if isinstance(response, dict) and response.get("id"):
-            return response
-        if isinstance(response, dict):
-            data = response.get("data", {})
-            return data if isinstance(data, dict) else {}
-        return {}
+        return self._process_response_data(response)
 
     def delete_user(self, user_id: int) -> Dict[str, Any]:
         """Delete a user by their ID.
