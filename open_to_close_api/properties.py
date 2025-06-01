@@ -1,89 +1,49 @@
-from typing import Dict, Any, Optional, List, TYPE_CHECKING
+"""Properties client for Open To Close API."""
 
-if TYPE_CHECKING:  # pragma: no cover
-    from .client import OpenToCloseAPI
+from typing import Any, Dict, List, Optional
 
-class PropertiesAPI:
-    """Handles API requests for Property related endpoints."""
+from .base_client import BaseClient
 
-    def __init__(self, client: 'OpenToCloseAPI'):
-        """Initializes the PropertiesAPI with a client instance.
 
-        Args:
-            client: The OpenToCloseAPI client instance.
-        """
-        self._client = client
+class PropertiesAPI(BaseClient):
+    """Client for properties API endpoints."""
+
+    def __init__(
+        self, api_key: Optional[str] = None, base_url: Optional[str] = None
+    ) -> None:
+        """Initialize the properties client."""
+        super().__init__(api_key=api_key, base_url=base_url)
 
     def list_properties(self, params: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
-        """Retrieves a list of properties.
-
-        Args:
-            params: Optional dictionary of query parameters.
-
-        Returns:
-            A list of dictionaries, where each dictionary represents a property.
-        """
-        response = self._client._request("GET", "/properties", params=params)
-        json_response = response.json()
-        if isinstance(json_response, list):
-            return json_response
-        elif isinstance(json_response, dict):
-            return json_response.get("data", [])
-        return [] # Should not happen with a consistent API, but a safe default
+        """Retrieve a list of properties."""
+        response = self.get("/properties", params=params)
+        if isinstance(response, list):
+            return response
+        elif isinstance(response, dict):
+            return response.get("data", [])
+        return []
 
     def create_property(self, property_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Creates a new property.
-
-        Args:
-            property_data: A dictionary containing the property's information.
-
-        Returns:
-            A dictionary representing the newly created property.
-        """
-        response = self._client._request("POST", "/properties", json_data=property_data)
-        json_response = response.json()
-        if isinstance(json_response, dict) and json_response.get('id'): return json_response
-        return json_response.get("data", {})
+        """Create a new property."""
+        response = self.post("/properties", json_data=property_data)
+        if isinstance(response, dict) and response.get('id'):
+            return response
+        return response.get("data", {}) if isinstance(response, dict) else {}
 
     def retrieve_property(self, property_id: int) -> Dict[str, Any]:
-        """Retrieves a specific property by its ID.
-
-        Args:
-            property_id: The ID of the property to retrieve.
-
-        Returns:
-            A dictionary representing the property.
-        """
-        response = self._client._request("GET", f"/properties/{property_id}")
-        json_response = response.json()
-        if isinstance(json_response, dict) and json_response.get('id'): return json_response
-        return json_response.get("data", {})
+        """Retrieve a specific property by ID."""
+        response = self.get(f"/properties/{property_id}")
+        if isinstance(response, dict) and response.get('id'):
+            return response
+        return response.get("data", {}) if isinstance(response, dict) else {}
 
     def update_property(self, property_id: int, property_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Updates an existing property.
-
-        Args:
-            property_id: The ID of the property to update.
-            property_data: A dictionary containing the fields to update.
-
-        Returns:
-            A dictionary representing the updated property.
-        """
-        response = self._client._request("PUT", f"/properties/{property_id}", json_data=property_data)
-        json_response = response.json()
-        if isinstance(json_response, dict) and json_response.get('id'): return json_response
-        return json_response.get("data", {})
+        """Update an existing property."""
+        response = self.put(f"/properties/{property_id}", json_data=property_data)
+        if isinstance(response, dict) and response.get('id'):
+            return response
+        return response.get("data", {}) if isinstance(response, dict) else {}
 
     def delete_property(self, property_id: int) -> Dict[str, Any]:
-        """Deletes a property by its ID.
-
-        Args:
-            property_id: The ID of the property to delete.
-        
-        Returns:
-            A dictionary containing the API response.
-        """
-        response = self._client._request("DELETE", f"/properties/{property_id}")
-        if response.status_code == 204:
-            return {}
-        return response.json() 
+        """Delete a property by ID."""
+        return self.delete(f"/properties/{property_id}") 

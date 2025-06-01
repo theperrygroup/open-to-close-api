@@ -1,0 +1,65 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Open To Close API Python Client - ReZEN Documentation Rules
+
+## 🔄 Auto-Documentation Updates
+When making ANY changes to the Open To Close API library code, you MUST automatically update the corresponding documentation:
+
+### Code Changes → Documentation Updates
+1. **Function/Method Changes**: When modifying any function or method in `open_to_close_api/`:
+   - Update the Google-format docstring with new parameters, return types, or behavior
+   - Update any affected examples in the docstring
+   - Check and update corresponding examples in `docs/examples.md`
+   - Update API reference in `docs/api-reference.md` if needed
+
+2. **New Endpoints/Methods**: When adding new functionality:
+   - Add comprehensive Google-format docstrings with examples
+   - Add usage examples to `docs/examples.md`
+   - Update `docs/api-reference.md` with new endpoint documentation
+   - Update the main `README.md` if it's a major feature
+   - Add corresponding test documentation in test files
+   - Update `tasks/endpoint_tasks.md` if new API endpoints are added
+
+3. **Parameter Changes**: When changing function signatures:
+   - Update all docstrings with new parameter descriptions
+   - Update type hints throughout the codebase
+   - Update all examples that use the changed functions
+   - Update troubleshooting docs if error conditions change
+
+4. **Breaking Changes**: When making breaking changes:
+   - Update `docs/changelog.md` with migration notes
+   - Update all affected examples across documentation
+   - Update version number in `open_to_close_api/__init__.py`
+   - Add deprecation warnings and migration guides
+
+## 📋 Checklist for Every Code Change
+Before completing any change to the Open To Close API library:
+- [ ] Updated relevant docstrings
+- [ ] Updated examples in affected documentation files
+- [ ] Updated API reference if needed
+- [ ] Updated changelog if user-facing change
+- [ ] Verified all examples still work
+- [ ] Updated type hints if signatures changed
+- [ ] Added test documentation for new features
+- [ ] Updated endpoint tasks if applicable
+
+## 🚨 Documentation Validation Rules
+- All public methods MUST have comprehensive docstrings
+- All examples in documentation MUST be runnable
+- Version numbers MUST be consistent across all files
+- Breaking changes MUST be documented in changelog
+- New features MUST include usage examples
+
+## Documentation Quality Standards
+Always ensure documentation includes:
+- **Google-format docstrings** for all public methods
+- **Type hints** for all parameters and return values
+- **Usage examples** showing real-world scenarios
+- **Error handling examples** for common failure cases
+- **Parameter validation** documentation
+- **Cross-references** to related methods and classes
+
+Remember: **Documentation is code!** Treat it with the same rigor and attention to detail as the library implementation itself.

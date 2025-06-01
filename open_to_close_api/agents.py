@@ -1,95 +1,156 @@
-from typing import Dict, Any, Optional, List, TYPE_CHECKING
+"""Agents client for Open To Close API."""
 
-if TYPE_CHECKING:  # pragma: no cover
-    from .client import OpenToCloseAPI # Import for type hinting only
+from typing import Any, Dict, List, Optional
 
-class AgentsAPI:
-    """Handles API requests for Agent related endpoints."""
+from .base_client import BaseClient
 
-    def __init__(self, client: 'OpenToCloseAPI'): # Use string literal for type hint
-        """Initializes the AgentsAPI with a client instance.
+
+class AgentsAPI(BaseClient):
+    """Client for agents API endpoints.
+    
+    This client provides methods to manage agents in the Open To Close platform.
+    """
+
+    def __init__(
+        self, api_key: Optional[str] = None, base_url: Optional[str] = None
+    ) -> None:
+        """Initialize the agents client.
 
         Args:
-            client: The OpenToCloseAPI client instance.
+            api_key: API key for authentication
+            base_url: Base URL for the API
         """
-        self._client = client
+        super().__init__(api_key=api_key, base_url=base_url)
 
     def list_agents(self, params: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
-        """Retrieves a list of agents.
+        """Retrieve a list of agents.
 
         Args:
-            params: Optional dictionary of query parameters.
+            params: Optional dictionary of query parameters for filtering
 
         Returns:
-            A list of dictionaries, where each dictionary represents an agent.
-        """
-        response = self._client._request("GET", "/agents", params=params)
-        json_response = response.json()
-        if isinstance(json_response, list):
-            return json_response
-        elif isinstance(json_response, dict):
-            return json_response.get("data", []) # Standard case for object with a data key
-        return [] # Should not happen if API is consistent, but a safe default
+            A list of dictionaries, where each dictionary represents an agent
 
-    def create_agent(self, user_data_for_agent: Dict[str, Any]) -> Dict[str, Any]:
-        """Creates a new Agent (likely as a specific type of User).
-        Assumes the API uses a general user creation endpoint with a type identifier for agents.
-        The exact payload (e.g. user_type_id, role_id) needs to be confirmed from API docs.
+        Raises:
+            OpenToCloseAPIError: If the API request fails
+            ValidationError: If parameters are invalid
+            AuthenticationError: If authentication fails
+
+        Example:
+            ```python
+            # Get all agents
+            agents = client.agents.list_agents()
+
+            # Get agents with custom parameters
+            agents = client.agents.list_agents(params={"limit": 50})
+            ```
+        """
+        response = self.get("/agents", params=params)
+        if isinstance(response, list):
+            return response
+        elif isinstance(response, dict):
+            return response.get("data", [])
+        return []
+
+    def create_agent(self, agent_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Create a new agent.
 
         Args:
-            user_data_for_agent: A dictionary containing the user/agent's information.
+            agent_data: A dictionary containing the agent's information
 
         Returns:
-            A dictionary representing the newly created user/agent.
+            A dictionary representing the newly created agent
+
+        Raises:
+            OpenToCloseAPIError: If the API request fails
+            ValidationError: If agent data is invalid
+            AuthenticationError: If authentication fails
+
+        Example:
+            ```python
+            agent = client.agents.create_agent({
+                "name": "John Doe",
+                "email": "john@example.com",
+                "phone": "+1234567890"
+            })
+            ```
         """
-        # Path changed from /agents to /users based on typical API design for typed users
-        response = self._client._request("POST", "/users", json_data=user_data_for_agent)
-        json_response = response.json()
-        if isinstance(json_response, dict) and json_response.get('id'): 
-            return json_response
-        return json_response.get("data", {}) # Fallback
+        response = self.post("/agents", json_data=agent_data)
+        if isinstance(response, dict) and response.get('id'):
+            return response
+        return response.get("data", {}) if isinstance(response, dict) else {}
 
     def retrieve_agent(self, agent_id: int) -> Dict[str, Any]:
-        """Retrieves a specific agent by its ID.
+        """Retrieve a specific agent by their ID.
 
         Args:
-            agent_id: The ID of the agent to retrieve.
+            agent_id: The ID of the agent to retrieve
 
         Returns:
-            A dictionary representing the agent.
+            A dictionary representing the agent
+
+        Raises:
+            NotFoundError: If the agent is not found
+            OpenToCloseAPIError: If the API request fails
+            AuthenticationError: If authentication fails
+
+        Example:
+            ```python
+            agent = client.agents.retrieve_agent(123)
+            print(f"Agent name: {agent['name']}")
+            ```
         """
-        response = self._client._request("GET", f"/agents/{agent_id}")
-        json_response = response.json()
-        if isinstance(json_response, dict) and json_response.get('id'): return json_response
-        return json_response.get("data", {})
+        response = self.get(f"/agents/{agent_id}")
+        if isinstance(response, dict) and response.get('id'):
+            return response
+        return response.get("data", {}) if isinstance(response, dict) else {}
 
     def update_agent(self, agent_id: int, agent_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Updates an existing agent.
+        """Update an existing agent.
 
         Args:
-            agent_id: The ID of the agent to update.
-            agent_data: A dictionary containing the fields to update.
+            agent_id: The ID of the agent to update
+            agent_data: A dictionary containing the fields to update
 
         Returns:
-            A dictionary representing the updated agent.
+            A dictionary representing the updated agent
+
+        Raises:
+            NotFoundError: If the agent is not found
+            ValidationError: If agent data is invalid
+            OpenToCloseAPIError: If the API request fails
+            AuthenticationError: If authentication fails
+
+        Example:
+            ```python
+            updated_agent = client.agents.update_agent(123, {
+                "name": "Jane Doe",
+                "email": "jane@example.com"
+            })
+            ```
         """
-        response = self._client._request("PUT", f"/agents/{agent_id}", json_data=agent_data)
-        json_response = response.json()
-        if isinstance(json_response, dict) and json_response.get('id'): return json_response
-        return json_response.get("data", {})
+        response = self.put(f"/agents/{agent_id}", json_data=agent_data)
+        if isinstance(response, dict) and response.get('id'):
+            return response
+        return response.get("data", {}) if isinstance(response, dict) else {}
 
     def delete_agent(self, agent_id: int) -> Dict[str, Any]:
-        """Deletes an agent by its ID.
+        """Delete an agent by their ID.
 
         Args:
-            agent_id: The ID of the agent to delete.
+            agent_id: The ID of the agent to delete
         
         Returns:
-            A dictionary containing the API response (often empty or a success message for deletes).
+            A dictionary containing the API response
+
+        Raises:
+            NotFoundError: If the agent is not found
+            OpenToCloseAPIError: If the API request fails
+            AuthenticationError: If authentication fails
+
+        Example:
+            ```python
+            result = client.agents.delete_agent(123)
+            ```
         """
-        # Delete typically returns 204 No Content, or sometimes a confirmation
-        response = self._client._request("DELETE", f"/agents/{agent_id}")
-        # If 204, response.json() will fail. Check status code.
-        if response.status_code == 204:
-            return {}
-        return response.json() # Or handle based on actual API behavior 
+        return self.delete(f"/agents/{agent_id}") 

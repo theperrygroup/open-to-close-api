@@ -1,0 +1,154 @@
+site_name: Open To Close API Python Client
+site_description: Official Python client for the Open To Close Real Estate API
+site_author: The Perry Group
+site_url: https://open-to-close-api.readthedocs.io/
+
+# Repository
+repo_name: open-to-close-api
+repo_url: https://github.com/theperrygroup/open-to-close-api
+edit_uri: edit/main/docs/
+
+# Copyright
+copyright: Copyright &copy; 2025 The Perry Group
+
+# Configuration
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+    - content.action.edit
+    - content.action.view
+    - content.code.copy
+    - content.code.annotate
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      primary: green
+      accent: green
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - scheme: slate
+      primary: green
+      accent: green
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+  icon:
+    logo: material/home
+    repo: fontawesome/brands/github
+    edit: material/pencil
+    view: material/eye
+
+# Plugins
+plugins:
+  - search:
+      separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+  - include-markdown:
+      opening_tag: "{!"
+      closing_tag: "!}"
+  - minify:
+      minify_html: true
+
+# Extensions
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      repo_url_shorthand: true
+      user: theperrygroup
+      repo: open-to-close-api
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+# Navigation
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: installation.md
+    - Quick Start: quickstart.md
+    - Examples: examples.md
+  - API Reference:
+    - Complete API Reference: api-reference.md
+  - Guides:
+    - Troubleshooting: troubleshooting.md
+  - Development:
+    - Contributing: contributing.md
+    - Release Notes: changelog.md
+    - Deployment Guide: deployment.md
+
+# Extra CSS and JavaScript
+# extra_css: []
+# extra_javascript: []
+
+# Extra
+extra:
+  version:
+    provider: mike
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/theperrygroup/open-to-close-api
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/open-to-close-api/
+    - icon: material/web
+      link: https://www.theperry.group
+    - icon: material/email
+      link: mailto:john@theperry.group
+  analytics:
+    provider: google
+    property: G-XXXXXXXXXX  # Replace with actual Google Analytics ID
+  consent:
+    title: Cookie consent
+    description: >- 
+      We use cookies to recognize your repeated visits and preferences, as well
+      as to measure the effectiveness of our documentation and whether users
+      find what they're searching for. With your consent, you're helping us to
+      make our documentation better.
+
+# Watch extra directories
+watch:
+  - open_to_close_api/ 
