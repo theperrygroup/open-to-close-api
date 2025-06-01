@@ -1,46 +1,218 @@
 # Open To Close API Python Client
 
-A comprehensive Python client library for the Open To Close API, providing easy-to-use interfaces for all API endpoints with full type safety and documentation.
+A comprehensive Python client library for the Open To Close API, providing easy-to-use interfaces for all API endpoints with full type safety and comprehensive documentation.
 
-## Quick Links
+!!! tip "🚀 Quick Start"
+    Get up and running in under 5 minutes with our streamlined installation and setup process.
 
-- [Installation](getting-started/installation.md) - Get started in minutes
-- [Quick Start Guide](getting-started/quickstart.md) - 5-minute tutorial
-- [API Reference](reference/api-reference.md) - Complete API documentation
-- [Examples](guides/examples.md) - Comprehensive usage examples
-- [Troubleshooting](guides/troubleshooting.md) - Common issues and solutions
+## 🎯 Quick Navigation
 
-## Features
+<div class="grid cards" markdown>
 
-✅ **Complete API Coverage** - All Open To Close API endpoints supported  
-✅ **Type Safety** - Full type hints and validation  
-✅ **Comprehensive Documentation** - Google-style docstrings with examples  
-✅ **Error Handling** - Detailed exception handling with specific error types  
-✅ **Easy Authentication** - Environment variable or direct API key support  
-✅ **Pagination Support** - Automatic handling of paginated results  
-✅ **Rate Limiting** - Built-in rate limit handling  
+-   :material-rocket:{ .lg .middle } **Getting Started**
 
-## Supported Endpoints
+    ---
 
-- **Agents** - Manage real estate agents
-- **Contacts** - Handle customer contacts
-- **Properties** - Property management
-- **Property Relations** - Documents, emails, notes, tasks, and contacts
-- **Teams** - Team management
-- **Tags** - Tagging system
-- **Users** - User management
+    Complete setup and installation guide to get you up and running quickly
 
-## Organization
+    [:octicons-arrow-right-24: Start Here](getting-started/installation.md)
 
-- **Organization**: The Perry Group
-- **Author**: John Perry
-- **Email**: john@theperry.group
-- **License**: MIT License
+-   :material-flash:{ .lg .middle } **Quick Start**
 
-## Latest Updates
+    ---
 
-See [Changelog](development/changelog.md) for version history and updates.
+    5-minute tutorial with working examples for immediate productivity
 
-## Contributing
+    [:octicons-arrow-right-24: Quick Start](getting-started/quickstart.md)
 
-See [Contributing Guide](development/contributing.md) for development setup and guidelines. 
+-   :material-api:{ .lg .middle } **API Reference**
+
+    ---
+
+    Complete technical documentation for all endpoints and methods
+
+    [:octicons-arrow-right-24: API Docs](reference/api-reference.md)
+
+-   :material-code-tags:{ .lg .middle } **Examples**
+
+    ---
+
+    Comprehensive usage examples and real-world implementation patterns
+
+    [:octicons-arrow-right-24: View Examples](guides/examples.md)
+
+-   :material-wrench:{ .lg .middle } **Troubleshooting**
+
+    ---
+
+    Common issues, solutions, and debugging techniques
+
+    [:octicons-arrow-right-24: Get Help](guides/troubleshooting.md)
+
+-   :material-account-group:{ .lg .middle } **Contributing**
+
+    ---
+
+    Development setup, guidelines, and contribution process
+
+    [:octicons-arrow-right-24: Contribute](development/contributing.md)
+
+</div>
+
+## ✨ Key Features
+
+=== "Core Features"
+    !!! success "✅ Complete API Coverage"
+        All Open To Close API endpoints supported with full functionality
+
+    !!! success "✅ Type Safety"
+        Full type hints and validation for better development experience
+
+    !!! success "✅ Comprehensive Documentation"
+        Google-style docstrings with examples for every method
+
+=== "Developer Experience"
+    !!! success "✅ Error Handling"
+        Detailed exception handling with specific error types
+
+    !!! success "✅ Easy Authentication"
+        Environment variable or direct API key support
+
+    !!! success "✅ Smart Features"
+        Built-in pagination support and rate limit handling
+
+## 🏠 Supported Resources
+
+<div class="grid cards" markdown>
+
+-   :material-account:{ .lg .middle } **Agents**
+
+    ---
+
+    Manage real estate agents and their profiles
+
+-   :material-contacts:{ .lg .middle } **Contacts**
+
+    ---
+
+    Handle customer contacts and relationships
+
+-   :material-home:{ .lg .middle } **Properties**
+
+    ---
+
+    Complete property management functionality
+
+-   :material-file-document:{ .lg .middle } **Property Relations**
+
+    ---
+
+    Documents, emails, notes, tasks, and contacts
+
+-   :material-account-group:{ .lg .middle } **Teams**
+
+    ---
+
+    Team management and organization
+
+-   :material-tag:{ .lg .middle } **Tags**
+
+    ---
+
+    Flexible tagging and categorization system
+
+-   :material-account-circle:{ .lg .middle } **Users**
+
+    ---
+
+    User management and authentication
+
+-   :material-plus:{ .lg .middle } **And More**
+
+    ---
+
+    Additional endpoints and functionality
+
+</div>
+
+## 📊 Quick Example
+
+=== "Simple Usage"
+    ```python
+    from open_to_close import OpenToCloseAPI
+
+    # Initialize client
+    client = OpenToCloseAPI()
+
+    # Get contacts
+    contacts = client.contacts.list_contacts()
+    print(f"Found {len(contacts)} contacts")
+    ```
+
+=== "With Error Handling"
+    ```python
+    from open_to_close import OpenToCloseAPI, NotFoundError
+
+    client = OpenToCloseAPI()
+
+    try:
+        contact = client.contacts.retrieve_contact(123)
+        print(f"Contact: {contact['first_name']} {contact['last_name']}")
+    except NotFoundError:
+        print("Contact not found")
+    ```
+
+=== "Advanced Usage"
+    ```python
+    from open_to_close import OpenToCloseAPI
+
+    client = OpenToCloseAPI()
+
+    # Create a new contact with full details
+    new_contact = {
+        "first_name": "John",
+        "last_name": "Doe", 
+        "email": "john.doe@example.com",
+        "phone": "+1234567890"
+    }
+
+    contact = client.contacts.create_contact(new_contact)
+    print(f"Created contact with ID: {contact['id']}")
+    ```
+
+!!! info "💡 Pro Tip"
+    All methods include comprehensive type hints and detailed docstrings. Use your IDE's autocomplete and inline documentation for the best development experience.
+
+## 📈 Status
+
+!!! success "✅ Production Ready"
+    **Current Version**: Latest stable release with comprehensive testing
+    
+    **API Coverage**: All Open To Close API endpoints implemented and tested
+    
+    **Documentation**: Complete with examples and troubleshooting guides
+
+## 🏢 Project Information
+
+**Organization**: The Perry Group  
+**Author**: John Perry  
+**Email**: john@theperry.group  
+**License**: MIT License  
+
+## 📋 What's Next?
+
+Choose your path based on your needs:
+
+- 🚀 **New to the API?** → [Installation Guide](getting-started/installation.md)
+- ⚡ **Want to jump in?** → [Quick Start Guide](getting-started/quickstart.md)  
+- 📚 **Need examples?** → [Usage Examples](guides/examples.md)
+- 🔍 **Looking for specifics?** → [API Reference](reference/api-reference.md)
+- 🐛 **Having issues?** → [Troubleshooting Guide](guides/troubleshooting.md)
+
+## 🔄 Latest Updates
+
+Stay informed about new features and improvements:
+
+- 📅 [**Changelog**](development/changelog.md) - Version history and updates
+- 🚀 [**Deployment Guide**](development/deployment.md) - Release process and CI/CD
+- 🤝 [**Contributing**](development/contributing.md) - Join our development community 

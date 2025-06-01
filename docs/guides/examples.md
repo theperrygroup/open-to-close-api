@@ -1,143 +1,421 @@
 # Comprehensive Examples
 
-Real-world usage examples for the Open To Close API client.
+Real-world usage examples and implementation patterns for the Open To Close API client with production-ready code and best practices.
 
-## Table of Contents
+!!! info "🎯 What You'll Learn"
+    These examples showcase complete workflows, error handling patterns, and advanced techniques used in production real estate applications.
 
-- [Basic CRUD Operations](#basic-crud-operations)
-- [Working with Properties](#working-with-properties)
-- [Managing Property Relationships](#managing-property-relationships)
-- [Error Handling Patterns](#error-handling-patterns)
-- [Bulk Operations](#bulk-operations)
-- [Advanced Filtering](#advanced-filtering)
-- [Real Estate Workflow Examples](#real-estate-workflow-examples)
+## 🚀 Quick Navigation
 
-## Basic CRUD Operations
+<div class="grid cards" markdown>
 
-### Complete Contact Management
+-   :material-account:{ .lg .middle } **Basic Operations**
 
-```python
-from open_to_close_api import OpenToCloseAPI, NotFoundError, ValidationError
+    ---
 
-client = OpenToCloseAPI()
+    Essential CRUD operations for contacts, properties, and agents
 
-# Create a new contact
-def create_contact_example():
-    contact_data = {
-        "first_name": "Sarah",
-        "last_name": "Johnson",
-        "email": "sarah.johnson@example.com",
-        "phone": "+1555123456",
-        "notes": "Potential first-time buyer"
-    }
-    
-    try:
-        contact = client.contacts.create_contact(contact_data)
-        print(f"Created contact: {contact['first_name']} {contact['last_name']} (ID: {contact['id']})")
-        return contact
-    except ValidationError as e:
-        print(f"Invalid contact data: {e}")
-        return None
+    [:octicons-arrow-right-24: CRUD Examples](#basic-crud-operations)
 
-# Update contact information
-def update_contact_example(contact_id: int):
-    updates = {
-        "phone": "+1555987654",
-        "notes": "Approved for mortgage pre-qualification"
-    }
-    
-    try:
-        updated_contact = client.contacts.update_contact(contact_id, updates)
-        print(f"Updated contact {contact_id}")
-        return updated_contact
-    except NotFoundError:
-        print(f"Contact {contact_id} not found")
-    except ValidationError as e:
-        print(f"Invalid update data: {e}")
+-   :material-home:{ .lg .middle } **Property Management**
 
-# Retrieve and display contact details
-def get_contact_details(contact_id: int):
-    try:
-        contact = client.contacts.retrieve_contact(contact_id)
-        print(f"Contact Details:")
-        print(f"  Name: {contact['first_name']} {contact['last_name']}")
-        print(f"  Email: {contact['email']}")
-        print(f"  Phone: {contact['phone']}")
-        return contact
-    except NotFoundError:
-        print(f"Contact {contact_id} not found")
-        return None
-```
+    ---
 
-## Working with Properties
+    Complete property lifecycle from listing to closing
 
-### Property Lifecycle Management
+    [:octicons-arrow-right-24: Property Examples](#working-with-properties)
 
-```python
-def create_property_listing():
-    """Create a new property listing with complete information."""
-    
-    property_data = {
-        "address": "456 Oak Avenue",
-        "city": "Springfield",
-        "state": "CA",
-        "zip_code": "90210",
-        "property_type": "single_family",
-        "bedrooms": 4,
-        "bathrooms": 3,
-        "square_feet": 2500,
-        "lot_size": 0.25,
-        "listing_price": 750000,
-        "status": "active",
-        "description": "Beautiful family home in desirable neighborhood"
-    }
-    
-    try:
-        property = client.properties.create_property(property_data)
-        print(f"Created property listing: {property['address']} (ID: {property['id']})")
-        return property
-    except ValidationError as e:
-        print(f"Invalid property data: {e}")
-        return None
+-   :material-file-document:{ .lg .middle } **Relationships**
 
-def update_property_status(property_id: int, new_status: str):
-    """Update property status (e.g., pending, sold, withdrawn)."""
-    
-    try:
-        updated_property = client.properties.update_property(property_id, {
-            "status": new_status
-        })
-        print(f"Property {property_id} status updated to: {new_status}")
-        return updated_property
-    except NotFoundError:
-        print(f"Property {property_id} not found")
-    except ValidationError as e:
-        print(f"Invalid status: {e}")
+    ---
 
-def search_properties_by_criteria():
-    """Search for properties based on specific criteria."""
-    
-    search_params = {
-        "city": "Springfield",
-        "min_price": 500000,
-        "max_price": 800000,
-        "bedrooms__gte": 3,  # 3 or more bedrooms
-        "property_type": "single_family",
-        "status": "active"
-    }
-    
-    try:
-        properties = client.properties.list_properties(params=search_params)
-        print(f"Found {len(properties)} properties matching criteria:")
+    Managing documents, emails, notes, and tasks
+
+    [:octicons-arrow-right-24: Relationship Examples](#managing-property-relationships)
+
+-   :material-shield:{ .lg .middle } **Error Handling**
+
+    ---
+
+    Production-ready error handling and retry patterns
+
+    [:octicons-arrow-right-24: Error Examples](#error-handling-patterns)
+
+-   :material-database:{ .lg .middle } **Bulk Operations**
+
+    ---
+
+    Efficient bulk data import/export with progress tracking
+
+    [:octicons-arrow-right-24: Bulk Examples](#bulk-operations)
+
+-   :material-chart-line:{ .lg .middle } **Real Estate Workflows**
+
+    ---
+
+    Complete transaction workflows and market analysis
+
+    [:octicons-arrow-right-24: Workflow Examples](#real-estate-workflow-examples)
+
+</div>
+
+## 📋 Basic CRUD Operations
+
+Master the fundamental create, read, update, and delete operations with comprehensive error handling.
+
+!!! success "✅ What's Covered"
+    - Complete contact lifecycle management
+    - Property and agent operations
+    - Error handling best practices
+    - Real-world usage patterns
+
+### 👥 Complete Contact Management
+
+!!! example "Contact Lifecycle Examples"
+
+=== "Create Contact"
+    ```python
+    from open_to_close import OpenToCloseAPI, NotFoundError, ValidationError
+
+    client = OpenToCloseAPI()
+
+    def create_contact_example():
+        """Create a new contact with comprehensive data."""
+        contact_data = {
+            "first_name": "Sarah",
+            "last_name": "Johnson", 
+            "email": "sarah.johnson@example.com",
+            "phone": "+1555123456",
+            "contact_type": "buyer",
+            "budget_min": 400000,
+            "budget_max": 600000,
+            "notes": "Potential first-time buyer, pre-approved"
+        }
         
-        for prop in properties:
-            print(f"  {prop['address']} - ${prop['listing_price']:,} ({prop['bedrooms']}br/{prop['bathrooms']}ba)")
+        try:
+            contact = client.contacts.create_contact(contact_data)
+            print(f"✅ Created contact: {contact['first_name']} {contact['last_name']}")
+            print(f"   ID: {contact['id']}")
+            print(f"   Type: {contact['contact_type']}")
+            return contact
+        except ValidationError as e:
+            print(f"❌ Invalid contact data: {e}")
+            return None
+    ```
+
+=== "Update Contact"
+    ```python
+    def update_contact_example(contact_id: int):
+        """Update existing contact information."""
+        
+        # Partial update with new information
+        updates = {
+            "phone": "+1555987654",
+            "budget_max": 650000,
+            "notes": "Approved for mortgage pre-qualification - $625k max",
+            "preferred_areas": ["Downtown", "Midtown", "Suburbs"]
+        }
+        
+        try:
+            updated_contact = client.contacts.update_contact(contact_id, updates)
+            print(f"✅ Updated contact {contact_id}")
+            print(f"   New budget: ${updates['budget_max']:,}")
+            print(f"   Preferred areas: {', '.join(updates['preferred_areas'])}")
+            return updated_contact
+        except NotFoundError:
+            print(f"❌ Contact {contact_id} not found")
+        except ValidationError as e:
+            print(f"❌ Invalid update data: {e}")
+        return None
+    ```
+
+=== "Retrieve & Display"
+    ```python
+    def get_contact_details(contact_id: int):
+        """Retrieve and display complete contact information."""
+        
+        try:
+            contact = client.contacts.retrieve_contact(contact_id)
             
-        return properties
-    except Exception as e:
-        print(f"Error searching properties: {e}")
-        return []
-```
+            print(f"📋 Contact Details (ID: {contact['id']})")
+            print(f"   Name: {contact['first_name']} {contact['last_name']}")
+            print(f"   Email: {contact['email']}")
+            print(f"   Phone: {contact.get('phone', 'Not provided')}")
+            print(f"   Type: {contact.get('contact_type', 'Not specified')}")
+            
+            if contact.get('budget_min') and contact.get('budget_max'):
+                print(f"   Budget: ${contact['budget_min']:,} - ${contact['budget_max']:,}")
+            
+            if contact.get('preferred_areas'):
+                print(f"   Preferred Areas: {', '.join(contact['preferred_areas'])}")
+                
+            return contact
+        except NotFoundError:
+            print(f"❌ Contact {contact_id} not found")
+            return None
+    ```
+
+=== "Complete Example"
+    ```python
+    def contact_management_demo():
+        """Complete contact management workflow."""
+        
+        # Create a new contact
+        contact = create_contact_example()
+        if not contact:
+            return
+        
+        contact_id = contact['id']
+        
+        # Retrieve initial details
+        print("\n🔍 Initial Contact Details:")
+        get_contact_details(contact_id)
+        
+        # Update the contact
+        print("\n✏️ Updating Contact:")
+        update_contact_example(contact_id)
+        
+        # Retrieve updated details
+        print("\n🔍 Updated Contact Details:")
+        updated_contact = get_contact_details(contact_id)
+        
+        print(f"\n🎉 Contact management demo completed!")
+        return updated_contact
+
+    # Run the demo
+    if __name__ == "__main__":
+        contact_management_demo()
+    ```
+
+!!! tip "💡 Best Practices"
+    - Always handle `ValidationError` for data issues
+    - Use `NotFoundError` to handle missing resources
+    - Include meaningful contact types and budget information
+    - Store notes for future reference and context
+
+## 🏠 Working with Properties
+
+Complete property lifecycle management from listing creation to status updates and advanced search capabilities.
+
+!!! success "✅ Property Operations"
+    - Create comprehensive property listings
+    - Update property status throughout lifecycle
+    - Advanced search and filtering
+    - Market analysis and reporting
+
+### 🏡 Property Lifecycle Management
+
+!!! example "Property Management Examples"
+
+=== "Create Listing"
+    ```python
+    def create_property_listing():
+        """Create a new property listing with comprehensive information."""
+        
+        property_data = {
+            "address": "456 Oak Avenue",
+            "city": "Springfield",
+            "state": "CA", 
+            "zip_code": "90210",
+            "property_type": "single_family",
+            "bedrooms": 4,
+            "bathrooms": 3,
+            "square_feet": 2500,
+            "lot_size": 0.25,
+            "listing_price": 750000,
+            "status": "active",
+            "description": "Beautiful family home in desirable neighborhood",
+            "features": ["hardwood floors", "granite counters", "two-car garage"],
+            "year_built": 2010,
+            "listing_date": "2024-01-15"
+        }
+        
+        try:
+            property_obj = client.properties.create_property(property_data)
+            print(f"✅ Created property listing:")
+            print(f"   Address: {property_obj['address']}")
+            print(f"   ID: {property_obj['id']}")
+            print(f"   Price: ${property_obj['listing_price']:,}")
+            print(f"   Features: {len(property_data['features'])} highlighted features")
+            return property_obj
+        except ValidationError as e:
+            print(f"❌ Invalid property data: {e}")
+            return None
+    ```
+
+=== "Update Status"
+    ```python
+    def update_property_status(property_id: int, new_status: str, notes: str = None):
+        """Update property status with optional notes."""
+        
+        update_data = {"status": new_status}
+        
+        if notes:
+            # Append status change note
+            update_data["status_notes"] = notes
+        
+        try:
+            updated_property = client.properties.update_property(property_id, update_data)
+            print(f"✅ Property {property_id} status updated:")
+            print(f"   New Status: {new_status}")
+            print(f"   Address: {updated_property['address']}")
+            
+            if notes:
+                print(f"   Notes: {notes}")
+                
+            return updated_property
+        except NotFoundError:
+            print(f"❌ Property {property_id} not found")
+        except ValidationError as e:
+            print(f"❌ Invalid status '{new_status}': {e}")
+        return None
+    ```
+
+=== "Advanced Search"
+    ```python
+    def search_properties_by_criteria():
+        """Search for properties with detailed filtering."""
+        
+        search_params = {
+            "city": "Springfield",
+            "min_price": 500000,
+            "max_price": 800000,
+            "bedrooms__gte": 3,  # 3 or more bedrooms
+            "bathrooms__gte": 2,  # 2 or more bathrooms
+            "property_type": "single_family",
+            "status": "active",
+            "square_feet__gte": 2000  # Minimum 2000 sq ft
+        }
+        
+        try:
+            properties = client.properties.list_properties(params=search_params)
+            print(f"🔍 Found {len(properties)} properties matching criteria:")
+            print(f"   Location: {search_params['city']}")
+            print(f"   Price Range: ${search_params['min_price']:,} - ${search_params['max_price']:,}")
+            print(f"   Min Bedrooms: {search_params['bedrooms__gte']}")
+            print(f"   Min Square Feet: {search_params['square_feet__gte']:,}")
+            print()
+            
+            for i, prop in enumerate(properties, 1):
+                print(f"{i}. 📍 {prop['address']}")
+                print(f"   💰 ${prop['listing_price']:,}")
+                print(f"   🏠 {prop['bedrooms']}br/{prop['bathrooms']}ba • {prop['square_feet']:,} sq ft")
+                print(f"   📅 Listed: {prop.get('listing_date', 'N/A')}")
+                print()
+                
+            return properties
+        except Exception as e:
+            print(f"❌ Error searching properties: {e}")
+            return []
+    ```
+
+=== "Price Analysis"
+    ```python
+    def analyze_property_pricing(property_id: int):
+        """Analyze property pricing compared to market."""
+        
+        try:
+            # Get the property details
+            property_obj = client.properties.retrieve_property(property_id)
+            
+            # Search for comparable properties
+            comp_params = {
+                "city": property_obj['city'],
+                "property_type": property_obj['property_type'],
+                "bedrooms": property_obj['bedrooms'],
+                "bathrooms": property_obj['bathrooms'],
+                "square_feet__gte": property_obj['square_feet'] * 0.8,  # 80% of size
+                "square_feet__lte": property_obj['square_feet'] * 1.2,  # 120% of size
+                "status__in": ["active", "pending", "sold"],
+                "limit": 10
+            }
+            
+            comparables = client.properties.list_properties(params=comp_params)
+            
+            if comparables:
+                prices = [comp['listing_price'] for comp in comparables if comp['listing_price']]
+                avg_price = sum(prices) / len(prices) if prices else 0
+                
+                print(f"📊 Price Analysis for {property_obj['address']}")
+                print(f"   Current Price: ${property_obj['listing_price']:,}")
+                print(f"   Market Average: ${avg_price:,.0f}")
+                print(f"   Difference: ${property_obj['listing_price'] - avg_price:+,.0f}")
+                print(f"   Comparables Found: {len(comparables)}")
+                
+                percentage_diff = ((property_obj['listing_price'] - avg_price) / avg_price) * 100
+                print(f"   % vs Market: {percentage_diff:+.1f}%")
+                
+                if percentage_diff > 10:
+                    print("   💡 Suggestion: Property may be overpriced")
+                elif percentage_diff < -10:
+                    print("   💡 Suggestion: Property may be underpriced")
+                else:
+                    print("   ✅ Pricing appears competitive")
+                
+            return {
+                "property": property_obj,
+                "comparables": comparables,
+                "analysis": {
+                    "current_price": property_obj['listing_price'],
+                    "market_average": avg_price,
+                    "difference": property_obj['listing_price'] - avg_price,
+                    "percentage_difference": percentage_diff
+                }
+            }
+            
+        except NotFoundError:
+            print(f"❌ Property {property_id} not found")
+        except Exception as e:
+            print(f"❌ Error analyzing property: {e}")
+        return None
+    ```
+
+=== "Complete Workflow"
+    ```python
+    def property_management_workflow():
+        """Complete property management demonstration."""
+        
+        print("🏠 Property Management Workflow Demo")
+        print("=" * 40)
+        
+        # 1. Create a new listing
+        print("\n1️⃣ Creating New Property Listing:")
+        property_obj = create_property_listing()
+        if not property_obj:
+            return
+        
+        property_id = property_obj['id']
+        
+        # 2. Perform market analysis
+        print("\n2️⃣ Market Analysis:")
+        analysis = analyze_property_pricing(property_id)
+        
+        # 3. Search for similar properties
+        print("\n3️⃣ Finding Comparable Properties:")
+        search_properties_by_criteria()
+        
+        # 4. Update property status
+        print("\n4️⃣ Updating Property Status:")
+        update_property_status(
+            property_id, 
+            "pending", 
+            "Received offer above asking price"
+        )
+        
+        print("\n🎉 Property management workflow completed!")
+        return property_obj
+
+    # Run the demo
+    if __name__ == "__main__":
+        property_management_workflow()
+    ```
+
+!!! tip "💡 Property Best Practices"
+    - Include comprehensive property details for better search results
+    - Update status regularly to track progress
+    - Use comparable properties for pricing guidance  
+    - Store detailed notes for status changes
+    - Regular market analysis helps with pricing decisions
 
 ## Managing Property Relationships
 
@@ -682,4 +960,53 @@ def generate_market_report():
     return report
 ```
 
-These examples demonstrate the full capabilities of the Open To Close API client, from basic operations to complex real estate workflows. Use these patterns as templates for your own implementations. 
+## 📋 What's Next?
+
+These comprehensive examples showcase the full power of the Open To Close API client. Choose your next step:
+
+<div class="grid cards" markdown>
+
+-   :material-rocket:{ .lg .middle } **Quick Start**
+
+    ---
+
+    New to the API? Start with our 5-minute tutorial
+
+    [:octicons-arrow-right-24: Quick Start Guide](../getting-started/quickstart.md)
+
+-   :material-api:{ .lg .middle } **API Reference**
+
+    ---
+
+    Complete technical documentation for all methods
+
+    [:octicons-arrow-right-24: API Documentation](../reference/api-reference.md)
+
+-   :material-wrench:{ .lg .middle } **Troubleshooting**
+
+    ---
+
+    Common issues, solutions, and debugging techniques
+
+    [:octicons-arrow-right-24: Get Help](troubleshooting.md)
+
+-   :material-github:{ .lg .middle } **Contributing**
+
+    ---
+
+    Help improve the client with your contributions
+
+    [:octicons-arrow-right-24: Contribute](../development/contributing.md)
+
+</div>
+
+!!! success "🎯 Examples Mastery Complete!"
+    You now have comprehensive, production-ready examples for:
+    
+    - ✅ Complete CRUD operations with error handling
+    - ✅ Advanced property management workflows
+    - ✅ Bulk operations with progress tracking
+    - ✅ Real estate transaction workflows
+    - ✅ Market analysis and reporting patterns
+    
+    **Ready to build?** Use these patterns as templates for your own implementations. All examples include comprehensive error handling and follow production best practices. 
