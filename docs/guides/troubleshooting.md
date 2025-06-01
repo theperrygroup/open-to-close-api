@@ -415,7 +415,7 @@ def inspect_response_format():
 If you continue to experience issues:
 
 1. **Check this troubleshooting guide** for similar problems
-2. **Review the [API documentation](api-reference.md)** for correct usage
+2. **Review the [API documentation](../reference/api-reference.md)** for correct usage
 3. **Check the [examples](examples.md)** for working code patterns
 4. **Enable debug logging** to get more information
 5. **Contact support** with:
@@ -448,4 +448,4 @@ pip show open-to-close-api
 pip install --upgrade open-to-close-api
 ```
 
-Refer to the [changelog](changelog.md) for version-specific information and breaking changes. 
+Refer to the [changelog](../development/changelog.md) for version-specific information and breaking changes. 

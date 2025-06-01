@@ -109,22 +109,22 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Getting Started:
-    - Installation: installation.md
-    - Quick Start: quickstart.md
-    - Examples: examples.md
-  - API Reference:
-    - Complete API Reference: api-reference.md
+    - Installation: getting-started/installation.md
+    - Quick Start: getting-started/quickstart.md
   - Guides:
-    - Troubleshooting: troubleshooting.md
+    - Examples & Tutorials: guides/examples.md
+    - Troubleshooting: guides/troubleshooting.md
+  - API Reference:
+    - Complete API Reference: reference/api-reference.md
   - Development:
-    - Contributing: contributing.md
-    - Documentation Style Guide: STYLE_GUIDE.md
-    - Release Notes: changelog.md
-    - Deployment Guide: deployment.md
+    - Contributing: development/contributing.md
+    - Documentation Style Guide: development/STYLE_GUIDE.md
+    - Deployment Guide: development/deployment.md
+    - Release Notes: development/changelog.md
 
 # Extra CSS and JavaScript
 extra_css:
-  - extra.css
+  - assets/stylesheets/extra.css
 # extra_javascript: []
 
 # Extra

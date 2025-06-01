@@ -82,5 +82,5 @@ client = OpenToCloseAPI()
 ## Next Steps
 
 - [Quick Start Guide](quickstart.md) - Get started with basic usage
-- [API Reference](api-reference.md) - Explore all available methods
-- [Examples](examples.md) - See comprehensive usage examples 
+- [API Reference](../reference/api-reference.md) - Explore all available methods
+- [Examples](../guides/examples.md) - See comprehensive usage examples 

@@ -4,11 +4,11 @@ A comprehensive Python client library for the Open To Close API, providing easy-
 
 ## Quick Links
 
-- [Installation](installation.md) - Get started in minutes
-- [Quick Start Guide](quickstart.md) - 5-minute tutorial
-- [API Reference](api-reference.md) - Complete API documentation
-- [Examples](examples.md) - Comprehensive usage examples
-- [Troubleshooting](troubleshooting.md) - Common issues and solutions
+- [Installation](getting-started/installation.md) - Get started in minutes
+- [Quick Start Guide](getting-started/quickstart.md) - 5-minute tutorial
+- [API Reference](reference/api-reference.md) - Complete API documentation
+- [Examples](guides/examples.md) - Comprehensive usage examples
+- [Troubleshooting](guides/troubleshooting.md) - Common issues and solutions
 
 ## Features
 
@@ -39,8 +39,8 @@ A comprehensive Python client library for the Open To Close API, providing easy-
 
 ## Latest Updates
 
-See [Changelog](changelog.md) for version history and updates.
+See [Changelog](development/changelog.md) for version history and updates.
 
 ## Contributing
 
-See [Contributing Guide](contributing.md) for development setup and guidelines. 
+See [Contributing Guide](development/contributing.md) for development setup and guidelines. 

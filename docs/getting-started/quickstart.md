@@ -165,12 +165,12 @@ client.property_tasks       # Property tasks
 
 ## Next Steps
 
-- [API Reference](api-reference.md) - Complete method documentation
-- [Examples](examples.md) - More comprehensive examples
-- [Troubleshooting](troubleshooting.md) - Common issues and solutions
+- [API Reference](../reference/api-reference.md) - Complete method documentation
+- [Examples](../guides/examples.md) - More comprehensive examples
+- [Troubleshooting](../guides/troubleshooting.md) - Common issues and solutions
 
 ## Need Help?
 
-- Check the [troubleshooting guide](troubleshooting.md) for common issues
-- Review the [complete examples](examples.md) for advanced usage patterns
-- Refer to the [API reference](api-reference.md) for detailed method documentation 
+- Check the [troubleshooting guide](../guides/troubleshooting.md) for common issues
+- Review the [complete examples](../guides/examples.md) for advanced usage patterns
+- Refer to the [API reference](../reference/api-reference.md) for detailed method documentation 

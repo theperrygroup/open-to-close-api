@@ -12,16 +12,23 @@ This comprehensive guide ensures consistent, high-quality documentation across t
 ```
 docs/
 ├── index.md                    # Homepage (required)
-├── installation.md            # Setup instructions
-├── quickstart.md              # Getting started guide
-├── api-reference.md           # Complete API documentation
-├── examples.md                # Usage examples
-├── troubleshooting.md         # Common issues and solutions
-├── contributing.md            # Development guidelines
-├── changelog.md               # Version history
-├── deployment.md              # Production deployment
-├── STYLE_GUIDE.md             # This style guide
-└── extra.css                  # Custom styling
+├── getting-started/           # New user onboarding
+│   ├── installation.md        # Setup instructions
+│   └── quickstart.md          # Quick start guide
+├── guides/                    # How-to guides and tutorials
+│   ├── examples.md            # Usage examples & tutorials
+│   └── troubleshooting.md     # Common issues & solutions
+├── reference/                 # Technical reference
+│   └── api-reference.md       # Complete API documentation
+├── development/               # Developer documentation
+│   ├── contributing.md        # Development guidelines
+│   ├── STYLE_GUIDE.md         # Documentation standards
+│   ├── deployment.md          # Production deployment
+│   └── changelog.md           # Version history
+└── assets/                    # Static assets
+    ├── stylesheets/
+    │   └── extra.css          # Custom styling
+    └── images/                # Documentation images
 ```
 
 #### File Naming Conventions
@@ -153,10 +160,11 @@ Continue pattern...
 #### Internal Links
 ```markdown
 # Relative links to other docs
-[Installation Guide](installation.md)
-[API Reference](api-reference.md#contacts-api)
+[Installation Guide](../getting-started/installation.md)
+[API Reference](../reference/api-reference.md#contacts-api)
+[Contributing Guide](../development/contributing.md)
 
-# Section anchors (auto-generated from headings)
+# Section anchors (auto-generated from headings)  
 [Error Handling](#error-handling)
 [Client Initialization](#client-initialization)
 ```
@@ -635,13 +643,13 @@ print(contacts)  # Print contacts
 #### Internal Linking Strategy
 ```markdown
 # Link to specific sections
-See the [Authentication section](installation.md#authentication) for setup details.
+See the [Authentication section](../getting-started/installation.md#authentication) for setup details.
 
 # Link to methods in API reference  
-Use the [`create_contact()`](api-reference.md#create-contact) method to add new contacts.
+Use the [`create_contact()`](../reference/api-reference.md#create-contact) method to add new contacts.
 
 # Link to examples
-For a complete example, see [Contact Management](examples.md#contact-management).
+For a complete example, see [Contact Management](../guides/examples.md#contact-management).
 ```
 
 #### External References
