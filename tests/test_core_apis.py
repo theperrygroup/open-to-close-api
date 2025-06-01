@@ -1,15 +1,16 @@
 """Tests for core API endpoints."""
 
-import pytest
-from unittest.mock import Mock, patch
-import requests
 import os
+from unittest.mock import Mock, patch
+
+import pytest
+import requests
 
 from open_to_close import OpenToCloseAPI
 from open_to_close.exceptions import (
+    AuthenticationError,
     NotFoundError,
     ValidationError,
-    AuthenticationError,
 )
 
 

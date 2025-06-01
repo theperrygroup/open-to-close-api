@@ -1,7 +1,8 @@
 """Tests for BaseClient functionality."""
 
-import pytest
 from unittest.mock import Mock, patch
+
+import pytest
 import requests
 
 from open_to_close.base_client import BaseClient

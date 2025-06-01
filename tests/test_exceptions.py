@@ -1,14 +1,15 @@
 """Tests for exceptions module."""
 
 import pytest
+
 from open_to_close.exceptions import (
-    OpenToCloseAPIError,
     AuthenticationError,
-    ValidationError,
+    NetworkError,
     NotFoundError,
+    OpenToCloseAPIError,
     RateLimitError,
     ServerError,
-    NetworkError,
+    ValidationError,
 )
 
 

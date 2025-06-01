@@ -1,18 +1,19 @@
 """Tests for additional API endpoints with low coverage."""
 
-import pytest
 from unittest.mock import Mock, patch
+
+import pytest
 import requests
 
 from open_to_close import OpenToCloseAPI
 from open_to_close.exceptions import (
-    NotFoundError,
-    ValidationError,
     AuthenticationError,
     NetworkError,
+    NotFoundError,
+    OpenToCloseAPIError,
     RateLimitError,
     ServerError,
-    OpenToCloseAPIError,
+    ValidationError,
 )
 
 
