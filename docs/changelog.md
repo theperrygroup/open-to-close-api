@@ -8,14 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Comprehensive documentation structure following ReZEN model
 - Advanced error handling patterns with retry logic
 - Bulk operation examples and utilities
-- Enhanced troubleshooting guide
 
 ### Changed
-- Improved docstring formatting and examples
-- Enhanced type hints throughout codebase
+- Enhanced troubleshooting guide improvements
 
 ### Deprecated
 - None
@@ -28,6 +25,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 - None
+
+## [2.0.1] - 2025-01-30
+
+### Added
+- Comprehensive endpoint tracking documentation in `tasks/` directory
+- Enhanced code quality tooling and linting configuration
+
+### Changed
+- **BREAKING**: Package renamed from `open-to-close-api` to `open-to-close`
+- **BREAKING**: Import statements now use `from open_to_close import OpenToCloseAPI`
+- Improved code quality: pylint score increased from 9.84/10 to 9.97/10
+- Updated dependencies: pip (24.0→25.1.1), setuptools (80.8.0→80.9.0), coverage (7.8.1→7.8.2)
+- Enhanced BaseClient `_request` method with keyword-only arguments
+- Comprehensive documentation structure following ReZEN model
+- Improved docstring formatting and examples throughout codebase
+- Enhanced type hints throughout codebase
+
+### Fixed
+- Unnecessary `elif` statements after `return` in BaseClient
+- Missing explicit re-raising with `from` clause in error handling
+- Unnecessary `else` after `raise` statements
+- Trailing whitespace and code formatting issues
+
+### Removed
+- Build artifacts and Python cache files cleanup
+- Legacy package name references in documentation
+
+### Maintenance
+- Maintained 98.21% test coverage with all 155 tests passing
+- Verified all linting tools (flake8, mypy, black, isort) passing
+- Confirmed documentation builds successfully with MkDocs
+- Updated repository URLs and package references throughout documentation
+
+## [2.0.0] - 2024-12-15
+
+### Changed
+- **BREAKING**: Package renamed from `open-to-close-api` to `open-to-close`
+- **BREAKING**: All imports changed to use new package name
+- Version bumped to 2.0.0 due to breaking package name change
+
+### Added
+- Maintained all existing functionality under new package name
+- Updated CI/CD pipelines for new package name
 
 ## [1.0.0] - 2024-01-15
 

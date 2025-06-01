@@ -8,7 +8,7 @@
 ## Install from PyPI
 
 ```bash
-pip install open-to-close-api
+pip install open-to-close
 ```
 
 ## Install from Source
@@ -16,8 +16,8 @@ pip install open-to-close-api
 For development or to get the latest features:
 
 ```bash
-git clone https://github.com/theperry-group/open-to-close-api.git
-cd open-to-close-api
+git clone https://github.com/theperrygroup/open-to-close.git
+cd open-to-close
 pip install -e .
 ```
 
@@ -27,8 +27,8 @@ To contribute to the project:
 
 ```bash
 # Clone the repository
-git clone https://github.com/theperry-group/open-to-close-api.git
-cd open-to-close-api
+git clone https://github.com/theperrygroup/open-to-close.git
+cd open-to-close
 
 # Create virtual environment
 python -m venv .venv
@@ -42,8 +42,8 @@ pip install -e .
 ## Verify Installation
 
 ```python
-import open_to_close_api
-print(open_to_close_api.__version__)
+import open_to_close
+print(open_to_close.__version__)
 ```
 
 ## Environment Setup
@@ -73,7 +73,7 @@ OPEN_TO_CLOSE_API_KEY=your_actual_api_key_here
 The client will automatically load this when you initialize it:
 
 ```python
-from open_to_close_api import OpenToCloseAPI
+from open_to_close import OpenToCloseAPI
 
 # Automatically loads from environment or .env file
 client = OpenToCloseAPI()

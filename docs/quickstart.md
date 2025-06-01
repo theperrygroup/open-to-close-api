@@ -5,7 +5,7 @@ Get up and running with the Open To Close API in 5 minutes.
 ## 1. Installation
 
 ```bash
-pip install open-to-close-api
+pip install open-to-close
 ```
 
 ## 2. Set Your API Key
@@ -22,7 +22,7 @@ OPEN_TO_CLOSE_API_KEY=your_actual_api_key_here
 ## 3. Initialize the Client
 
 ```python
-from open_to_close_api import OpenToCloseAPI
+from open_to_close import OpenToCloseAPI
 
 # Initialize with environment variable
 client = OpenToCloseAPI()
@@ -118,7 +118,7 @@ except Exception as e:
 The client provides specific exception types for different error conditions:
 
 ```python
-from open_to_close_api import (
+from open_to_close import (
     OpenToCloseAPI,
     AuthenticationError,
     ValidationError,
