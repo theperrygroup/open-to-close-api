@@ -26,6 +26,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - None
 
+## [2.0.2] - 2025-01-30
+
+### Changed
+- **Documentation**: Streamlined README to reference comprehensive docs directory instead of duplicating content
+- **DRY Principle**: Eliminated duplicate documentation between README and docs/ to maintain single source of truth
+- **Navigation**: Added clear documentation table for easy access to all guides and references
+- **Maintenance**: Simplified README maintenance by centralizing all detailed content in docs/ directory
+
+### Fixed
+- Package name references in installation and quickstart documentation
+- Repository URLs updated throughout documentation
+- Import statements corrected to use new package name
+
+### Removed
+- Lengthy duplicate content from README (171 lines removed, 39 lines added)
+- Redundant development setup, error handling examples, and workflow documentation from README
+
+### Maintenance
+- Maintained 98.21% test coverage with all 155 tests passing
+- Verified all documentation builds successfully with MkDocs
+- Updated documentation navigation and cross-references
+
 ## [2.0.1] - 2025-01-30
 
 ### Added
