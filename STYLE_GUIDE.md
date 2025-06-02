@@ -193,7 +193,7 @@ class OpenToCloseAPI:
     def __init__(
         self,
         api_key: Optional[str] = None,
-        base_url: str = "https://api.opentoclose.com"
+        base_url: str = "https://api.opentoclose.com/v1"
     ):
         self.api_key = api_key or os.getenv("OPEN_TO_CLOSE_API_KEY")
         if not self.api_key:

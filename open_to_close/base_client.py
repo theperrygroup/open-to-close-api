@@ -20,6 +20,7 @@ load_dotenv()
 
 # Constants
 DEFAULT_BASE_URL = "https://api.opentoclose.com/v1"
+NON_V1_BASE_URL = "https://api.opentoclose.com"
 
 
 class BaseClient:
@@ -49,6 +50,31 @@ class BaseClient:
                 "Content-Type": "application/json",
             }
         )
+
+    def _get_base_url_for_operation(self, method: str, endpoint: str) -> str:
+        """Get the appropriate base URL based on operation type and endpoint.
+
+        Based on testing, POST operations work better with non-v1 URLs,
+        while GET operations work with v1 URLs.
+
+        Args:
+            method: HTTP method (GET, POST, PUT, DELETE, PATCH)
+            endpoint: API endpoint
+
+        Returns:
+            Appropriate base URL for the operation
+        """
+        if self.base_url != DEFAULT_BASE_URL:
+            # If user provided custom base URL, use it as-is
+            return self.base_url
+
+        # Use specific URL patterns based on our findings
+        if method.upper() == "POST":
+            # POST operations work better with non-v1 URLs
+            return NON_V1_BASE_URL
+        else:
+            # GET, PUT, DELETE, PATCH use v1 URLs
+            return DEFAULT_BASE_URL
 
     def _handle_response(self, response: requests.Response) -> Dict[str, Any]:
         """Handle HTTP response and raise appropriate exceptions."""
@@ -144,7 +170,9 @@ class BaseClient:
         params: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """Make HTTP request to API."""
-        url = f"{self.base_url}/{endpoint.lstrip('/')}"
+        # Get the appropriate base URL for this operation
+        base_url = self._get_base_url_for_operation(method, endpoint)
+        url = f"{base_url}/{endpoint.lstrip('/')}"
 
         # Add api_token to params for all requests
         if params is None:

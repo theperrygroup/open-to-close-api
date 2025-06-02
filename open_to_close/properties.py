@@ -67,14 +67,16 @@ class PropertiesAPI(BaseClient):
         Example:
             ```python
             property = client.properties.create_property({
-                "address": "123 Main St",
-                "city": "Anytown",
-                "state": "CA",
-                "zip": "12345"
+                "contract_title": "Property Name",
+                "property_address": "123 Main St",
+                "property_city": "Anytown",
+                "property_state": "CA",
+                "property_zip": "12345"
             })
             ```
         """
-        response = self.post("/properties", json_data=property_data)
+        # Properties POST endpoint requires trailing slash (per docs.opentoclose.com)
+        response = self.post("/properties/", json_data=property_data)
         return self._process_response_data(response)
 
     def retrieve_property(self, property_id: int) -> Dict[str, Any]:
