@@ -155,3 +155,5 @@ Thumbs.db /site/
 
 # Task tracking and development artifacts
 tasks/
+
+api.json

@@ -238,6 +238,7 @@ class TestPropertiesAPI:
         }
 
         property_data = {
+            "contract_title": "Test Property Contract",
             "address": "123 Main St, City, ST 12345",
             "price": 500000,
             "bedrooms": 3,

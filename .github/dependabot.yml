@@ -1,0 +1,89 @@
+# Dependabot configuration for automated dependency management
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  # Python dependencies (pip/poetry)
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/New_York"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "theperrygroup"
+    assignees:
+      - "theperrygroup"
+    commit-message:
+      prefix: "deps"
+      prefix-development: "deps-dev"
+      include: "scope"
+    groups:
+      production-dependencies:
+        patterns:
+          - "requests*"
+          - "urllib3*"
+          - "certifi*"
+        exclude-patterns:
+          - "*dev*"
+          - "*test*"
+      development-dependencies:
+        patterns:
+          - "*dev*"
+          - "*test*"
+          - "pytest*"
+          - "black*"
+          - "mypy*"
+          - "flake8*"
+          - "isort*"
+          - "mkdocs*"
+      documentation-dependencies:
+        patterns:
+          - "mkdocs*"
+          - "sphinx*"
+          - "mermaid*"
+    ignore:
+      # Ignore major version updates for stable dependencies
+      - dependency-name: "requests"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "urllib3"
+        update-types: ["version-update:semver-major"]
+
+  # GitHub Actions dependencies
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+      timezone: "America/New_York"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "theperrygroup"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+
+  # Docker dependencies (if any Dockerfiles exist)
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+      time: "09:00"
+      timezone: "America/New_York"
+    open-pull-requests-limit: 2
+    reviewers:
+      - "theperrygroup"
+    commit-message:
+      prefix: "docker"
+      include: "scope"
+
+# Security updates configuration
+enable-beta-ecosystems: true 

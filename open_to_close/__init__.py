@@ -6,11 +6,14 @@ from .client import OpenToCloseAPI
 from .contacts import ContactsAPI
 from .exceptions import (
     AuthenticationError,
+    ConfigurationError,
+    DataFormatError,
     NetworkError,
     NotFoundError,
     OpenToCloseAPIError,
     RateLimitError,
     ServerError,
+    TimeoutError,
     ValidationError,
 )
 from .properties import PropertiesAPI
@@ -23,7 +26,7 @@ from .tags import TagsAPI
 from .teams import TeamsAPI
 from .users import UsersAPI
 
-__version__ = "2.2.0"
+__version__ = "2.3.1"
 __all__ = [
     "OpenToCloseAPI",
     # Service Clients
@@ -46,4 +49,7 @@ __all__ = [
     "RateLimitError",
     "ServerError",
     "NetworkError",
+    "TimeoutError",
+    "ConfigurationError",
+    "DataFormatError",
 ]
