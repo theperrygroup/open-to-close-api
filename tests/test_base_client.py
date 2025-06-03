@@ -101,7 +101,7 @@ class TestBaseClient:
         response.content = b'{"message": "Invalid request"}'
         response.json.return_value = {"message": "Invalid request"}
 
-        with pytest.raises(ValidationError, match="Bad request: Invalid request"):
+        with pytest.raises(ValidationError, match="Bad request to POST /test: Invalid request"):
             client._handle_response(response, "/test", "POST")
 
     @patch("open_to_close.base_client.requests.Session.request")
@@ -114,7 +114,7 @@ class TestBaseClient:
         response.json.return_value = {"message": "Invalid credentials"}
 
         with pytest.raises(
-            AuthenticationError, match="Authentication failed: Invalid credentials"
+            AuthenticationError, match="Authentication failed for GET /test: Invalid credentials"
         ):
             client._handle_response(response, "/test", "GET")
 
@@ -128,7 +128,7 @@ class TestBaseClient:
         response.json.return_value = {"message": "Resource not found"}
 
         with pytest.raises(
-            NotFoundError, match="Resource not found: Resource not found"
+            NotFoundError, match="Resource not found for GET /test: Resource not found"
         ):
             client._handle_response(response, "/test", "GET")
 
@@ -140,9 +140,10 @@ class TestBaseClient:
         response.status_code = 429
         response.content = b'{"message": "Too many requests"}'
         response.json.return_value = {"message": "Too many requests"}
+        response.headers = {}
 
         with pytest.raises(
-            RateLimitError, match="Rate limit exceeded: Too many requests"
+            RateLimitError, match="Rate limit exceeded for GET /test: Too many requests"
         ):
             client._handle_response(response, "/test", "GET")
 
@@ -155,7 +156,7 @@ class TestBaseClient:
         response.content = b'{"message": "Internal server error"}'
         response.json.return_value = {"message": "Internal server error"}
 
-        with pytest.raises(ServerError, match="Server error: Internal server error"):
+        with pytest.raises(ServerError, match="Server error for GET /test: Internal server error"):
             client._handle_response(response, "/test", "GET")
 
     @patch("open_to_close.base_client.requests.Session.request")
@@ -168,7 +169,7 @@ class TestBaseClient:
         response.json.return_value = {"message": "Unknown error"}
 
         with pytest.raises(
-            OpenToCloseAPIError, match="Unexpected error: Unknown error"
+            OpenToCloseAPIError, match="Unexpected error for GET /test: Unknown error"
         ):
             client._handle_response(response, "/test", "GET")
 
@@ -182,7 +183,7 @@ class TestBaseClient:
         response.text = "invalid json"
         response.json.side_effect = ValueError("Invalid JSON")
 
-        with pytest.raises(ValidationError, match="Bad request: invalid json"):
+        with pytest.raises(ValidationError, match="Bad request to POST /test: invalid json"):
             client._handle_response(response, "/test", "POST")
 
     @patch("open_to_close.base_client.requests.Session.request")
@@ -218,6 +219,7 @@ class TestBaseClient:
             data=None,
             files=None,
             params={"limit": 10, "api_token": "test_key"},
+            timeout=30.0,
         )
         assert result == {"id": 1}
 
@@ -229,7 +231,7 @@ class TestBaseClient:
             "Connection failed"
         )
 
-        with pytest.raises(NetworkError, match="Network error: Connection failed"):
+        with pytest.raises(NetworkError, match="Network error for GET /test: Connection failed"):
             client._request("GET", "/test")
 
     @patch("open_to_close.base_client.requests.Session.request")
@@ -252,6 +254,7 @@ class TestBaseClient:
             data=None,
             files=None,
             params={"page": 1, "api_token": "test_key"},
+            timeout=30.0,
         )
         assert result == {"data": "test"}
 
@@ -276,6 +279,7 @@ class TestBaseClient:
             data=None,
             files=None,
             params={"api_token": "test_key"},
+            timeout=30.0,
         )
         assert result == {"id": 1, "created": True}
 
@@ -300,6 +304,7 @@ class TestBaseClient:
             data=None,
             files=None,
             params={"api_token": "test_key"},
+            timeout=30.0,
         )
         assert result == {"id": 1, "updated": True}
 
@@ -322,6 +327,7 @@ class TestBaseClient:
             data=None,
             files=None,
             params={"api_token": "test_key"},
+            timeout=30.0,
         )
         assert result == {}
 
@@ -346,6 +352,7 @@ class TestBaseClient:
             data=None,
             files=None,
             params={"api_token": "test_key"},
+            timeout=30.0,
         )
         assert result == {"id": 1, "patched": True}
 
@@ -372,6 +379,7 @@ class TestBaseClient:
             data=None,
             files=None,
             params={"api_token": "test_key"},
+            timeout=30.0,
         )
         assert result == {"data": "test"}
 
@@ -396,6 +404,7 @@ class TestBaseClient:
             data=None,
             files=files,
             params={"api_token": "test_key"},
+            timeout=30.0,
         )
         assert result == {"uploaded": True}
 
@@ -420,5 +429,6 @@ class TestBaseClient:
             data=data,
             files=None,
             params={"api_token": "test_key"},
+            timeout=30.0,
         )
         assert result == {"submitted": True}

@@ -166,9 +166,6 @@ class BaseClient:
     def _get_base_url_for_operation(self, method: str, endpoint: str) -> str:
         """Get the appropriate base URL based on operation type and endpoint.
 
-        Based on testing, POST operations work better with non-v1 URLs,
-        while GET operations work with v1 URLs.
-
         Args:
             method: HTTP method (GET, POST, PUT, DELETE, PATCH)
             endpoint: API endpoint
@@ -180,13 +177,8 @@ class BaseClient:
             # If user provided custom base URL, use it as-is
             return self.base_url
 
-        # Use specific URL patterns based on our findings
-        if method.upper() == "POST":
-            # POST operations work better with non-v1 URLs
-            return NON_V1_BASE_URL
-        else:
-            # GET, PUT, DELETE, PATCH use v1 URLs
-            return DEFAULT_BASE_URL
+        # Use consistent v1 URLs for all operations to maintain compatibility
+        return DEFAULT_BASE_URL
 
     def _validate_endpoint(self, endpoint: str) -> str:
         """Validate and normalize API endpoint.

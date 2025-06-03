@@ -6,6 +6,7 @@ import pytest
 import requests
 
 from open_to_close import OpenToCloseAPI
+from open_to_close.exceptions import DataFormatError
 
 
 @pytest.fixture
@@ -496,11 +497,8 @@ class TestPropertyEmailsAPI:
         response.json.return_value = "unexpected string response"
         mock_request.return_value = response
 
-        emails = client.property_emails.list_property_emails(1)
-
-        assert isinstance(emails, list)
-        assert len(emails) == 0
-        mock_request.assert_called_once()
+        with pytest.raises(DataFormatError, match="Expected list or dict with list data"):
+            client.property_emails.list_property_emails(1)
 
     @patch("open_to_close.base_client.requests.Session.request")
     def test_create_property_email(
@@ -572,11 +570,8 @@ class TestPropertyEmailsAPI:
         mock_request.return_value = response
 
         email_data = {"subject": "Test Email"}
-        email = client.property_emails.create_property_email(1, email_data)
-
-        assert isinstance(email, dict)
-        assert len(email) == 0
-        mock_request.assert_called_once()
+        with pytest.raises(DataFormatError, match="Expected dictionary response"):
+            client.property_emails.create_property_email(1, email_data)
 
     @patch("open_to_close.base_client.requests.Session.request")
     def test_retrieve_property_email(
@@ -741,7 +736,7 @@ class TestPropertyNotesAPI:
         response.json.return_value = {"data": {"id": 1, "title": "Test Note"}}
         mock_request.return_value = response
 
-        note_data = {"title": "Test Note"}
+        note_data = {"title": "Test Note", "content": "This is test note content"}
         note = client.property_notes.create_property_note(1, note_data)
 
         assert isinstance(note, dict)
@@ -758,7 +753,7 @@ class TestPropertyNotesAPI:
         response.json.return_value = {"data": "not a dict"}
         mock_request.return_value = response
 
-        note_data = {"title": "Test Note"}
+        note_data = {"title": "Test Note", "content": "This is test note content"}
         note = client.property_notes.create_property_note(1, note_data)
 
         assert isinstance(note, dict)
@@ -912,6 +907,7 @@ class TestPropertyDocumentsAPI:
 
         document_data = {
             "title": "Contract Document",
+            "name": "contract.pdf",
             "filename": "contract.pdf",
             "file_url": "http://example.com/contract.pdf",
         }
@@ -932,7 +928,7 @@ class TestPropertyDocumentsAPI:
         response.json.return_value = {"data": {"id": 1, "title": "Test Document"}}
         mock_request.return_value = response
 
-        document_data = {"title": "Test Document"}
+        document_data = {"title": "Test Document", "name": "test-document.pdf"}
         document = client.property_documents.create_property_document(1, document_data)
 
         assert isinstance(document, dict)
@@ -949,7 +945,7 @@ class TestPropertyDocumentsAPI:
         response.json.return_value = {"data": "not a dict"}
         mock_request.return_value = response
 
-        document_data = {"title": "Test Document"}
+        document_data = {"title": "Test Document", "name": "test-document.pdf"}
         document = client.property_documents.create_property_document(1, document_data)
 
         assert isinstance(document, dict)

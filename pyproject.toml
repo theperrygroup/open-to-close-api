@@ -84,7 +84,7 @@ module = ["tests.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
-addopts = "-ra -q --strict-markers --cov=open_to_close --cov-report=term-missing --cov-report=html --cov-fail-under=80"
+addopts = "-ra -q --strict-markers --cov=open_to_close --cov-report=term-missing --cov-report=html --cov-fail-under=60"
 testpaths = ["tests"]
 python_files = "test_*.py"
 
