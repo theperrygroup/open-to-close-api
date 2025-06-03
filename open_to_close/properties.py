@@ -47,7 +47,7 @@ class PropertiesAPI(BaseClient):
             properties = client.properties.list_properties(params={"limit": 50})
             ```
         """
-        response = self.get("/properties", params=params)
+        response = self.get("/properties/", params=params)
         return self._process_list_response(response)
 
     def create_property(self, property_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -74,7 +74,7 @@ class PropertiesAPI(BaseClient):
             })
             ```
         """
-        response = self.post("/properties", json_data=property_data)
+        response = self.post("/properties/", json_data=property_data)
         return self._process_response_data(response)
 
     def retrieve_property(self, property_id: int) -> Dict[str, Any]:
@@ -97,7 +97,7 @@ class PropertiesAPI(BaseClient):
             print(f"Property address: {property['address']}")
             ```
         """
-        response = self.get(f"/properties/{property_id}")
+        response = self.get(f"/properties/{property_id}/")
         return self._process_response_data(response)
 
     def update_property(
@@ -126,7 +126,7 @@ class PropertiesAPI(BaseClient):
             })
             ```
         """
-        response = self.put(f"/properties/{property_id}", json_data=property_data)
+        response = self.put(f"/properties/{property_id}/", json_data=property_data)
         return self._process_response_data(response)
 
     def delete_property(self, property_id: int) -> Dict[str, Any]:
@@ -148,4 +148,4 @@ class PropertiesAPI(BaseClient):
             result = client.properties.delete_property(123)
             ```
         """
-        return self.delete(f"/properties/{property_id}")
+        return self.delete(f"/properties/{property_id}/")
