@@ -497,7 +497,9 @@ class TestPropertyEmailsAPI:
         response.json.return_value = "unexpected string response"
         mock_request.return_value = response
 
-        with pytest.raises(DataFormatError, match="Expected list or dict with list data"):
+        with pytest.raises(
+            DataFormatError, match="Expected list or dict with list data"
+        ):
             client.property_emails.list_property_emails(1)
 
     @patch("open_to_close.base_client.requests.Session.request")

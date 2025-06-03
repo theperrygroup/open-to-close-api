@@ -101,7 +101,9 @@ class TestBaseClient:
         response.content = b'{"message": "Invalid request"}'
         response.json.return_value = {"message": "Invalid request"}
 
-        with pytest.raises(ValidationError, match="Bad request to POST /test: Invalid request"):
+        with pytest.raises(
+            ValidationError, match="Bad request to POST /test: Invalid request"
+        ):
             client._handle_response(response, "/test", "POST")
 
     @patch("open_to_close.base_client.requests.Session.request")
@@ -114,7 +116,8 @@ class TestBaseClient:
         response.json.return_value = {"message": "Invalid credentials"}
 
         with pytest.raises(
-            AuthenticationError, match="Authentication failed for GET /test: Invalid credentials"
+            AuthenticationError,
+            match="Authentication failed for GET /test: Invalid credentials",
         ):
             client._handle_response(response, "/test", "GET")
 
@@ -156,7 +159,9 @@ class TestBaseClient:
         response.content = b'{"message": "Internal server error"}'
         response.json.return_value = {"message": "Internal server error"}
 
-        with pytest.raises(ServerError, match="Server error for GET /test: Internal server error"):
+        with pytest.raises(
+            ServerError, match="Server error for GET /test: Internal server error"
+        ):
             client._handle_response(response, "/test", "GET")
 
     @patch("open_to_close.base_client.requests.Session.request")
@@ -183,7 +188,9 @@ class TestBaseClient:
         response.text = "invalid json"
         response.json.side_effect = ValueError("Invalid JSON")
 
-        with pytest.raises(ValidationError, match="Bad request to POST /test: invalid json"):
+        with pytest.raises(
+            ValidationError, match="Bad request to POST /test: invalid json"
+        ):
             client._handle_response(response, "/test", "POST")
 
     @patch("open_to_close.base_client.requests.Session.request")
@@ -231,7 +238,9 @@ class TestBaseClient:
             "Connection failed"
         )
 
-        with pytest.raises(NetworkError, match="Network error for GET /test: Connection failed"):
+        with pytest.raises(
+            NetworkError, match="Network error for GET /test: Connection failed"
+        ):
             client._request("GET", "/test")
 
     @patch("open_to_close.base_client.requests.Session.request")
