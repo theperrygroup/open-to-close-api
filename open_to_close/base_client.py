@@ -160,8 +160,7 @@ class BaseClient:
             }
         )
 
-        # Configure session timeouts
-        self.session.timeout = self.timeout
+        # Session timeout is configured per request in the _request method
 
     def _get_base_url_for_operation(self, method: str, endpoint: str) -> str:
         """Get the appropriate base URL based on operation type and endpoint.
@@ -389,7 +388,10 @@ class BaseClient:
         elif response.status_code == 404:
             raise NotFoundError(
                 f"Resource not found for {method} {endpoint}: {response_data.get('message', 'Not found')}",
-                **error_kwargs,
+                status_code=response.status_code,
+                response_data=response_data,
+                endpoint=endpoint,
+                method=method,
             )
 
         elif response.status_code == 429:
@@ -417,7 +419,10 @@ class BaseClient:
         # Generic error for other status codes
         raise OpenToCloseAPIError(
             f"Unexpected error for {method} {endpoint}: {response_data.get('message', 'Unknown error')}",
-            **error_kwargs,
+            status_code=response.status_code,
+            response_data=response_data,
+            endpoint=endpoint,
+            method=method,
         )
 
     def _process_response_data(
