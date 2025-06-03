@@ -66,7 +66,7 @@ class TestBaseClient:
         response.content = b'{"id": 1, "name": "test"}'
         response.json.return_value = {"id": 1, "name": "test"}
 
-        result = client._handle_response(response)
+        result = client._handle_response(response, "/test", "GET")
         assert result == {"id": 1, "name": "test"}
 
     @patch("open_to_close.base_client.requests.Session.request")
@@ -78,7 +78,7 @@ class TestBaseClient:
         response.content = b'{"id": 1, "name": "created"}'
         response.json.return_value = {"id": 1, "name": "created"}
 
-        result = client._handle_response(response)
+        result = client._handle_response(response, "/test", "POST")
         assert result == {"id": 1, "name": "created"}
 
     @patch("open_to_close.base_client.requests.Session.request")
@@ -89,7 +89,7 @@ class TestBaseClient:
         response.status_code = 204
         response.content = b""
 
-        result = client._handle_response(response)
+        result = client._handle_response(response, "/test", "DELETE")
         assert result == {}
 
     @patch("open_to_close.base_client.requests.Session.request")
@@ -102,7 +102,7 @@ class TestBaseClient:
         response.json.return_value = {"message": "Invalid request"}
 
         with pytest.raises(ValidationError, match="Bad request: Invalid request"):
-            client._handle_response(response)
+            client._handle_response(response, "/test", "POST")
 
     @patch("open_to_close.base_client.requests.Session.request")
     def test_handle_response_401_authentication_error(self, mock_request: Mock) -> None:
@@ -116,7 +116,7 @@ class TestBaseClient:
         with pytest.raises(
             AuthenticationError, match="Authentication failed: Invalid credentials"
         ):
-            client._handle_response(response)
+            client._handle_response(response, "/test", "GET")
 
     @patch("open_to_close.base_client.requests.Session.request")
     def test_handle_response_404_not_found_error(self, mock_request: Mock) -> None:
@@ -130,7 +130,7 @@ class TestBaseClient:
         with pytest.raises(
             NotFoundError, match="Resource not found: Resource not found"
         ):
-            client._handle_response(response)
+            client._handle_response(response, "/test", "GET")
 
     @patch("open_to_close.base_client.requests.Session.request")
     def test_handle_response_429_rate_limit_error(self, mock_request: Mock) -> None:
@@ -144,7 +144,7 @@ class TestBaseClient:
         with pytest.raises(
             RateLimitError, match="Rate limit exceeded: Too many requests"
         ):
-            client._handle_response(response)
+            client._handle_response(response, "/test", "GET")
 
     @patch("open_to_close.base_client.requests.Session.request")
     def test_handle_response_500_server_error(self, mock_request: Mock) -> None:
@@ -156,7 +156,7 @@ class TestBaseClient:
         response.json.return_value = {"message": "Internal server error"}
 
         with pytest.raises(ServerError, match="Server error: Internal server error"):
-            client._handle_response(response)
+            client._handle_response(response, "/test", "GET")
 
     @patch("open_to_close.base_client.requests.Session.request")
     def test_handle_response_unknown_error(self, mock_request: Mock) -> None:
@@ -170,7 +170,7 @@ class TestBaseClient:
         with pytest.raises(
             OpenToCloseAPIError, match="Unexpected error: Unknown error"
         ):
-            client._handle_response(response)
+            client._handle_response(response, "/test", "GET")
 
     @patch("open_to_close.base_client.requests.Session.request")
     def test_handle_response_invalid_json(self, mock_request: Mock) -> None:
@@ -183,7 +183,7 @@ class TestBaseClient:
         response.json.side_effect = ValueError("Invalid JSON")
 
         with pytest.raises(ValidationError, match="Bad request: invalid json"):
-            client._handle_response(response)
+            client._handle_response(response, "/test", "POST")
 
     @patch("open_to_close.base_client.requests.Session.request")
     def test_handle_response_no_content(self, mock_request: Mock) -> None:
@@ -193,7 +193,7 @@ class TestBaseClient:
         response.status_code = 200
         response.content = b""
 
-        result = client._handle_response(response)
+        result = client._handle_response(response, "/test", "GET")
         assert result == {}
 
     @patch("open_to_close.base_client.requests.Session.request")

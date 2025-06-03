@@ -6,11 +6,14 @@ from .client import OpenToCloseAPI
 from .contacts import ContactsAPI
 from .exceptions import (
     AuthenticationError,
+    ConfigurationError,
+    DataFormatError,
     NetworkError,
     NotFoundError,
     OpenToCloseAPIError,
     RateLimitError,
     ServerError,
+    TimeoutError,
     ValidationError,
 )
 from .properties import PropertiesAPI
@@ -46,4 +49,7 @@ __all__ = [
     "RateLimitError",
     "ServerError",
     "NetworkError",
+    "TimeoutError",
+    "ConfigurationError",
+    "DataFormatError",
 ]
