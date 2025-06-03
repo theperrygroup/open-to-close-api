@@ -7,6 +7,8 @@ We need to setup an API wrapper for follow up boss. My env variables can be foun
 
 OPEN_TO_CLOSE_API_KEY=MWI2TnluVjdxRVZPdm00eUREblRNQT09OmlPT2M0UlRKY2cyVEZmeUdqTk9PVVRrclJLZXdoancxOmE4ODZjMmVmNTI3MGQyNGM0YWY5N2Y1ZWZjOWQ5M2Q2OWVmMTgyMzZhMmY3YTEwZTI3MDk0ZWM1YmI4MTk4MTg=
 
+You can find all documentation here: https://api.postman.com/collections/247535-01abc285-e717-4ac9-94f3-327b23bd2b51?access_key=PMAT-01JVTZ6D0DPHFC75D98E8WSCA9
+
 Pull from there to get the API key in the code. 
 
 You will find all endpoints in the ./tasks/endpoint_tasks.md. We need to build an API wrapper for each and every endpoint. Once you have written the code for an endpoint, test the code to ensure that it works. Once you have confirmed that, check off the endpoint.
