@@ -235,9 +235,11 @@ class TestPropertiesAPI:
         # Mock both the teams request (for team member auto-detection) and property creation
         teams_response = Mock(spec=requests.Response)
         teams_response.status_code = 200
-        teams_response.json.return_value = [{"team_members": [{"id": 26392, "name": "Test Member"}]}]
+        teams_response.json.return_value = [
+            {"team_members": [{"id": 26392, "name": "Test Member"}]}
+        ]
         teams_response.headers = {}
-        
+
         property_response = Mock(spec=requests.Response)
         property_response.status_code = 201
         property_response.json.return_value = {
@@ -246,7 +248,7 @@ class TestPropertiesAPI:
             "price": 500000,
         }
         property_response.headers = {}
-        
+
         # Configure mock to return different responses for different URLs
         mock_request.side_effect = [teams_response, property_response]
 
