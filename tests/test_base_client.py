@@ -65,6 +65,7 @@ class TestBaseClient:
         response.status_code = 200
         response.content = b'{"id": 1, "name": "test"}'
         response.json.return_value = {"id": 1, "name": "test"}
+        response.headers = {}
 
         result = client._handle_response(response, "/test", "GET")
         assert result == {"id": 1, "name": "test"}
@@ -77,6 +78,7 @@ class TestBaseClient:
         response.status_code = 201
         response.content = b'{"id": 1, "name": "created"}'
         response.json.return_value = {"id": 1, "name": "created"}
+        response.headers = {}
 
         result = client._handle_response(response, "/test", "POST")
         assert result == {"id": 1, "name": "created"}
@@ -89,6 +91,7 @@ class TestBaseClient:
         response.status_code = 204
         response.content = b""
 
+        response.headers = {}
         result = client._handle_response(response, "/test", "DELETE")
         assert result == {}
 
@@ -101,6 +104,7 @@ class TestBaseClient:
         response.content = b'{"message": "Invalid request"}'
         response.json.return_value = {"message": "Invalid request"}
 
+        response.headers = {}
         with pytest.raises(
             ValidationError, match="Bad request to POST /test: Invalid request"
         ):
@@ -115,6 +119,7 @@ class TestBaseClient:
         response.content = b'{"message": "Invalid credentials"}'
         response.json.return_value = {"message": "Invalid credentials"}
 
+        response.headers = {}
         with pytest.raises(
             AuthenticationError,
             match="Authentication failed for GET /test: Invalid credentials",
@@ -130,6 +135,7 @@ class TestBaseClient:
         response.content = b'{"message": "Resource not found"}'
         response.json.return_value = {"message": "Resource not found"}
 
+        response.headers = {}
         with pytest.raises(
             NotFoundError, match="Resource not found for GET /test: Resource not found"
         ):
@@ -159,6 +165,7 @@ class TestBaseClient:
         response.content = b'{"message": "Internal server error"}'
         response.json.return_value = {"message": "Internal server error"}
 
+        response.headers = {}
         with pytest.raises(
             ServerError, match="Server error for GET /test: Internal server error"
         ):
@@ -173,6 +180,7 @@ class TestBaseClient:
         response.content = b'{"message": "Unknown error"}'
         response.json.return_value = {"message": "Unknown error"}
 
+        response.headers = {}
         with pytest.raises(
             OpenToCloseAPIError, match="Unexpected error for GET /test: Unknown error"
         ):
@@ -188,6 +196,7 @@ class TestBaseClient:
         response.text = "invalid json"
         response.json.side_effect = ValueError("Invalid JSON")
 
+        response.headers = {}
         with pytest.raises(
             ValidationError, match="Bad request to POST /test: invalid json"
         ):
@@ -201,6 +210,7 @@ class TestBaseClient:
         response.status_code = 200
         response.content = b""
 
+        response.headers = {}
         result = client._handle_response(response, "/test", "GET")
         assert result == {}
 
@@ -214,6 +224,7 @@ class TestBaseClient:
         response.status_code = 200
         response.content = b'{"id": 1}'
         response.json.return_value = {"id": 1}
+        response.headers = {}
         mock_session_request.return_value = response
 
         result = client._request("GET", "/test", params={"limit": 10})
@@ -252,6 +263,7 @@ class TestBaseClient:
         response.status_code = 200
         response.content = b'{"data": "test"}'
         response.json.return_value = {"data": "test"}
+        response.headers = {}
         mock_session_request.return_value = response
 
         result = client.get("/test", params={"page": 1})
@@ -276,6 +288,7 @@ class TestBaseClient:
         response.status_code = 201
         response.content = b'{"id": 1, "created": true}'
         response.json.return_value = {"id": 1, "created": True}
+        response.headers = {}
         mock_session_request.return_value = response
 
         json_data = {"name": "Test", "value": 123}
@@ -301,6 +314,7 @@ class TestBaseClient:
         response.status_code = 200
         response.content = b'{"id": 1, "updated": true}'
         response.json.return_value = {"id": 1, "updated": True}
+        response.headers = {}
         mock_session_request.return_value = response
 
         json_data = {"name": "Updated Test"}
@@ -325,6 +339,7 @@ class TestBaseClient:
         response = Mock(spec=requests.Response)
         response.status_code = 204
         response.content = b""
+        response.headers = {}
         mock_session_request.return_value = response
 
         result = client.delete("/test/1")
@@ -349,6 +364,7 @@ class TestBaseClient:
         response.status_code = 200
         response.content = b'{"id": 1, "patched": true}'
         response.json.return_value = {"id": 1, "patched": True}
+        response.headers = {}
         mock_session_request.return_value = response
 
         json_data = {"status": "active"}
@@ -376,6 +392,7 @@ class TestBaseClient:
         response.status_code = 200
         response.content = b'{"data": "test"}'
         response.json.return_value = {"data": "test"}
+        response.headers = {}
         mock_session_request.return_value = response
 
         result = client._request("GET", "/test")
@@ -401,6 +418,7 @@ class TestBaseClient:
         response.status_code = 200
         response.content = b'{"uploaded": true}'
         response.json.return_value = {"uploaded": True}
+        response.headers = {}
         mock_session_request.return_value = response
 
         files = {"file": ("test.txt", "file content")}
@@ -426,6 +444,7 @@ class TestBaseClient:
         response.status_code = 200
         response.content = b'{"submitted": true}'
         response.json.return_value = {"submitted": True}
+        response.headers = {}
         mock_session_request.return_value = response
 
         data = {"form_field": "value"}

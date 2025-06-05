@@ -22,6 +22,7 @@ def mock_response() -> Mock:
     response = Mock(spec=requests.Response)
     response.status_code = 200
     response.json.return_value = {"id": 1, "name": "Test"}
+    response.headers = {}
     return response
 
 
@@ -149,7 +150,8 @@ class TestContactsAPI:
         }
 
         contact_data = {
-            "name": "John Contact",
+            "first_name": "John",
+            "last_name": "Contact",
             "email": "john@example.com",
             "phone": "+1234567890",
         }
@@ -181,7 +183,7 @@ class TestContactsAPI:
         mock_request.return_value = mock_response
         mock_response.json.return_value = {"id": 1, "name": "Jane Contact"}
 
-        update_data = {"name": "Jane Contact"}
+        update_data = {"first_name": "Jane", "last_name": "Contact"}
         contact = client.contacts.update_contact(1, update_data)
 
         assert isinstance(contact, dict)
@@ -230,12 +232,23 @@ class TestPropertiesAPI:
         self, mock_request: Mock, client: OpenToCloseAPI, mock_response: Mock
     ) -> None:
         """Test creating a property."""
-        mock_request.return_value = mock_response
-        mock_response.json.return_value = {
+        # Mock both the teams request (for team member auto-detection) and property creation
+        teams_response = Mock(spec=requests.Response)
+        teams_response.status_code = 200
+        teams_response.json.return_value = [{"team_members": [{"id": 26392, "name": "Test Member"}]}]
+        teams_response.headers = {}
+        
+        property_response = Mock(spec=requests.Response)
+        property_response.status_code = 201
+        property_response.json.return_value = {
             "id": 1,
             "address": "123 Main St",
             "price": 500000,
         }
+        property_response.headers = {}
+        
+        # Configure mock to return different responses for different URLs
+        mock_request.side_effect = [teams_response, property_response]
 
         property_data = {
             "contract_title": "Test Property Contract",
@@ -248,7 +261,8 @@ class TestPropertiesAPI:
 
         assert isinstance(property, dict)
         assert property.get("id") == 1
-        mock_request.assert_called_once()
+        # Expect 2 calls: 1 for teams (auto-detection) and 1 for property creation
+        assert mock_request.call_count == 2
 
     @patch("open_to_close.base_client.requests.Session.request")
     def test_retrieve_property(

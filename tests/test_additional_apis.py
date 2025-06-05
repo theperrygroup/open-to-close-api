@@ -21,6 +21,7 @@ def mock_response() -> Mock:
     response = Mock(spec=requests.Response)
     response.status_code = 200
     response.json.return_value = {"id": 1, "name": "Test"}
+    response.headers = {}
     return response
 
 
@@ -30,6 +31,7 @@ def mock_list_response() -> Mock:
     response = Mock(spec=requests.Response)
     response.status_code = 200
     response.json.return_value = [{"id": 1, "name": "Test Item"}]
+    response.headers = {}
     return response
 
 
@@ -39,6 +41,7 @@ def mock_delete_response() -> Mock:
     response = Mock(spec=requests.Response)
     response.status_code = 204
     response.json.return_value = {}
+    response.headers = {}
     return response
 
 
@@ -89,6 +92,7 @@ class TestTagsAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = {"data": [{"id": 1, "name": "Test Tag"}]}
+        response.headers = {}
         mock_request.return_value = response
 
         tags = client.tags.list_tags()
@@ -125,6 +129,7 @@ class TestTagsAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = {"data": {"id": 1, "name": "Test Tag"}}
+        response.headers = {}
         mock_request.return_value = response
 
         tag_data = {"name": "Test Tag"}
@@ -156,6 +161,7 @@ class TestTagsAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = {"data": {"id": 123, "name": "Test Tag"}}
+        response.headers = {}
         mock_request.return_value = response
 
         tag = client.tags.retrieve_tag(123)
@@ -463,6 +469,7 @@ class TestPropertyEmailsAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = {"data": [{"id": 1, "subject": "Test Email"}]}
+        response.headers = {}
         mock_request.return_value = response
 
         emails = client.property_emails.list_property_emails(1)
@@ -479,6 +486,7 @@ class TestPropertyEmailsAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = {"data": "not a list"}
+        response.headers = {}
         mock_request.return_value = response
 
         emails = client.property_emails.list_property_emails(1)
@@ -495,6 +503,7 @@ class TestPropertyEmailsAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = "unexpected string response"
+        response.headers = {}
         mock_request.return_value = response
 
         with pytest.raises(
@@ -535,6 +544,7 @@ class TestPropertyEmailsAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = {"data": {"id": 1, "subject": "Test Email"}}
+        response.headers = {}
         mock_request.return_value = response
 
         email_data = {"subject": "Test Email"}
@@ -552,6 +562,7 @@ class TestPropertyEmailsAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = {"data": "not a dict"}
+        response.headers = {}
         mock_request.return_value = response
 
         email_data = {"subject": "Test Email"}
@@ -569,6 +580,7 @@ class TestPropertyEmailsAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = "unexpected string response"
+        response.headers = {}
         mock_request.return_value = response
 
         email_data = {"subject": "Test Email"}
@@ -597,6 +609,7 @@ class TestPropertyEmailsAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = {"data": {"id": 123, "subject": "Test Email"}}
+        response.headers = {}
         mock_request.return_value = response
 
         email = client.property_emails.retrieve_property_email(1, 123)
@@ -628,6 +641,7 @@ class TestPropertyEmailsAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = {"data": {"id": 123, "subject": "Updated Email"}}
+        response.headers = {}
         mock_request.return_value = response
 
         update_data = {"subject": "Updated Email"}
@@ -683,6 +697,7 @@ class TestPropertyNotesAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = {"data": [{"id": 1, "title": "Test Note"}]}
+        response.headers = {}
         mock_request.return_value = response
 
         notes = client.property_notes.list_property_notes(1)
@@ -699,6 +714,7 @@ class TestPropertyNotesAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = {"data": "not a list"}
+        response.headers = {}
         mock_request.return_value = response
 
         notes = client.property_notes.list_property_notes(1)
@@ -736,6 +752,7 @@ class TestPropertyNotesAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = {"data": {"id": 1, "title": "Test Note"}}
+        response.headers = {}
         mock_request.return_value = response
 
         note_data = {"title": "Test Note", "content": "This is test note content"}
@@ -753,6 +770,7 @@ class TestPropertyNotesAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = {"data": "not a dict"}
+        response.headers = {}
         mock_request.return_value = response
 
         note_data = {"title": "Test Note", "content": "This is test note content"}
@@ -784,6 +802,7 @@ class TestPropertyNotesAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = {"data": {"id": 123, "title": "Test Note"}}
+        response.headers = {}
         mock_request.return_value = response
 
         note = client.property_notes.retrieve_property_note(1, 123)
@@ -815,6 +834,7 @@ class TestPropertyNotesAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = {"data": {"id": 123, "title": "Updated Note"}}
+        response.headers = {}
         mock_request.return_value = response
 
         update_data = {"title": "Updated Note"}
@@ -870,6 +890,7 @@ class TestPropertyDocumentsAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = {"data": [{"id": 1, "title": "Test Document"}]}
+        response.headers = {}
         mock_request.return_value = response
 
         documents = client.property_documents.list_property_documents(1)
@@ -886,6 +907,7 @@ class TestPropertyDocumentsAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = {"data": "not a list"}
+        response.headers = {}
         mock_request.return_value = response
 
         documents = client.property_documents.list_property_documents(1)
@@ -928,6 +950,7 @@ class TestPropertyDocumentsAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = {"data": {"id": 1, "title": "Test Document"}}
+        response.headers = {}
         mock_request.return_value = response
 
         document_data = {"title": "Test Document", "name": "test-document.pdf"}
@@ -945,6 +968,7 @@ class TestPropertyDocumentsAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = {"data": "not a dict"}
+        response.headers = {}
         mock_request.return_value = response
 
         document_data = {"title": "Test Document", "name": "test-document.pdf"}
@@ -976,6 +1000,7 @@ class TestPropertyDocumentsAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = {"data": {"id": 123, "title": "Test Document"}}
+        response.headers = {}
         mock_request.return_value = response
 
         document = client.property_documents.retrieve_property_document(1, 123)
@@ -1009,6 +1034,7 @@ class TestPropertyDocumentsAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = {"data": {"id": 123, "title": "Updated Document"}}
+        response.headers = {}
         mock_request.return_value = response
 
         update_data = {"title": "Updated Document"}
@@ -1066,6 +1092,7 @@ class TestPropertyTasksAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = {"data": [{"id": 1, "title": "Test Task"}]}
+        response.headers = {}
         mock_request.return_value = response
 
         tasks = client.property_tasks.list_property_tasks(1)
@@ -1082,6 +1109,7 @@ class TestPropertyTasksAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = {"data": "not a list"}
+        response.headers = {}
         mock_request.return_value = response
 
         tasks = client.property_tasks.list_property_tasks(1)
@@ -1124,6 +1152,7 @@ class TestPropertyTasksAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = {"data": {"id": 1, "title": "Test Task"}}
+        response.headers = {}
         mock_request.return_value = response
 
         task_data = {"title": "Test Task"}
@@ -1141,6 +1170,7 @@ class TestPropertyTasksAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = {"data": "not a dict"}
+        response.headers = {}
         mock_request.return_value = response
 
         task_data = {"title": "Test Task"}
@@ -1172,6 +1202,7 @@ class TestPropertyTasksAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = {"data": {"id": 123, "title": "Test Task"}}
+        response.headers = {}
         mock_request.return_value = response
 
         task = client.property_tasks.retrieve_property_task(1, 123)
@@ -1208,6 +1239,7 @@ class TestPropertyTasksAPI:
         response = Mock(spec=requests.Response)
         response.status_code = 200
         response.json.return_value = {"data": {"id": 123, "title": "Updated Task"}}
+        response.headers = {}
         mock_request.return_value = response
 
         update_data = {"title": "Updated Task"}
