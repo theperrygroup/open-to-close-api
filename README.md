@@ -23,6 +23,7 @@ A modern, type-safe Python wrapper for the Open To Close API. Manage properties,
 - **📚 Excellent Documentation** - Complete guides, examples, and API reference
 - **✅ Endpoint Reliability** - All 6 core API endpoints tested and verified working (100% success rate)
 - **🔧 Smart URL Routing** - Automatic handling of different URL patterns for optimal API compatibility
+- **🎯 Simplified Property Creation** - Create properties with just a title or simple dictionary format
 
 ## 🚀 Quick Start
 
@@ -48,15 +49,16 @@ from open_to_close import OpenToCloseAPI
 # Initialize the client
 client = OpenToCloseAPI()
 
-# Create a new property
+# Create a new property (simplified format) 🆕
 property_data = client.properties.create_property({
-    "address": "123 Main Street",
-    "city": "New York",
-    "state": "NY",
-    "zip_code": "10001",
-    "property_type": "Single Family Home",
-    "listing_price": 450000
+    "title": "Beautiful Family Home",
+    "client_type": "Buyer", 
+    "status": "Active",
+    "purchase_amount": 450000
 })
+
+# Or even simpler - just pass a title!
+simple_property = client.properties.create_property("Downtown Condo")
 
 # Get all properties
 properties = client.properties.list_properties()
@@ -69,6 +71,93 @@ note = client.property_notes.create_property_note(
 
 print(f"Created property {property_data['id']} with note {note['id']}")
 ```
+
+## 🎯 Simplified Property Creation
+
+Creating properties is now incredibly easy! Choose from multiple input formats:
+
+```python
+# 1. Simple title only (uses smart defaults)
+property1 = client.properties.create_property("Beautiful Family Home")
+
+# 2. Dictionary with common fields
+property2 = client.properties.create_property({
+    "title": "Luxury Estate with Pool",
+    "client_type": "Buyer",      # "Buyer", "Seller", or "Dual" 
+    "status": "Active",          # "Active", "Pre-MLS", "Under Contract", etc.
+    "purchase_amount": 650000
+})
+
+# 3. Seller property
+property3 = client.properties.create_property({
+    "title": "Downtown Condo for Sale",
+    "client_type": "Seller",
+    "status": "Pre-MLS",
+    "purchase_amount": 425000
+})
+```
+
+**What happens automatically:**
+- 🔍 **Auto-detects team member ID** from your teams
+- 🎯 **Smart defaults**: Client type = "Buyer", Status = "Active"  
+- 🛡️ **Input validation** with clear error messages
+- 🔄 **Format conversion** to complex API structure behind the scenes
+- ⚡ **Legacy support** - advanced format still works for power users
+
+👉 **See [Property Creation Guide](docs/property-creation-guide.md) for complete examples and options**
+
+## 🏠 Complete Transaction Workflow
+
+Create complete real estate transactions with properties and associated contacts:
+
+```python
+from open_to_close import OpenToCloseAPI
+
+client = OpenToCloseAPI()
+
+# Step 1: Create property (transaction)
+property_result = client.properties.create_property({
+    "title": "123 Main Street Sale Transaction",
+    "client_type": "Buyer",
+    "status": "Active",
+    "purchase_amount": 450000
+})
+
+# Step 2: Create contacts with correct field format
+contacts = [
+    {
+        "first_name": "John",
+        "last_name": "Smith", 
+        "email": "john.smith@email.com",
+        "phone": "+1-555-0101"
+    },
+    {
+        "first_name": "Sarah",
+        "last_name": "Johnson",
+        "email": "sarah.johnson@email.com", 
+        "phone": "+1-555-0102"
+    }
+]
+
+# Create all contacts
+created_contacts = []
+for contact_data in contacts:
+    contact = client.contacts.create_contact(contact_data)
+    created_contacts.append(contact)
+
+# Step 3: Link contacts to property
+for contact in created_contacts:
+    association = client.property_contacts.create_property_contact(
+        property_id=property_result['id'],
+        contact_data={"contact_id": contact['id']}
+    )
+    print(f"Linked contact {contact['first_name']} {contact['last_name']}")
+```
+
+!!! warning "Important Contact Field Requirements"
+    🚨 **Critical**: The `name` field is **NOT supported** by the Open To Close API. You must use `first_name` and `last_name` fields separately, or the API will return "Bad request" errors.
+
+👉 **See [Property-Contact Workflow Guide](docs/guides/property-contact-workflow.md) for the complete tested workflow**
 
 ## 🛡️ Reliability & Testing
 
@@ -130,12 +219,12 @@ def onboard_new_listing():
         "status": "Coming Soon"
     })
     
-    # Create seller contact
+    # Create seller contact (using only reliably supported fields)
     seller = client.contacts.create_contact({
         "first_name": "Sarah",
         "last_name": "Johnson",
-        "email": "sarah.johnson@email.com",
-        "contact_type": "Seller"
+        "email": "sarah.johnson@email.com"
+        # Note: "contact_type" field has limited API support
     })
     
     # Link seller to property

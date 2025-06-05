@@ -5,6 +5,9 @@ The Contacts API manages people involved in real estate transactions including b
 !!! abstract "ContactsAPI Client"
     Access via `client.contacts` - provides full CRUD operations for contact management.
 
+!!! warning "Important Field Requirements"
+    🚨 **API Limitation**: The `name` field is **NOT supported** by the Open To Close API. You must use `first_name` and `last_name` fields separately. Using the `name` field will result in "Bad request" errors.
+
 ---
 
 ## 🚀 Quick Start
@@ -156,25 +159,31 @@ def create_contact(
 |------|-------------|
 | `Dict[str, Any]` | Created contact data with assigned ID |
 
-**Common Contact Fields:**
+**Supported Contact Fields:**
 
-| Field | Type | Required | Description | Example |
-|-------|------|----------|-------------|---------|
-| `first_name` | `string` | No | Contact's first name | `"John"` |
-| `last_name` | `string` | No | Contact's last name | `"Doe"` |
-| `email` | `string` | No | Email address | `"john@email.com"` |
-| `phone` | `string` | No | Phone number | `"+1234567890"` |
-| `contact_type` | `string` | No | Type of contact | `"Buyer"` |
-| `company` | `string` | No | Company name | `"ABC Realty"` |
-| `address` | `string` | No | Street address | `"123 Main St"` |
-| `city` | `string` | No | City | `"New York"` |
-| `state` | `string` | No | State | `"NY"` |
-| `zip_code` | `string` | No | ZIP code | `"10001"` |
+!!! info "Field Support Status"
+    ✅ **Supported** fields work with the API  
+    ⚠️ **Limited Support** fields may not work as expected  
+    ❌ **Unsupported** fields will cause API errors
+
+| Field | Status | Type | Required | Description | Example |
+|-------|--------|------|----------|-------------|---------|
+| `first_name` | ✅ | `string` | No | Contact's first name | `"John"` |
+| `last_name` | ✅ | `string` | No | Contact's last name | `"Doe"` |
+| `email` | ✅ | `string` | No | Email address | `"john@email.com"` |
+| `phone` | ✅ | `string` | No | Phone number | `"+1234567890"` |
+| `name` | ❌ | `string` | No | **NOT SUPPORTED** - Use first_name/last_name | - |
+| `contact_type` | ⚠️ | `string` | No | **LIMITED** - May not persist correctly | `"Buyer"` |
+| `company` | ⚠️ | `string` | No | **LIMITED** - May not persist correctly | `"ABC Realty"` |
+| `address` | ⚠️ | `string` | No | **LIMITED** - May not persist correctly | `"123 Main St"` |
+
+!!! warning "Field Limitations"
+    Based on API testing, only `first_name`, `last_name`, `email`, and `phone` are reliably supported. Other fields may be accepted but might not persist or may cause errors.
 
 === ":material-plus: Basic Creation"
 
     ```python
-    # Create a basic contact
+    # Create a basic contact (using only reliably supported fields)
     new_contact = client.contacts.create_contact({
         "first_name": "Jane",
         "last_name": "Smith",
@@ -184,45 +193,63 @@ def create_contact(
     
     print(f"Created contact with ID: {new_contact['id']}")
     print(f"Name: {new_contact['first_name']} {new_contact['last_name']}")
+    
+    # Minimal examples with single fields
+    email_only = client.contacts.create_contact({
+        "email": "contact@example.com"
+    })
+    
+    phone_only = client.contacts.create_contact({
+        "phone": "+1555999888"
+    })
     ```
 
-=== ":material-account-group: Complete Profile"
+=== ":material-account-group: Extended Profile"
 
     ```python
-    # Create a comprehensive contact profile
+    # ⚠️ WARNING: This example includes fields with limited API support
+    # Only first_name, last_name, email, and phone are guaranteed to work
+    
+    # Create a contact with additional fields (may not all persist)
     contact_data = {
+        # ✅ Reliably supported fields
         "first_name": "Michael",
-        "last_name": "Johnson",
+        "last_name": "Johnson", 
         "email": "michael.johnson@email.com",
         "phone": "+1555987654",
-        "contact_type": "Seller",
-        "company": "Johnson Enterprises",
-        "address": "456 Oak Avenue",
-        "city": "Los Angeles",
-        "state": "CA",
-        "zip_code": "90210",
-        "preferred_contact_method": "email",
-        "notes": "Prefers morning communications"
+        
+        # ⚠️ Fields with limited support - may not persist
+        # "contact_type": "Seller",      # May not work
+        # "company": "Johnson Enterprises",  # May not work
+        # "address": "456 Oak Avenue",   # May not work
     }
     
     new_contact = client.contacts.create_contact(contact_data)
-    print(f"Created {new_contact['contact_type']}: {new_contact['first_name']} {new_contact['last_name']}")
+    print(f"Created contact: {new_contact['first_name']} {new_contact['last_name']}")
+    
+    # Recommended approach: Create basic contact first, then update if needed
+    basic_contact = client.contacts.create_contact({
+        "first_name": "Michael",
+        "last_name": "Johnson",
+        "email": "michael.johnson@email.com",
+        "phone": "+1555987654"
+    })
     ```
 
 === ":material-business: Business Contact"
 
     ```python
-    # Create a business/professional contact
+    # Create a business/professional contact (using only supported fields)
     business_contact = client.contacts.create_contact({
         "first_name": "Sarah",
         "last_name": "Williams",
         "email": "sarah@inspectionpro.com",
-        "phone": "+1555456789",
-        "contact_type": "Inspector",
-        "company": "Professional Inspections Inc",
-        "license_number": "INS789456",
-        "specialties": ["Home Inspection", "Commercial Inspection"]
+        "phone": "+1555456789"
+        # Note: Fields like "contact_type", "company", "license_number" 
+        # may not be supported by the API
     })
+    
+    print(f"Created business contact: {business_contact['first_name']} {business_contact['last_name']}")
     ```
 
 ---

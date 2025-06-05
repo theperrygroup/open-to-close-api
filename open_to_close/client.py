@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Any, Dict, List, Optional
 
 from .agents import AgentsAPI
 from .base_client import DEFAULT_BASE_URL
@@ -205,3 +205,39 @@ class OpenToCloseAPI:
         if self._users is None:
             self._users = UsersAPI(api_key=self._api_key, base_url=self._base_url)
         return self._users
+
+    def get_property_fields(self) -> List[Dict[str, Any]]:
+        """Convenience method to retrieve property field definitions.
+
+        This is a convenience method that delegates to the properties API
+        to fetch property field definitions. It's equivalent to calling
+        client.properties.get_property_fields().
+
+        Returns:
+            A list of dictionaries containing property field definitions.
+            Each field group contains sections with individual field definitions
+            including field name, type, options (for choice fields), and other metadata.
+
+        Raises:
+            AuthenticationError: If authentication fails
+            RateLimitError: If rate limit is exceeded
+            ServerError: If server error occurs
+            NetworkError: If network error occurs
+            OpenToCloseAPIError: For other API errors
+
+        Example:
+            ```python
+            # Get property field definitions directly from main client
+            client = OpenToCloseAPI()
+            fields = client.get_property_fields()
+
+            # This is equivalent to:
+            # fields = client.properties.get_property_fields()
+
+            # Analyze field groups
+            for group in fields:
+                if 'group' in group:
+                    print(f"Group: {group['group']['title']}")
+            ```
+        """
+        return self.properties.get_property_fields()

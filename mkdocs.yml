@@ -153,11 +153,7 @@ nav:
     - Data Types: reference/data-types.md
     - Rate Limits: reference/rate-limits.md
     - Changelog: reference/changelog.md
-  - Development:
-    - development/index.md
-    - Contributing: development/contributing.md
-    - Testing: development/testing.md
-    - Release Process: development/release-process.md
+
 
 # Extra
 extra:

@@ -352,6 +352,35 @@ class BaseClient:
 
         # Handle successful responses
         if response.status_code in (200, 201):
+            # Check if we got HTML instead of JSON (indicates auth redirect or server error)
+            content_type = response.headers.get("content-type", "").lower()
+            if "text/html" in content_type:
+                # Check if it's an error page
+                if (
+                    "error occurred" in response.text.lower()
+                    or "internal server error" in response.text.lower()
+                ):
+                    raise ServerError(
+                        f"Server returned HTML error page for {method} {endpoint}. The endpoint may not be available or implemented.",
+                        status_code=response.status_code,
+                        response_data={
+                            "message": "Server error returned as HTML",
+                            "content_type": content_type,
+                        },
+                        endpoint=endpoint,
+                        method=method,
+                    )
+                else:
+                    raise AuthenticationError(
+                        f"Received HTML login page instead of JSON for {method} {endpoint}. Check authentication or endpoint availability.",
+                        status_code=response.status_code,
+                        response_data={
+                            "message": "Authentication required",
+                            "content_type": content_type,
+                        },
+                        endpoint=endpoint,
+                        method=method,
+                    )
             return response_data
         if response.status_code == 204:
             return {}

@@ -2,7 +2,6 @@ include README.md
 include LICENSE
 include requirements.txt
 include requirements-dev.txt
-include STYLE_GUIDE.md
 recursive-include open_to_close *.py
 recursive-include open_to_close py.typed
 recursive-include tests *.py

@@ -55,10 +55,18 @@ class ContactsAPI(BaseClient):
         # Validate required fields for create operations
         if operation == "create":
             # Check for at least one identifier field
-            identifier_fields = ["email", "phone", "name", "first_name", "last_name"]
+            # NOTE: The 'name' field is NOT supported by the API - use first_name/last_name instead
+            identifier_fields = ["email", "phone", "first_name", "last_name"]
             if not any(field in contact_data for field in identifier_fields):
                 raise ValidationError(
                     f"Contact data for {operation} must include at least one of: {', '.join(identifier_fields)}"
+                )
+
+            # Warn if unsupported 'name' field is used
+            if "name" in contact_data:
+                raise ValidationError(
+                    "The 'name' field is not supported by the API. "
+                    "Use 'first_name' and 'last_name' fields instead."
                 )
 
         # Validate email format if provided
@@ -74,7 +82,7 @@ class ContactsAPI(BaseClient):
                 raise ValidationError(f"Phone must be a non-empty string, got: {phone}")
 
         # Validate name fields if provided
-        for name_field in ["name", "first_name", "last_name"]:
+        for name_field in ["first_name", "last_name"]:
             if name_field in contact_data:
                 name_value = contact_data[name_field]
                 if not isinstance(name_value, str) or len(name_value.strip()) == 0:
@@ -192,17 +200,22 @@ class ContactsAPI(BaseClient):
     def create_contact(self, contact_data: Dict[str, Any]) -> Dict[str, Any]:
         """Create a new contact with comprehensive validation.
 
+        **Important:** The API requires separate first_name and last_name fields.
+        The 'name' field is NOT supported and will cause validation errors.
+
         Args:
             contact_data: A dictionary containing the contact's information.
-                         Must include at least one of: email, phone, name, first_name, last_name.
-                         Common fields include:
+                         Must include at least one of: email, phone, first_name, last_name.
+                         Supported fields include:
                          - email: Contact email address
                          - phone: Contact phone number
-                         - name: Full name (or use first_name/last_name)
-                         - first_name: First name
-                         - last_name: Last name
-                         - company: Company name
-                         - title: Job title
+                         - first_name: First name (required if no email/phone)
+                         - last_name: Last name (required if no email/phone)
+
+                         **Unsupported fields** (will cause API errors):
+                         - name: Not supported - use first_name/last_name instead
+                         - company: Not supported in basic contact creation
+                         - title: Not supported in basic contact creation
 
         Returns:
             A dictionary representing the newly created contact
@@ -217,11 +230,22 @@ class ContactsAPI(BaseClient):
 
         Example:
             ```python
+            # Correct usage with first_name and last_name
             contact = client.contacts.create_contact({
-                "name": "John Doe",
+                "first_name": "John",
+                "last_name": "Doe",
                 "email": "john@example.com",
-                "phone": "+1234567890",
-                "company": "Example Corp"
+                "phone": "+1234567890"
+            })
+
+            # Minimal contact with just email
+            contact = client.contacts.create_contact({
+                "email": "jane@example.com"
+            })
+
+            # Contact with just phone
+            contact = client.contacts.create_contact({
+                "phone": "+1555123456"
             })
             ```
         """
@@ -272,7 +296,10 @@ class ContactsAPI(BaseClient):
         Example:
             ```python
             contact = client.contacts.retrieve_contact(123)
-            print(f"Contact name: {contact.get('name', 'N/A')}")
+            first_name = contact.get('first_name', '')
+            last_name = contact.get('last_name', '')
+            full_name = f"{first_name} {last_name}".strip() or 'N/A'
+            print(f"Contact name: {full_name}")
             ```
         """
         try:
@@ -297,8 +324,10 @@ class ContactsAPI(BaseClient):
         Args:
             contact_id: The ID of the contact to update (must be a positive integer)
             contact_data: A dictionary containing the fields to update.
-                         Fields can include any valid contact fields like:
-                         - email, phone, name, first_name, last_name, company, title, etc.
+                         Supported fields include:
+                         - email, phone, first_name, last_name
+
+                         **Note:** The 'name' field is not supported - use first_name/last_name instead.
 
         Returns:
             A dictionary representing the updated contact
@@ -315,9 +344,9 @@ class ContactsAPI(BaseClient):
         Example:
             ```python
             updated_contact = client.contacts.update_contact(123, {
-                "name": "Jane Doe",
-                "email": "jane@example.com",
-                "title": "Senior Manager"
+                "first_name": "Jane",
+                "last_name": "Doe",
+                "email": "jane@example.com"
             })
             ```
         """
